@@ -13,7 +13,9 @@ export default function ProfileTab() {
   const debouncedUpdate = useCallback(
     debounce((field: 'username' | 'bio', value: string) => {
       updateProfile({ [field]: value });
-      toast.success(`${field.charAt(0).toUpperCase() + field.slice(1)} updated`);
+
+      const fieldNames = { username: '使用者名稱', bio: '個人簡介' };
+      toast.success(`${fieldNames[field]}已更新`);
     }, 1000),
     [],
   );
@@ -35,19 +37,19 @@ export default function ProfileTab() {
         const base64String = reader.result as string;
         updateProfile({ avatar: base64String });
         setIsUploading(false);
-        toast.success('Profile picture updated');
+        toast.success('個人資料圖片已更新');
       };
 
       reader.onerror = () => {
         console.error('Error reading file:', reader.error);
         setIsUploading(false);
-        toast.error('Failed to update profile picture');
+        toast.error('更新個人資料圖片失敗');
       };
       reader.readAsDataURL(file);
     } catch (error) {
       console.error('Error uploading avatar:', error);
       setIsUploading(false);
-      toast.error('Failed to update profile picture');
+      toast.error('更新個人資料圖片失敗');
     }
   };
 
@@ -117,16 +119,14 @@ export default function ProfileTab() {
             </div>
 
             <div className="flex-1 pt-1">
-              <label className="block text-base font-medium text-gray-900 dark:text-gray-100 mb-1">
-                Profile Picture
-              </label>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Upload a profile picture or avatar</p>
+              <label className="block text-base font-medium text-gray-900 dark:text-gray-100 mb-1">個人資料圖片</label>
+              <p className="text-sm text-gray-500 dark:text-gray-400">上傳個人資料圖片或頭像</p>
             </div>
           </div>
 
           {/* Username Input */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Username</label>
+            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">使用者名稱</label>
             <div className="relative group">
               <div className="absolute left-3.5 top-1/2 -translate-y-1/2">
                 <div className="i-ph:user-circle-fill w-5 h-5 text-gray-400 dark:text-gray-500 transition-colors group-focus-within:text-purple-500" />
@@ -144,14 +144,14 @@ export default function ProfileTab() {
                   'focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50',
                   'transition-all duration-300 ease-out',
                 )}
-                placeholder="Enter your username"
+                placeholder="輸入您的使用者名稱"
               />
             </div>
           </div>
 
           {/* Bio Input */}
           <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Bio</label>
+            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">個人簡介</label>
             <div className="relative group">
               <div className="absolute left-3.5 top-3">
                 <div className="i-ph:text-aa w-5 h-5 text-gray-400 dark:text-gray-500 transition-colors group-focus-within:text-purple-500" />
@@ -170,7 +170,7 @@ export default function ProfileTab() {
                   'resize-none',
                   'h-32',
                 )}
-                placeholder="Tell us about yourself"
+                placeholder="介紹您自己"
               />
             </div>
           </div>

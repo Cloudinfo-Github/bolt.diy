@@ -30,7 +30,7 @@ export default function GitLabTab() {
     if (!connection?.user) {
       setConnectionTest({
         status: 'error',
-        message: 'No connection established',
+        message: '尚未建立連線',
         timestamp: Date.now(),
       });
       return;
@@ -38,7 +38,7 @@ export default function GitLabTab() {
 
     setConnectionTest({
       status: 'testing',
-      message: 'Testing connection...',
+      message: '正在測試連線...',
     });
 
     try {
@@ -47,20 +47,20 @@ export default function GitLabTab() {
       if (isValid) {
         setConnectionTest({
           status: 'success',
-          message: `Connected successfully as ${connection.user.username}`,
+          message: `已成功連線為 ${connection.user.username}`,
           timestamp: Date.now(),
         });
       } else {
         setConnectionTest({
           status: 'error',
-          message: 'Connection test failed',
+          message: '連線測試失敗',
           timestamp: Date.now(),
         });
       }
     } catch (error) {
       setConnectionTest({
         status: 'error',
-        message: `Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: `連線失敗：${error instanceof Error ? error.message : '未知錯誤'}`,
         timestamp: Date.now(),
       });
     }
@@ -72,12 +72,12 @@ export default function GitLabTab() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <GitLabLogo />
-          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitLab Integration</h2>
+          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitLab 整合</h2>
         </div>
         <div className="flex items-center justify-center p-4">
           <div className="flex items-center gap-2">
             <div className="i-ph:spinner-gap-bold animate-spin w-4 h-4" />
-            <span className="text-bolt-elements-textSecondary">Loading...</span>
+            <span className="text-bolt-elements-textSecondary">載入中...</span>
           </div>
         </div>
       </div>
@@ -105,11 +105,10 @@ export default function GitLabTab() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <GitLabLogo />
-          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitLab Integration</h2>
+          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitLab 整合</h2>
         </div>
         <p className="text-sm text-bolt-elements-textSecondary">
-          Connect your GitLab account to enable advanced repository management features, statistics, and seamless
-          integration.
+          連接您的 GitLab 帳戶以啟用進階儲存庫管理功能、統計資料和無縫整合。
         </p>
         <GitLabConnection connectionTest={connectionTest} onTestConnection={handleTestConnection} />
       </div>
@@ -128,7 +127,7 @@ export default function GitLabTab() {
         <div className="flex items-center gap-2">
           <GitLabLogo />
           <h2 className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-            GitLab Integration
+            GitLab 整合
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -136,7 +135,7 @@ export default function GitLabTab() {
             <div className="flex items-center gap-2 px-3 py-1 bg-bolt-elements-background-depth-1 rounded-lg text-xs">
               <div className="i-ph:cloud w-4 h-4 text-bolt-elements-textSecondary" />
               <span className="text-bolt-elements-textSecondary">
-                API: {connection.rateLimit.remaining}/{connection.rateLimit.limit}
+                API：{connection.rateLimit.remaining}/{connection.rateLimit.limit}
               </span>
             </div>
           )}
@@ -144,7 +143,7 @@ export default function GitLabTab() {
       </motion.div>
 
       <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-        Manage your GitLab integration with advanced repository features and comprehensive statistics
+        使用進階儲存庫功能和全面統計資料管理您的 GitLab 整合
       </p>
 
       {/* Connection Test Results */}
@@ -256,7 +255,7 @@ export default function GitLabTab() {
           transition={{ delay: 0.4 }}
           className="border-t border-bolt-elements-borderColor pt-6"
         >
-          <h3 className="text-base font-medium text-bolt-elements-textPrimary mb-4">Statistics</h3>
+          <h3 className="text-base font-medium text-bolt-elements-textPrimary mb-4">統計資料</h3>
           <StatsDisplay
             stats={connection.stats}
             onRefresh={async () => {

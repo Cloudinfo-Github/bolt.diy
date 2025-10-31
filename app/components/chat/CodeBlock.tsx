@@ -71,7 +71,7 @@ export const CodeBlock = memo(
                   'before:opacity-100': copied,
                 },
               )}
-              title="Copy Code"
+              title="複製程式碼"
               onClick={() => copyToClipboard()}
             >
               <div className="i-ph:clipboard-text-duotone"></div>

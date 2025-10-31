@@ -28,7 +28,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
     if (filteredFiles.length === 0) {
       const error = new Error('No valid files found');
       logStore.logError('File import failed - no valid files', error, { folderName: 'Unknown Folder' });
-      toast.error('No files found in the selected folder');
+      toast.error('所選資料夾中找不到檔案');
 
       return;
     }
@@ -40,7 +40,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
         maxFiles: MAX_FILES,
       });
       toast.error(
-        `This folder contains ${filteredFiles.length.toLocaleString()} files. This product is not yet optimized for very large projects. Please select a folder with fewer than ${MAX_FILES.toLocaleString()} files.`,
+        `此資料夾包含 ${filteredFiles.length.toLocaleString()} 個檔案。本產品尚未針對大型專案進行最佳化。請選擇包含少於 ${MAX_FILES.toLocaleString()} 個檔案的資料夾。`,
       );
 
       return;
@@ -49,7 +49,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
     const folderName = filteredFiles[0]?.webkitRelativePath.split('/')[0] || 'Unknown Folder';
     setIsLoading(true);
 
-    const loadingToast = toast.loading(`Importing ${folderName}...`);
+    const loadingToast = toast.loading(`正在匯入 ${folderName}...`);
 
     try {
       const fileChecks = await Promise.all(
@@ -67,7 +67,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
       if (textFiles.length === 0) {
         const error = new Error('No text files found');
         logStore.logError('File import failed - no text files', error, { folderName });
-        toast.error('No text files found in the selected folder');
+        toast.error('所選資料夾中找不到文字檔案');
 
         return;
       }
@@ -77,7 +77,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
           folderName,
           binaryCount: binaryFilePaths.length,
         });
-        toast.info(`Skipping ${binaryFilePaths.length} binary files`);
+        toast.info(`略過 ${binaryFilePaths.length} 個二進制檔案`);
       }
 
       const messages = await createChatFromFolder(textFiles, binaryFilePaths, folderName);
@@ -91,11 +91,11 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
         textFileCount: textFiles.length,
         binaryFileCount: binaryFilePaths.length,
       });
-      toast.success('Folder imported successfully');
+      toast.success('成功匯入資料夾');
     } catch (error) {
       logStore.logError('Failed to import folder', error, { folderName });
       console.error('Failed to import folder:', error);
-      toast.error('Failed to import folder');
+      toast.error('無法匯入資料夾');
     } finally {
       setIsLoading(false);
       toast.dismiss(loadingToast);
@@ -119,7 +119,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
           const input = document.getElementById('folder-import');
           input?.click();
         }}
-        title="Import Folder"
+        title="匯入資料夾"
         variant="default"
         size="lg"
         className={classNames(
@@ -134,7 +134,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
         disabled={isLoading}
       >
         <span className="i-ph:upload-simple w-4 h-4" />
-        {isLoading ? 'Importing...' : 'Import Folder'}
+        {isLoading ? '匯入中...' : '匯入資料夾'}
       </Button>
     </>
   );

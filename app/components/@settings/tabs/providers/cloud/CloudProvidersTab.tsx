@@ -14,6 +14,7 @@ import { TbBrain, TbCloudComputing } from 'react-icons/tb';
 import { BiCodeBlock, BiChip } from 'react-icons/bi';
 import { FaCloud, FaBrain } from 'react-icons/fa';
 import type { IconType } from 'react-icons';
+import { AzureOpenAiConfig } from '~/components/@settings/tabs/providers/AzureOpenAIConfig';
 
 // Add type for provider names to ensure type safety
 type ProviderName =
@@ -54,9 +55,9 @@ const PROVIDER_ICONS: Record<ProviderName, IconType> = {
 
 // Update PROVIDER_DESCRIPTIONS to use the same type
 const PROVIDER_DESCRIPTIONS: Partial<Record<ProviderName, string>> = {
-  Anthropic: 'Access Claude and other Anthropic models',
-  Github: 'Use OpenAI models hosted through GitHub infrastructure',
-  OpenAI: 'Use GPT-4, GPT-3.5, and other OpenAI models',
+  Anthropic: '使用 Claude 和其他 Anthropic 模型',
+  Github: '透過 GitHub 基礎設施使用 OpenAI 模型',
+  OpenAI: '使用 GPT-4、GPT-3.5 和其他 OpenAI 模型',
 };
 
 const CloudProvidersTab = () => {
@@ -95,7 +96,7 @@ const CloudProvidersTab = () => {
       });
 
       setCategoryEnabled(enabled);
-      toast.success(enabled ? 'All cloud providers enabled' : 'All cloud providers disabled');
+      toast.success(enabled ? '已啟用所有雲端提供者' : '已停用所有雲端提供者');
     },
     [filteredProviders, settings],
   );
@@ -107,10 +108,10 @@ const CloudProvidersTab = () => {
 
       if (enabled) {
         logStore.logProvider(`Provider ${provider.name} enabled`, { provider: provider.name });
-        toast.success(`${provider.name} enabled`);
+        toast.success(`已啟用 ${provider.name}`);
       } else {
         logStore.logProvider(`Provider ${provider.name} disabled`, { provider: provider.name });
-        toast.success(`${provider.name} disabled`);
+        toast.success(`已停用 ${provider.name}`);
       }
     },
     [settings],
@@ -127,7 +128,7 @@ const CloudProvidersTab = () => {
         provider: provider.name,
         baseUrl: newBaseUrl,
       });
-      toast.success(`${provider.name} base URL updated`);
+      toast.success(`已更新 ${provider.name} 基礎網址`);
       setEditingProvider(null);
     },
     [settings],
@@ -135,6 +136,9 @@ const CloudProvidersTab = () => {
 
   return (
     <div className="space-y-6">
+      {/* Azure OpenAI Configuration Section */}
+      <AzureOpenAiConfig />
+
       <motion.div
         className="space-y-4"
         initial={{ opacity: 0, y: 20 }}
@@ -153,13 +157,13 @@ const CloudProvidersTab = () => {
               <TbCloudComputing className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-md font-medium text-bolt-elements-textPrimary">Cloud Providers</h4>
-              <p className="text-sm text-bolt-elements-textSecondary">Connect to cloud-based AI models and services</p>
+              <h4 className="text-md font-medium text-bolt-elements-textPrimary">雲端提供者</h4>
+              <p className="text-sm text-bolt-elements-textSecondary">連接雲端 AI 模型和服務</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-bolt-elements-textSecondary">Enable All Cloud</span>
+            <span className="text-sm text-bolt-elements-textSecondary">啟用所有雲端</span>
             <Switch checked={categoryEnabled} onCheckedChange={handleToggleCategory} />
           </div>
         </div>
@@ -188,7 +192,7 @@ const CloudProvidersTab = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Configurable
+                    可配置
                   </motion.span>
                 )}
               </div>
@@ -221,8 +225,8 @@ const CloudProvidersTab = () => {
                       <p className="text-xs text-bolt-elements-textSecondary mt-0.5">
                         {PROVIDER_DESCRIPTIONS[provider.name as keyof typeof PROVIDER_DESCRIPTIONS] ||
                           (URL_CONFIGURABLE_PROVIDERS.includes(provider.name)
-                            ? 'Configure custom endpoint for this provider'
-                            : 'Standard AI provider integration')}
+                            ? '為此提供者配置自訂端點'
+                            : '標準 AI 提供者整合')}
                       </p>
                     </div>
                     <Switch
@@ -243,7 +247,7 @@ const CloudProvidersTab = () => {
                           <input
                             type="text"
                             defaultValue={provider.settings.baseUrl}
-                            placeholder={`Enter ${provider.name} base URL`}
+                            placeholder={`輸入 ${provider.name} 基礎網址`}
                             className={classNames(
                               'flex-1 px-3 py-1.5 rounded-lg text-sm',
                               'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
@@ -269,7 +273,7 @@ const CloudProvidersTab = () => {
                             <div className="flex items-center gap-2 text-bolt-elements-textSecondary">
                               <div className="i-ph:link text-sm" />
                               <span className="group-hover/url:text-purple-500 transition-colors">
-                                {provider.settings.baseUrl || 'Click to set base URL'}
+                                {provider.settings.baseUrl || '點擊設定基礎網址'}
                               </span>
                             </div>
                           </div>
@@ -280,7 +284,7 @@ const CloudProvidersTab = () => {
                         <div className="mt-2 text-xs text-green-500">
                           <div className="flex items-center gap-1">
                             <div className="i-ph:info" />
-                            <span>Environment URL set in .env file</span>
+                            <span>環境變數網址已在 .env 檔案中設定</span>
                           </div>
                         </div>
                       )}

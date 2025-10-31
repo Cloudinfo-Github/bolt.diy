@@ -166,7 +166,7 @@ export function BranchSelector({
             {isLoading ? (
               <div className="flex flex-col items-center justify-center p-8 space-y-4">
                 <div className="animate-spin w-8 h-8 border-2 border-bolt-elements-borderColorActive border-t-transparent rounded-full" />
-                <p className="text-sm text-bolt-elements-textSecondary">Loading branches...</p>
+                <p className="text-sm text-bolt-elements-textSecondary">載入分支中...</p>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center p-8 space-y-4">
@@ -186,7 +186,7 @@ export function BranchSelector({
                   <div className="p-4 border-b border-bolt-elements-borderColor">
                     <input
                       type="text"
-                      placeholder="Search branches..."
+                      placeholder="搜尋分支..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full px-3 py-2 rounded-lg bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive"
@@ -250,7 +250,7 @@ export function BranchSelector({
               </div>
               <div className="flex items-center gap-3">
                 <Button onClick={onClose} variant="outline" size="sm">
-                  Cancel
+                  取消
                 </Button>
                 <Button
                   onClick={handleConfirmSelection}

@@ -19,13 +19,13 @@ interface SelectOption {
 const logLevelOptions: SelectOption[] = [
   {
     value: 'all',
-    label: 'All Types',
+    label: '所有類型',
     icon: 'i-ph:funnel',
     color: '#9333ea',
   },
   {
     value: 'provider',
-    label: 'LLM',
+    label: '語言模型',
     icon: 'i-ph:robot',
     color: '#10b981',
   },
@@ -37,25 +37,25 @@ const logLevelOptions: SelectOption[] = [
   },
   {
     value: 'error',
-    label: 'Errors',
+    label: '錯誤',
     icon: 'i-ph:warning-circle',
     color: '#ef4444',
   },
   {
     value: 'warning',
-    label: 'Warnings',
+    label: '警告',
     icon: 'i-ph:warning',
     color: '#f59e0b',
   },
   {
     value: 'info',
-    label: 'Info',
+    label: '資訊',
     icon: 'i-ph:info',
     color: '#3b82f6',
   },
   {
     value: 'debug',
-    label: 'Debug',
+    label: '除錯',
     icon: 'i-ph:bug',
     color: '#6b7280',
   },
@@ -136,15 +136,15 @@ const LogEntryItem = ({ log, isExpanded: forceExpanded, use24Hour, showTimestamp
       return (
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-            <span>Model: {details.model}</span>
+            <span>模型: {details.model}</span>
             <span>•</span>
-            <span>Tokens: {details.totalTokens}</span>
+            <span>語元: {details.totalTokens}</span>
             <span>•</span>
-            <span>Duration: {details.duration}ms</span>
+            <span>持續時間: {details.duration}ms</span>
           </div>
           {details.prompt && (
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-medium text-gray-700 dark:text-gray-300">Prompt:</div>
+              <div className="text-xs font-medium text-gray-700 dark:text-gray-300">提示詞:</div>
               <pre className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded p-2 whitespace-pre-wrap">
                 {details.prompt}
               </pre>
@@ -152,7 +152,7 @@ const LogEntryItem = ({ log, isExpanded: forceExpanded, use24Hour, showTimestamp
           )}
           {details.response && (
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-medium text-gray-700 dark:text-gray-300">Response:</div>
+              <div className="text-xs font-medium text-gray-700 dark:text-gray-300">回應:</div>
               <pre className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded p-2 whitespace-pre-wrap">
                 {details.response}
               </pre>
@@ -168,14 +168,14 @@ const LogEntryItem = ({ log, isExpanded: forceExpanded, use24Hour, showTimestamp
           <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
             <span className={details.method === 'GET' ? 'text-green-500' : 'text-blue-500'}>{details.method}</span>
             <span>•</span>
-            <span>Status: {details.statusCode}</span>
+            <span>狀態: {details.statusCode}</span>
             <span>•</span>
-            <span>Duration: {details.duration}ms</span>
+            <span>持續時間: {details.duration}ms</span>
           </div>
           <div className="text-xs text-gray-600 dark:text-gray-400 break-all">{details.url}</div>
           {details.request && (
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-medium text-gray-700 dark:text-gray-300">Request:</div>
+              <div className="text-xs font-medium text-gray-700 dark:text-gray-300">請求:</div>
               <pre className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded p-2 whitespace-pre-wrap">
                 {JSON.stringify(details.request, null, 2)}
               </pre>
@@ -183,7 +183,7 @@ const LogEntryItem = ({ log, isExpanded: forceExpanded, use24Hour, showTimestamp
           )}
           {details.response && (
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-medium text-gray-700 dark:text-gray-300">Response:</div>
+              <div className="text-xs font-medium text-gray-700 dark:text-gray-300">回應:</div>
               <pre className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded p-2 whitespace-pre-wrap">
                 {JSON.stringify(details.response, null, 2)}
               </pre>
@@ -191,7 +191,7 @@ const LogEntryItem = ({ log, isExpanded: forceExpanded, use24Hour, showTimestamp
           )}
           {details.error && (
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-medium text-red-500">Error:</div>
+              <div className="text-xs font-medium text-red-500">錯誤:</div>
               <pre className="text-xs text-red-400 bg-red-50 dark:bg-red-500/10 rounded p-2 whitespace-pre-wrap">
                 {JSON.stringify(details.error, null, 2)}
               </pre>
@@ -232,7 +232,7 @@ const LogEntryItem = ({ log, isExpanded: forceExpanded, use24Hour, showTimestamp
                   onClick={() => setLocalExpanded(!localExpanded)}
                   className="text-xs text-gray-500 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors"
                 >
-                  {localExpanded ? 'Hide' : 'Show'} Details
+                  {localExpanded ? '隱藏' : '顯示'}詳細資訊
                 </button>
                 {localExpanded && renderDetails(log.details)}
               </>
@@ -433,17 +433,17 @@ export function EventLogsTab() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      toast.success('Event logs exported successfully as JSON');
+      toast.success('事件日誌已成功匯出為 JSON');
     } catch (error) {
       console.error('Failed to export JSON:', error);
-      toast.error('Failed to export event logs as JSON');
+      toast.error('匯出事件日誌為 JSON 失敗');
     }
   };
 
   const exportAsCSV = () => {
     try {
       // Convert logs to CSV format
-      const headers = ['Timestamp', 'Level', 'Category', 'Message', 'Details'];
+      const headers = ['時間戳記', '級別', '類別', '訊息', '詳細資訊'];
       const csvData = [
         headers,
         ...filteredLogs.map((log) => [
@@ -467,10 +467,10 @@ export function EventLogsTab() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      toast.success('Event logs exported successfully as CSV');
+      toast.success('事件日誌已成功匯出為 CSV');
     } catch (error) {
       console.error('Failed to export CSV:', error);
-      toast.error('Failed to export event logs as CSV');
+      toast.error('匯出事件日誌為 CSV 失敗');
     }
   };
 
@@ -507,27 +507,27 @@ export function EventLogsTab() {
       doc.setTextColor('#FFFFFF');
       doc.setFontSize(24);
       doc.setFont('helvetica', 'bold');
-      doc.text('Event Logs Report', margin, 35);
+      doc.text('事件日誌報告', margin, 35);
 
       // Add subtitle with bolt.diy
       doc.setFontSize(12);
       doc.setFont('helvetica', 'normal');
-      doc.text('bolt.diy - AI Development Platform', margin, 45);
+      doc.text('bolt.diy - AI 開發平台', margin, 45);
       yPos = 70;
 
       // Add report summary section
-      addSectionHeader('Report Summary');
+      addSectionHeader('報告摘要');
 
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor('#374151');
 
       const summaryItems = [
-        { label: 'Generated', value: new Date().toLocaleString() },
-        { label: 'Total Logs', value: filteredLogs.length.toString() },
-        { label: 'Filter Applied', value: selectedLevel === 'all' ? 'All Types' : selectedLevel },
-        { label: 'Search Query', value: searchQuery || 'None' },
-        { label: 'Time Format', value: use24Hour ? '24-hour' : '12-hour' },
+        { label: '產生時間', value: new Date().toLocaleString() },
+        { label: '總日誌數', value: filteredLogs.length.toString() },
+        { label: '已套用篩選', value: selectedLevel === 'all' ? '所有類型' : selectedLevel },
+        { label: '搜尋查詢', value: searchQuery || '無' },
+        { label: '時間格式', value: use24Hour ? '24 小時制' : '12 小時制' },
       ];
 
       summaryItems.forEach((item) => {
@@ -541,7 +541,7 @@ export function EventLogsTab() {
       yPos += lineHeight * 2;
 
       // Add statistics section
-      addSectionHeader('Log Statistics');
+      addSectionHeader('日誌統計');
 
       // Calculate statistics
       const stats = {
@@ -555,15 +555,15 @@ export function EventLogsTab() {
 
       // Create two columns for statistics
       const leftStats = [
-        { label: 'Error Logs', value: stats.error, color: '#DC2626' },
-        { label: 'Warning Logs', value: stats.warning, color: '#F59E0B' },
-        { label: 'Info Logs', value: stats.info, color: '#3B82F6' },
+        { label: '錯誤日誌', value: stats.error, color: '#DC2626' },
+        { label: '警告日誌', value: stats.warning, color: '#F59E0B' },
+        { label: '資訊日誌', value: stats.info, color: '#3B82F6' },
       ];
 
       const rightStats = [
-        { label: 'Debug Logs', value: stats.debug, color: '#6B7280' },
-        { label: 'LLM Logs', value: stats.provider, color: '#10B981' },
-        { label: 'API Logs', value: stats.api, color: '#3B82F6' },
+        { label: '除錯日誌', value: stats.debug, color: '#6B7280' },
+        { label: 'LLM 日誌', value: stats.provider, color: '#10B981' },
+        { label: 'API 日誌', value: stats.api, color: '#3B82F6' },
       ];
 
       const colWidth = (pageWidth - 2 * margin) / 2;
@@ -592,7 +592,7 @@ export function EventLogsTab() {
       yPos += lineHeight * 2;
 
       // Add logs section
-      addSectionHeader('Event Logs');
+      addSectionHeader('事件日誌');
 
       // Helper function to add a log entry with improved formatting
       const addLogEntry = (log: LogEntry) => {
@@ -717,10 +717,10 @@ export function EventLogsTab() {
 
       // Save the PDF
       doc.save(`bolt-event-logs-${new Date().toISOString()}.pdf`);
-      toast.success('Event logs exported successfully as PDF');
+      toast.success('事件日誌已成功匯出為 PDF');
     } catch (error) {
       console.error('Failed to export PDF:', error);
-      toast.error('Failed to export event logs as PDF');
+      toast.error('匯出事件日誌為 PDF 失敗');
     }
   };
 
@@ -732,11 +732,11 @@ export function EventLogsTab() {
           let content = `[${timestamp}] ${log.level.toUpperCase()}: ${log.message}\n`;
 
           if (log.category) {
-            content += `Category: ${log.category}\n`;
+            content += `類別: ${log.category}\n`;
           }
 
           if (log.details) {
-            content += `Details:\n${JSON.stringify(log.details, null, 2)}\n`;
+            content += `詳細資訊:\n${JSON.stringify(log.details, null, 2)}\n`;
           }
 
           return content + '-'.repeat(80) + '\n';
@@ -752,35 +752,35 @@ export function EventLogsTab() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      toast.success('Event logs exported successfully as text file');
+      toast.success('事件日誌已成功匯出為文字檔案');
     } catch (error) {
       console.error('Failed to export text file:', error);
-      toast.error('Failed to export event logs as text file');
+      toast.error('匯出事件日誌為文字檔案失敗');
     }
   };
 
   const exportFormats: ExportFormat[] = [
     {
       id: 'json',
-      label: 'Export as JSON',
+      label: '匯出為 JSON',
       icon: 'i-ph:file-js',
       handler: exportAsJSON,
     },
     {
       id: 'csv',
-      label: 'Export as CSV',
+      label: '匯出為 CSV',
       icon: 'i-ph:file-csv',
       handler: exportAsCSV,
     },
     {
       id: 'pdf',
-      label: 'Export as PDF',
+      label: '匯出為 PDF',
       icon: 'i-ph:file-pdf',
       handler: exportAsPDF,
     },
     {
       id: 'txt',
-      label: 'Export as Text',
+      label: '匯出為文字',
       icon: 'i-ph:file-text',
       handler: exportAsText,
     },
@@ -813,14 +813,14 @@ export function EventLogsTab() {
           )}
         >
           <span className="i-ph:download text-lg text-gray-500 dark:text-gray-400 group-hover:text-purple-500 transition-colors" />
-          Export
+          匯出
         </button>
 
         <Dialog showCloseButton>
           <div className="p-6">
             <DialogTitle className="flex items-center gap-2">
               <div className="i-ph:download w-5 h-5" />
-              Export Event Logs
+              匯出事件日誌
             </DialogTitle>
 
             <div className="mt-4 flex flex-col gap-2">
@@ -841,10 +841,10 @@ export function EventLogsTab() {
                   <div>
                     <div className="font-medium">{format.label}</div>
                     <div className="text-xs text-bolt-elements-textSecondary mt-0.5">
-                      {format.id === 'json' && 'Export as a structured JSON file'}
-                      {format.id === 'csv' && 'Export as a CSV spreadsheet'}
-                      {format.id === 'pdf' && 'Export as a formatted PDF document'}
-                      {format.id === 'txt' && 'Export as a formatted text file'}
+                      {format.id === 'json' && '匯出為結構化 JSON 檔案'}
+                      {format.id === 'csv' && '匯出為 CSV 試算表'}
+                      {format.id === 'pdf' && '匯出為格式化的 PDF 文件'}
+                      {format.id === 'txt' && '匯出為格式化的文字檔案'}
                     </div>
                   </div>
                 </button>
@@ -876,7 +876,7 @@ export function EventLogsTab() {
                 className={classNames('text-lg', selectedLevelOption?.icon || 'i-ph:funnel')}
                 style={{ color: selectedLevelOption?.color }}
               />
-              {selectedLevelOption?.label || 'All Types'}
+              {selectedLevelOption?.label || '所有類型'}
               <span className="i-ph:caret-down text-lg text-gray-500 dark:text-gray-400" />
             </button>
           </DropdownMenu.Trigger>
@@ -914,7 +914,7 @@ export function EventLogsTab() {
               onCheckedChange={(value) => handlePreferenceChange('timestamps', value)}
               className="data-[state=checked]:bg-purple-500"
             />
-            <span className="text-sm text-gray-500 dark:text-gray-400">Show Timestamps</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">顯示時間戳記</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -923,7 +923,7 @@ export function EventLogsTab() {
               onCheckedChange={(value) => handlePreferenceChange('24hour', value)}
               className="data-[state=checked]:bg-purple-500"
             />
-            <span className="text-sm text-gray-500 dark:text-gray-400">24h Time</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">24 小時制</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -932,7 +932,7 @@ export function EventLogsTab() {
               onCheckedChange={(value) => handlePreferenceChange('autoExpand', value)}
               className="data-[state=checked]:bg-purple-500"
             />
-            <span className="text-sm text-gray-500 dark:text-gray-400">Auto Expand</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">自動展開</span>
           </div>
 
           <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
@@ -951,7 +951,7 @@ export function EventLogsTab() {
             )}
           >
             <span className="i-ph:arrows-clockwise text-lg text-gray-500 dark:text-gray-400 group-hover:text-purple-500 transition-colors" />
-            Refresh
+            重新整理
           </button>
 
           <ExportButton />
@@ -962,7 +962,7 @@ export function EventLogsTab() {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search logs..."
+            placeholder="搜尋日誌..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className={classNames(
@@ -992,8 +992,8 @@ export function EventLogsTab() {
           >
             <span className="i-ph:clipboard-text text-4xl text-gray-400 dark:text-gray-600" />
             <div className="flex flex-col gap-1">
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white">No Logs Found</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Try adjusting your search or filters</p>
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white">找不到日誌</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">請嘗試調整您的搜尋或篩選條件</p>
             </div>
           </motion.div>
         ) : (

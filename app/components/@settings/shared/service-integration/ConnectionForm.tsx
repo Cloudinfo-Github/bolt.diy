@@ -37,14 +37,14 @@ export function ConnectionForm({
   onDisconnect,
   error,
   serviceName,
-  tokenLabel = 'Access Token',
+  tokenLabel = '存取權杖',
   tokenPlaceholder,
   getTokenUrl,
   environmentVariable,
   tokenTypes,
   selectedTokenType,
   onTokenTypeChange,
-  connectedMessage = `Connected to ${serviceName}`,
+  connectedMessage = `已連接到 ${serviceName}`,
   children,
 }: ConnectionFormProps) {
   return (

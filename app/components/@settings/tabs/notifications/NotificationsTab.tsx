@@ -131,9 +131,9 @@ const NotificationsTab = () => {
         <div className="flex flex-col gap-2">
           <p className="text-sm text-gray-600 dark:text-gray-400">{details.message}</p>
           <div className="flex flex-col gap-1 text-xs text-gray-500 dark:text-gray-500">
-            <p>Current Version: {details.currentVersion}</p>
-            <p>Latest Version: {details.latestVersion}</p>
-            <p>Branch: {details.branch}</p>
+            <p>目前版本: {details.currentVersion}</p>
+            <p>最新版本: {details.latestVersion}</p>
+            <p>分支: {details.branch}</p>
           </div>
           <button
             onClick={() => details.updateUrl && handleUpdateAction(details.updateUrl)}
@@ -149,7 +149,7 @@ const NotificationsTab = () => {
             )}
           >
             <span className="i-ph:git-branch text-lg" />
-            View Changes
+            檢視變更
           </button>
         </div>
       );
@@ -159,14 +159,14 @@ const NotificationsTab = () => {
   };
 
   const filterOptions: { id: FilterType; label: string; icon: string; color: string }[] = [
-    { id: 'all', label: 'All Notifications', icon: 'i-ph:bell', color: '#9333ea' },
-    { id: 'system', label: 'System', icon: 'i-ph:gear', color: '#6b7280' },
-    { id: 'update', label: 'Updates', icon: 'i-ph:arrow-circle-up', color: '#9333ea' },
-    { id: 'error', label: 'Errors', icon: 'i-ph:warning-circle', color: '#ef4444' },
-    { id: 'warning', label: 'Warnings', icon: 'i-ph:warning', color: '#f59e0b' },
-    { id: 'info', label: 'Information', icon: 'i-ph:info', color: '#3b82f6' },
-    { id: 'provider', label: 'Providers', icon: 'i-ph:robot', color: '#10b981' },
-    { id: 'network', label: 'Network', icon: 'i-ph:wifi-high', color: '#6366f1' },
+    { id: 'all', label: '所有通知', icon: 'i-ph:bell', color: '#9333ea' },
+    { id: 'system', label: '系統', icon: 'i-ph:gear', color: '#6b7280' },
+    { id: 'update', label: '更新', icon: 'i-ph:arrow-circle-up', color: '#9333ea' },
+    { id: 'error', label: '錯誤', icon: 'i-ph:warning-circle', color: '#ef4444' },
+    { id: 'warning', label: '警告', icon: 'i-ph:warning', color: '#f59e0b' },
+    { id: 'info', label: '資訊', icon: 'i-ph:info', color: '#3b82f6' },
+    { id: 'provider', label: '提供者', icon: 'i-ph:robot', color: '#10b981' },
+    { id: 'network', label: '網路', icon: 'i-ph:wifi-high', color: '#6366f1' },
   ];
 
   return (
@@ -189,7 +189,7 @@ const NotificationsTab = () => {
                 className={classNames('text-lg', filterOptions.find((opt) => opt.id === filter)?.icon || 'i-ph:funnel')}
                 style={{ color: filterOptions.find((opt) => opt.id === filter)?.color }}
               />
-              {filterOptions.find((opt) => opt.id === filter)?.label || 'Filter Notifications'}
+              {filterOptions.find((opt) => opt.id === filter)?.label || '篩選通知'}
               <span className="i-ph:caret-down text-lg text-gray-500 dark:text-gray-400" />
             </button>
           </DropdownMenu.Trigger>
@@ -233,7 +233,7 @@ const NotificationsTab = () => {
           )}
         >
           <span className="i-ph:trash text-lg text-gray-500 dark:text-gray-400 group-hover:text-purple-500 transition-colors" />
-          Clear All
+          全部清除
         </button>
       </div>
 
@@ -251,8 +251,8 @@ const NotificationsTab = () => {
           >
             <span className="i-ph:bell-slash text-4xl text-gray-400 dark:text-gray-600" />
             <div className="flex flex-col gap-1">
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white">No Notifications</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">You're all caught up!</p>
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white">沒有通知</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">您已經查看所有通知了！</p>
             </div>
           </motion.div>
         ) : (
@@ -279,7 +279,7 @@ const NotificationsTab = () => {
                       <h3 className="text-sm font-medium text-gray-900 dark:text-white">{log.message}</h3>
                       {log.details && renderNotificationDetails(log.details as NotificationDetails)}
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Category: {log.category}
+                        類別: {log.category}
                         {log.subCategory ? ` > ${log.subCategory}` : ''}
                       </p>
                     </div>

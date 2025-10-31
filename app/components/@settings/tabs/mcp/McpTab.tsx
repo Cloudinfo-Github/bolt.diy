@@ -44,8 +44,8 @@ export default function McpTab() {
   useEffect(() => {
     if (!isInitialized) {
       initialize().catch((err) => {
-        setError(`Failed to initialize MCP settings: ${err instanceof Error ? err.message : String(err)}`);
-        toast.error('Failed to load MCP configuration');
+        setError(`無法初始化 MCP 設定：${err instanceof Error ? err.message : String(err)}`);
+        toast.error('無法載入 MCP 配置');
       });
     }
   }, [isInitialized]);
@@ -61,7 +61,7 @@ export default function McpTab() {
       setError(null);
       return JSON.parse(mcpConfigText) as MCPConfig;
     } catch (e) {
-      setError(`Invalid JSON format: ${e instanceof Error ? e.message : String(e)}`);
+      setError(`無效的 JSON 格式：${e instanceof Error ? e.message : String(e)}`);
       return null;
     }
   }, [mcpConfigText]);
@@ -82,12 +82,12 @@ export default function McpTab() {
         mcpConfig: parsedConfig,
         maxLLMSteps,
       });
-      toast.success('MCP configuration saved');
+      toast.success('MCP 配置已儲存');
 
       setError(null);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to save configuration');
-      toast.error('Failed to save MCP configuration');
+      setError(e instanceof Error ? e.message : '無法儲存配置');
+      toast.error('無法儲存 MCP 配置');
     } finally {
       setIsSaving(false);
     }
@@ -109,7 +109,7 @@ export default function McpTab() {
     try {
       await checkServersAvailabilities();
     } catch (e) {
-      setError(`Failed to check server availability: ${e instanceof Error ? e.message : String(e)}`);
+      setError(`無法檢查伺服器可用性：${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setIsCheckingServers(false);
     }
@@ -125,7 +125,7 @@ export default function McpTab() {
     <div className="max-w-2xl mx-auto space-y-6">
       <section aria-labelledby="server-status-heading">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-base font-medium text-bolt-elements-textPrimary">MCP Servers Configured</h2>{' '}
+          <h2 className="text-base font-medium text-bolt-elements-textPrimary">已配置的 MCP 伺服器</h2>{' '}
           <button
             onClick={checkServerAvailability}
             disabled={isCheckingServers || !parsedConfig || serverEntries.length === 0}
@@ -143,7 +143,7 @@ export default function McpTab() {
             ) : (
               <div className="i-ph:arrow-counter-clockwise w-3 h-3" />
             )}
-            Check availability
+            檢查可用性
           </button>
         </div>
         <McpServerList
@@ -155,12 +155,12 @@ export default function McpTab() {
       </section>
 
       <section aria-labelledby="config-section-heading">
-        <h2 className="text-base font-medium text-bolt-elements-textPrimary mb-3">Configuration</h2>
+        <h2 className="text-base font-medium text-bolt-elements-textPrimary mb-3">配置</h2>
 
         <div className="space-y-4">
           <div>
             <label htmlFor="mcp-config" className="block text-sm text-bolt-elements-textSecondary mb-2">
-              Configuration JSON
+              配置 JSON
             </label>
             <textarea
               id="mcp-config"
@@ -179,12 +179,12 @@ export default function McpTab() {
           <div>{error && <p className="mt-2 mb-2 text-sm text-bolt-elements-icon-error">{error}</p>}</div>
           <div>
             <label htmlFor="max-llm-steps" className="block text-sm text-bolt-elements-textSecondary mb-2">
-              Maximum number of sequential LLM calls (steps)
+              LLM 連續呼叫的最大次數（步驟）
             </label>
             <input
               id="max-llm-steps"
               type="number"
-              placeholder="Maximum number of sequential LLM calls"
+              placeholder="LLM 連續呼叫的最大次數"
               min="1"
               max="20"
               value={maxLLMSteps}
@@ -193,14 +193,14 @@ export default function McpTab() {
             />
           </div>
           <div className="mt-2 text-sm text-bolt-elements-textSecondary">
-            The MCP configuration format is identical to the one used in Claude Desktop.
+            MCP 配置格式與 Claude Desktop 使用的格式相同。
             <a
               href="https://modelcontextprotocol.io/examples"
               target="_blank"
               rel="noopener noreferrer"
               className="text-bolt-elements-link hover:underline inline-flex items-center gap-1"
             >
-              View example servers
+              查看範例伺服器
               <div className="i-ph:arrow-square-out w-4 h-4" />
             </a>
           </div>
@@ -214,7 +214,7 @@ export default function McpTab() {
                     bg-bolt-elements-background-depth-2 text-bolt-elements-textSecondary
                     hover:bg-bolt-elements-background-depth-3"
         >
-          Load Example
+          載入範例
         </button>
 
         <div className="flex gap-2">
@@ -230,7 +230,7 @@ export default function McpTab() {
             )}
           >
             <div className="i-ph:floppy-disk w-4 h-4" />
-            {isSaving ? 'Saving...' : 'Save Configuration'}
+            {isSaving ? '儲存中...' : '儲存配置'}
           </button>
         </div>
       </div>

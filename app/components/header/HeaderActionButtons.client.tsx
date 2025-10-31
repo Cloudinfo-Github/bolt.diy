@@ -43,10 +43,10 @@ export function HeaderActionButtons({ chatStarted: _chatStarted }: HeaderActionB
               }
             }}
             className="rounded-r-md items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-3 py-1.5 text-xs bg-accent-500 text-white hover:text-bolt-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-bolt-elements-button-primary-backgroundHover outline-accent-500 flex gap-1.5"
-            title="Download Debug Log"
+            title="下載除錯日誌"
           >
             <div className="i-ph:download" />
-            <span>Debug Log</span>
+            <span>除錯日誌</span>
           </button>
         </div>
       )}

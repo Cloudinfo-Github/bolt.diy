@@ -16,10 +16,10 @@ interface ErrorStateProps {
 
 export function ErrorState({
   error,
-  title = 'Something went wrong',
+  title = '發生錯誤',
   onRetry,
   onDismiss,
-  retryLabel = 'Try again',
+  retryLabel = '重試',
   className,
   showDetails = false,
 }: ErrorStateProps) {

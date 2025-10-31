@@ -167,7 +167,7 @@ ${escapeBoltTags(file.content)}
           setSelectedProvider(null);
           setIsDialogOpen(true);
         }}
-        title="Clone a repo"
+        title="複製儲存庫"
         variant="default"
         size="lg"
         className={classNames(
@@ -181,7 +181,7 @@ ${escapeBoltTags(file.content)}
         )}
         disabled={!ready || loading}
       >
-        Clone a repo
+        複製儲存庫
         <div className="flex items-center gap-1 ml-2">
           <Github className="w-4 h-4" />
           <GitBranch className="w-4 h-4" />
@@ -195,7 +195,7 @@ ${escapeBoltTags(file.content)}
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-                  Choose Repository Provider
+                  選擇儲存庫提供者
                 </h3>
                 <button
                   onClick={() => setIsDialogOpen(false)}
@@ -219,7 +219,7 @@ ${escapeBoltTags(file.content)}
                         GitHub
                       </div>
                       <div className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-                        Clone from GitHub repositories
+                        從 GitHub 儲存庫複製
                       </div>
                     </div>
                   </div>
@@ -238,7 +238,7 @@ ${escapeBoltTags(file.content)}
                         GitLab
                       </div>
                       <div className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-                        Clone from GitLab repositories
+                        從 GitLab 儲存庫複製
                       </div>
                     </div>
                   </div>
@@ -260,10 +260,10 @@ ${escapeBoltTags(file.content)}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-                    Import GitHub Repository
+                    匯入 GitHub 儲存庫
                   </h3>
                   <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-                    Clone a repository from GitHub to your workspace
+                    從 GitHub 複製儲存庫到您的工作區
                   </p>
                 </div>
               </div>
@@ -296,10 +296,10 @@ ${escapeBoltTags(file.content)}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-                    Import GitLab Repository
+                    匯入 GitLab 儲存庫
                   </h3>
                   <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-                    Clone a repository from GitLab to your workspace
+                    從 GitLab 複製儲存庫到您的工作區
                   </p>
                 </div>
               </div>
@@ -321,7 +321,7 @@ ${escapeBoltTags(file.content)}
         </div>
       )}
 
-      {loading && <LoadingOverlay message="Please wait while we clone the repository..." />}
+      {loading && <LoadingOverlay message="正在複製儲存庫，請稍候..." />}
     </>
   );
 }

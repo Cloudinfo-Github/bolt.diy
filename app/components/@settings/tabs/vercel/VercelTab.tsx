@@ -78,37 +78,37 @@ export default function VercelTab() {
               throw new Error('Failed to redeploy project');
             }
 
-            toast.success('Project redeployment initiated');
+            toast.success('專案重新部署已啟動');
             await fetchVercelStats(connection.token);
           } catch (err: unknown) {
-            const error = err instanceof Error ? err.message : 'Unknown error';
-            toast.error(`Failed to redeploy project: ${error}`);
+            const error = err instanceof Error ? err.message : '未知錯誤';
+            toast.error(`無法重新部署專案：${error}`);
           }
         },
       },
       {
-        name: 'View Dashboard',
+        name: '查看儀表板',
         icon: 'i-ph:layout',
         action: async (projectId: string) => {
           window.open(`https://vercel.com/dashboard/${projectId}`, '_blank');
         },
       },
       {
-        name: 'View Deployments',
+        name: '查看部署',
         icon: 'i-ph:rocket',
         action: async (projectId: string) => {
           window.open(`https://vercel.com/dashboard/${projectId}/deployments`, '_blank');
         },
       },
       {
-        name: 'View Functions',
+        name: '查看函式',
         icon: 'i-ph:code',
         action: async (projectId: string) => {
           window.open(`https://vercel.com/dashboard/${projectId}/functions`, '_blank');
         },
       },
       {
-        name: 'View Analytics',
+        name: '查看分析',
         icon: 'i-ph:chart-bar',
         action: async (projectId: string) => {
           const project = connection.stats?.projects.find((p) => p.id === projectId);
@@ -119,28 +119,28 @@ export default function VercelTab() {
         },
       },
       {
-        name: 'View Domains',
+        name: '查看網域',
         icon: 'i-ph:globe',
         action: async (projectId: string) => {
           window.open(`https://vercel.com/dashboard/${projectId}/domains`, '_blank');
         },
       },
       {
-        name: 'View Settings',
+        name: '查看設定',
         icon: 'i-ph:gear',
         action: async (projectId: string) => {
           window.open(`https://vercel.com/dashboard/${projectId}/settings`, '_blank');
         },
       },
       {
-        name: 'View Logs',
+        name: '查看記錄',
         icon: 'i-ph:scroll',
         action: async (projectId: string) => {
           window.open(`https://vercel.com/dashboard/${projectId}/logs`, '_blank');
         },
       },
       {
-        name: 'Delete Project',
+        name: '刪除專案',
         icon: 'i-ph:trash',
         action: async (projectId: string) => {
           try {
@@ -155,11 +155,11 @@ export default function VercelTab() {
               throw new Error('Failed to delete project');
             }
 
-            toast.success('Project deleted successfully');
+            toast.success('專案刪除成功');
             await fetchVercelStats(connection.token);
           } catch (err: unknown) {
-            const error = err instanceof Error ? err.message : 'Unknown error';
-            toast.error(`Failed to delete project: ${error}`);
+            const error = err instanceof Error ? err.message : '未知錯誤';
+            toast.error(`無法刪除專案：${error}`);
           }
         },
         requiresConfirmation: true,
@@ -717,8 +717,8 @@ export default function VercelTab() {
     <div className="space-y-6">
       <ServiceHeader
         icon={VercelLogo}
-        title="Vercel Integration"
-        description="Connect and manage your Vercel projects with advanced deployment controls and analytics"
+        title="Vercel 整合"
+        description="連接和管理您的 Vercel 專案，包含進階部署控制和分析功能"
         onTestConnection={connection.user ? () => testConnection() : undefined}
         isTestingConnection={isTestingConnection}
       />
@@ -747,13 +747,13 @@ export default function VercelTab() {
               </div>
 
               <div>
-                <label className="block text-sm text-bolt-elements-textSecondary mb-2">Personal Access Token</label>
+                <label className="block text-sm text-bolt-elements-textSecondary mb-2">個人存取權杖</label>
                 <input
                   type="password"
                   value={connection.token}
                   onChange={(e) => updateVercelConnection({ ...connection, token: e.target.value })}
                   disabled={connecting}
-                  placeholder="Enter your Vercel personal access token"
+                  placeholder="輸入您的 Vercel 個人存取權杖"
                   className={classNames(
                     'w-full px-3 py-2 rounded-lg text-sm',
                     'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
@@ -770,7 +770,7 @@ export default function VercelTab() {
                     rel="noopener noreferrer"
                     className="text-bolt-elements-borderColorActive hover:underline inline-flex items-center gap-1"
                   >
-                    Get your token
+                    取得您的權杖
                     <div className="i-ph:arrow-square-out w-4 h-4" />
                   </a>
                 </div>
@@ -790,12 +790,12 @@ export default function VercelTab() {
                 {connecting ? (
                   <>
                     <div className="i-ph:spinner-gap animate-spin" />
-                    Connecting...
+                    連線中...
                   </>
                 ) : (
                   <>
                     <div className="i-ph:plug-charging w-4 h-4" />
-                    Connect
+                    連線
                   </>
                 )}
               </button>
@@ -813,11 +813,11 @@ export default function VercelTab() {
                     )}
                   >
                     <div className="i-ph:plug w-4 h-4" />
-                    Disconnect
+                    中斷連線
                   </button>
                   <span className="text-sm text-bolt-elements-textSecondary flex items-center gap-1">
                     <div className="i-ph:check-circle w-4 h-4 text-green-500" />
-                    Connected to Vercel
+                    已連線至 Vercel
                   </span>
                 </div>
               </div>

@@ -72,7 +72,7 @@ export function GitHubConnection({ connectionTest, onTestConnection }: GitHubCon
               environment variable to connect automatically.
             </p>
             <p>
-              For fine-grained tokens, also set{' '}
+              For 細粒度權杖s, also set{' '}
               <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 rounded">
                 VITE_GITHUB_TOKEN_TYPE=fine-grained
               </code>
@@ -106,16 +106,14 @@ export function GitHubConnection({ connectionTest, onTestConnection }: GitHubCon
 
             <div>
               <label className="block text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary mb-2">
-                {tokenType === 'classic' ? 'Personal Access Token' : 'Fine-grained Token'}
+                {tokenType === 'classic' ? '個人存取權杖' : '細粒度權杖'}
               </label>
               <input
                 type="password"
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
                 disabled={isConnecting || isConnected}
-                placeholder={`Enter your GitHub ${
-                  tokenType === 'classic' ? 'personal access token' : 'fine-grained token'
-                }`}
+                placeholder={`Enter your GitHub ${tokenType === 'classic' ? '個人存取權杖' : '細粒度權杖'}`}
                 className={classNames(
                   'w-full px-3 py-2 rounded-lg text-sm',
                   'bg-[#F8F8F8] dark:bg-[#1A1A1A]',

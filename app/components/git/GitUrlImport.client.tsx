@@ -104,7 +104,7 @@ ${escapeBoltTags(file.content)}
         }
       } catch (error) {
         console.error('Error during import:', error);
-        toast.error('Failed to import repository');
+        toast.error('無法匯入儲存庫');
         setLoading(false);
         window.location.href = '/';
 
@@ -139,7 +139,7 @@ ${escapeBoltTags(file.content)}
       {() => (
         <>
           <Chat />
-          {loading && <LoadingOverlay message="Please wait while we clone the repository..." />}
+          {loading && <LoadingOverlay message="正在複製儲存庫，請稍候..." />}
         </>
       )}
     </ClientOnly>

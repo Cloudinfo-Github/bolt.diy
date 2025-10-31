@@ -892,7 +892,7 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
 
                     <div className="mb-2">
                       <SearchInput
-                        placeholder="Search repositories..."
+                        placeholder="搜尋儲存庫..."
                         value={repoSearchQuery}
                         onChange={(e) => setRepoSearchQuery(e.target.value)}
                         onClear={() => setRepoSearchQuery('')}

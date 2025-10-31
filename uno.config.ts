@@ -238,10 +238,19 @@ export default defineConfig({
       },
     }),
     presetIcons({
-      warn: true,
+      warn: false,
+      // 移除 collections 參數，讓 UnoCSS 自動載入 @iconify-json 套件
+      // 同時也包含自定義圖示
+      extraProperties: {
+        'display': 'inline-block',
+        'vertical-align': 'middle',
+      },
       collections: {
+        // 保留自定義圖示
         ...customIconCollection,
       },
+      // 啟用 CDN，當本地找不到圖示時從 CDN 載入
+      cdn: 'https://esm.sh/',
       unit: 'em',
     }),
   ],

@@ -177,19 +177,19 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
   const getStatusMessage = (tabId: TabType): string => {
     switch (tabId) {
       case 'features':
-        return `${unviewedFeatures.length} new feature${unviewedFeatures.length === 1 ? '' : 's'} to explore`;
+        return `${unviewedFeatures.length} 個新功能${unviewedFeatures.length === 1 ? '' : 's'} 待探索`;
       case 'notifications':
-        return `${unreadNotifications.length} unread notification${unreadNotifications.length === 1 ? '' : 's'}`;
+        return `${unreadNotifications.length} 則未讀通知${unreadNotifications.length === 1 ? '' : 's'}`;
       case 'github':
       case 'gitlab':
       case 'supabase':
       case 'vercel':
       case 'netlify':
         return currentIssue === 'disconnected'
-          ? 'Connection lost'
+          ? '連接中斷'
           : currentIssue === 'high-latency'
-            ? 'High latency detected'
-            : 'Connection issues detected';
+            ? '偵測到高延遲'
+            : '偵測到連接問題';
       default:
         return '';
     }
@@ -261,7 +261,7 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
                       </button>
                     )}
                     <DialogTitle className="text-xl font-semibold text-gray-900 dark:text-white">
-                      {showTabManagement ? 'Tab Management' : activeTab ? TAB_LABELS[activeTab] : 'Control Panel'}
+                      {showTabManagement ? '標籤管理' : activeTab ? TAB_LABELS[activeTab] : '控制面板'}
                     </DialogTitle>
                   </div>
 

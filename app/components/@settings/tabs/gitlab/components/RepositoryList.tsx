@@ -74,7 +74,7 @@ export function RepositoryList({ repositories, onClone, onRefresh, isRefreshing 
       <div className="relative">
         <input
           type="text"
-          placeholder="Search repositories..."
+          placeholder="搜尋儲存庫..."
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
           className="w-full px-4 py-2 pl-10 rounded-lg bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive"

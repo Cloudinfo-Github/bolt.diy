@@ -117,7 +117,7 @@ const FileModifiedDropdown = memo(
                     <div className="relative mx-2 mb-2">
                       <input
                         type="text"
-                        placeholder="Search files..."
+                        placeholder="搜尋檔案..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor focus:outline-none focus:ring-2 focus:ring-blue-500/50"

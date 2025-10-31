@@ -49,11 +49,13 @@ const FeatureCard = memo(
             <div className="flex items-center gap-2">
               <h4 className="font-medium text-bolt-elements-textPrimary">{feature.title}</h4>
               {feature.beta && (
-                <span className="px-2 py-0.5 text-xs rounded-full bg-blue-500/10 text-blue-500 font-medium">Beta</span>
+                <span className="px-2 py-0.5 text-xs rounded-full bg-blue-500/10 text-blue-500 font-medium">
+                  測試版
+                </span>
               )}
               {feature.experimental && (
                 <span className="px-2 py-0.5 text-xs rounded-full bg-orange-500/10 text-orange-500 font-medium">
-                  Experimental
+                  實驗性
                 </span>
               )}
             </div>
@@ -148,25 +150,25 @@ export default function FeaturesTab() {
       switch (id) {
         case 'latestBranch': {
           enableLatestBranch(enabled);
-          toast.success(`Main branch updates ${enabled ? 'enabled' : 'disabled'}`);
+          toast.success(`主分支更新已${enabled ? '啟用' : '停用'}`);
           break;
         }
 
         case 'autoSelectTemplate': {
           setAutoSelectTemplate(enabled);
-          toast.success(`Auto select template ${enabled ? 'enabled' : 'disabled'}`);
+          toast.success(`自動選擇範本已${enabled ? '啟用' : '停用'}`);
           break;
         }
 
         case 'contextOptimization': {
           enableContextOptimization(enabled);
-          toast.success(`Context optimization ${enabled ? 'enabled' : 'disabled'}`);
+          toast.success(`上下文優化已${enabled ? '啟用' : '停用'}`);
           break;
         }
 
         case 'eventLogs': {
           setEventLogs(enabled);
-          toast.success(`Event logging ${enabled ? 'enabled' : 'disabled'}`);
+          toast.success(`事件日誌已${enabled ? '啟用' : '停用'}`);
           break;
         }
 
@@ -181,35 +183,35 @@ export default function FeaturesTab() {
     stable: [
       {
         id: 'latestBranch',
-        title: 'Main Branch Updates',
-        description: 'Get the latest updates from the main branch',
+        title: '主分支更新',
+        description: '從主分支獲取最新更新',
         icon: 'i-ph:git-branch',
         enabled: isLatestBranch,
-        tooltip: 'Enabled by default to receive updates from the main development branch',
+        tooltip: '預設啟用以接收來自主開發分支的更新',
       },
       {
         id: 'autoSelectTemplate',
-        title: 'Auto Select Template',
-        description: 'Automatically select starter template',
+        title: '自動選擇範本',
+        description: '自動選擇起始範本',
         icon: 'i-ph:selection',
         enabled: autoSelectTemplate,
-        tooltip: 'Enabled by default to automatically select the most appropriate starter template',
+        tooltip: '預設啟用以自動選擇最合適的起始範本',
       },
       {
         id: 'contextOptimization',
-        title: 'Context Optimization',
-        description: 'Optimize context for better responses',
+        title: '上下文優化',
+        description: '優化上下文以獲得更好的回應',
         icon: 'i-ph:brain',
         enabled: contextOptimizationEnabled,
-        tooltip: 'Enabled by default for improved AI responses',
+        tooltip: '預設啟用以改善 AI 回應品質',
       },
       {
         id: 'eventLogs',
-        title: 'Event Logging',
-        description: 'Enable detailed event logging and history',
+        title: '事件日誌',
+        description: '啟用詳細的事件日誌和歷史記錄',
         icon: 'i-ph:list-bullets',
         enabled: eventLogs,
-        tooltip: 'Enabled by default to record detailed logs of system events and user actions',
+        tooltip: '預設啟用以記錄系統事件和使用者動作的詳細日誌',
       },
     ],
     beta: [],
@@ -218,19 +220,19 @@ export default function FeaturesTab() {
   return (
     <div className="flex flex-col gap-8">
       <FeatureSection
-        title="Core Features"
+        title="核心功能"
         features={features.stable}
         icon="i-ph:check-circle"
-        description="Essential features that are enabled by default for optimal performance"
+        description="為達到最佳效能而預設啟用的必要功能"
         onToggleFeature={handleToggleFeature}
       />
 
       {features.beta.length > 0 && (
         <FeatureSection
-          title="Beta Features"
+          title="測試版功能"
           features={features.beta}
           icon="i-ph:test-tube"
-          description="New features that are ready for testing but may have some rough edges"
+          description="已準備好進行測試但可能仍有一些粗糙之處的新功能"
           onToggleFeature={handleToggleFeature}
         />
       )}
@@ -261,17 +263,15 @@ export default function FeaturesTab() {
           </div>
           <div className="flex-1">
             <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-purple-500 transition-colors">
-              Prompt Library
+              提示詞庫
             </h4>
-            <p className="text-xs text-bolt-elements-textSecondary mt-0.5">
-              Choose a prompt from the library to use as the system prompt
-            </p>
+            <p className="text-xs text-bolt-elements-textSecondary mt-0.5">從庫中選擇提示詞作為系統提示詞</p>
           </div>
           <select
             value={promptId}
             onChange={(e) => {
               setPromptId(e.target.value);
-              toast.success('Prompt template updated');
+              toast.success('提示詞範本已更新');
             }}
             className={classNames(
               'p-2 rounded-lg text-sm min-w-[200px]',

@@ -52,7 +52,7 @@ export default function GitHubTab() {
     if (!connection?.user) {
       setConnectionTest({
         status: 'error',
-        message: 'No connection established',
+        message: '尚未建立連線',
         timestamp: Date.now(),
       });
       return;
@@ -60,7 +60,7 @@ export default function GitHubTab() {
 
     setConnectionTest({
       status: 'testing',
-      message: 'Testing connection...',
+      message: '正在測試連線...',
     });
 
     try {
@@ -69,20 +69,20 @@ export default function GitHubTab() {
       if (isValid) {
         setConnectionTest({
           status: 'success',
-          message: `Connected successfully as ${connection.user.login}`,
+          message: `已成功連線為 ${connection.user.login}`,
           timestamp: Date.now(),
         });
       } else {
         setConnectionTest({
           status: 'error',
-          message: 'Connection test failed',
+          message: '連線測試失敗',
           timestamp: Date.now(),
         });
       }
     } catch (error) {
       setConnectionTest({
         status: 'error',
-        message: `Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: `連線失敗：${error instanceof Error ? error.message : '未知錯誤'}`,
         timestamp: Date.now(),
       });
     }
@@ -94,9 +94,9 @@ export default function GitHubTab() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <GithubLogo />
-          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitHub Integration</h2>
+          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitHub 整合</h2>
         </div>
-        <LoadingState message="Checking GitHub connection..." />
+        <LoadingState message="正在檢查 GitHub 連線..." />
       </div>
     );
   }
@@ -107,13 +107,13 @@ export default function GitHubTab() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <GithubLogo />
-          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitHub Integration</h2>
+          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitHub 整合</h2>
         </div>
         <ErrorState
-          title="Connection Error"
+          title="連線錯誤"
           message={error}
           onRetry={() => window.location.reload()}
-          retryLabel="Reload Page"
+          retryLabel="重新載入頁面"
         />
       </div>
     );
@@ -125,11 +125,10 @@ export default function GitHubTab() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <GithubLogo />
-          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitHub Integration</h2>
+          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitHub 整合</h2>
         </div>
         <p className="text-sm text-bolt-elements-textSecondary">
-          Connect your GitHub account to enable advanced repository management features, statistics, and seamless
-          integration.
+          連接您的 GitHub 帳戶以啟用進階儲存庫管理功能、統計資料和無縫整合。
         </p>
         <GitHubConnection connectionTest={connectionTest} onTestConnection={handleTestConnection} />
       </div>
@@ -149,7 +148,7 @@ export default function GitHubTab() {
           <div className="flex items-center gap-2">
             <GithubLogo />
             <h2 className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-              GitHub Integration
+              GitHub 整合
             </h2>
           </div>
           <div className="flex items-center gap-2">
@@ -157,7 +156,7 @@ export default function GitHubTab() {
               <div className="flex items-center gap-2 px-3 py-1 bg-bolt-elements-background-depth-1 rounded-lg text-xs">
                 <div className="i-ph:cloud w-4 h-4 text-bolt-elements-textSecondary" />
                 <span className="text-bolt-elements-textSecondary">
-                  API: {connection.rateLimit.remaining}/{connection.rateLimit.limit}
+                  API：{connection.rateLimit.remaining}/{connection.rateLimit.limit}
                 </span>
               </div>
             )}
@@ -165,7 +164,7 @@ export default function GitHubTab() {
         </motion.div>
 
         <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-          Manage your GitHub integration with advanced repository features and comprehensive statistics
+          使用進階儲存庫功能和全面統計資料管理您的 GitHub 整合
         </p>
 
         {/* Connection Test Results */}
@@ -198,7 +197,7 @@ export default function GitHubTab() {
                   <div className="flex items-center gap-2">
                     <div className="i-ph:folder w-4 h-4 text-bolt-elements-item-contentAccent" />
                     <span className="text-sm font-medium text-bolt-elements-textPrimary">
-                      All Repositories ({stats.repos.length})
+                      所有儲存庫 ({stats.repos.length})
                     </span>
                   </div>
                   <ChevronDown
@@ -232,7 +231,7 @@ export default function GitHubTab() {
                         onClick={() => setIsReposExpanded(true)}
                         className="text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary"
                       >
-                        Show {stats.repos.length - 12} more repositories
+                        顯示更多 {stats.repos.length - 12} 個儲存庫
                       </Button>
                     </div>
                   )}
@@ -245,10 +244,10 @@ export default function GitHubTab() {
         {/* Stats Error State */}
         {statsError && !stats && (
           <ErrorState
-            title="Failed to Load Statistics"
+            title="無法載入統計資料"
             message={statsError}
             onRetry={() => window.location.reload()}
-            retryLabel="Retry"
+            retryLabel="重試"
           />
         )}
 
@@ -256,13 +255,13 @@ export default function GitHubTab() {
         {isStatsLoading && !stats && (
           <GitHubProgressiveLoader
             isLoading={isStatsLoading}
-            loadingMessage="Loading GitHub statistics..."
+            loadingMessage="正在載入 GitHub 統計資料..."
             showProgress={true}
             progressSteps={[
-              { key: 'user', label: 'Fetching user info', completed: !!connection?.user, loading: !connection?.user },
-              { key: 'repos', label: 'Loading repositories', completed: false, loading: true },
-              { key: 'stats', label: 'Calculating statistics', completed: false },
-              { key: 'cache', label: 'Updating cache', completed: false },
+              { key: 'user', label: '正在取得使用者資訊', completed: !!connection?.user, loading: !connection?.user },
+              { key: 'repos', label: '正在載入儲存庫', completed: false, loading: true },
+              { key: 'stats', label: '正在計算統計資料', completed: false },
+              { key: 'cache', label: '正在更新快取', completed: false },
             ]}
           >
             <div />

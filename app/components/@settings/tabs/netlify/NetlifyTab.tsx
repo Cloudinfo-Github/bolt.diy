@@ -1217,7 +1217,7 @@ export default function NetlifyTab() {
             <NetlifyLogo />
           </div>
           <h2 className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-            Netlify Integration
+            Netlify 整合
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -1231,12 +1231,12 @@ export default function NetlifyTab() {
               {connectionTest?.status === 'testing' ? (
                 <>
                   <div className="i-ph:spinner-gap w-4 h-4 animate-spin" />
-                  Testing...
+                  測試中...
                 </>
               ) : (
                 <>
                   <div className="i-ph:plug-charging w-4 h-4" />
-                  Test Connection
+                  測試連線
                 </>
               )}
             </Button>
@@ -1245,7 +1245,7 @@ export default function NetlifyTab() {
       </motion.div>
 
       <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-        Connect and manage your Netlify sites with advanced deployment controls and site management
+        連接和管理您的 Netlify 網站，包含進階部署控制和網站管理功能
       </p>
 
       {/* Connection Test Results */}
@@ -1309,13 +1309,13 @@ export default function NetlifyTab() {
 
               <div>
                 <label className="block text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary mb-2">
-                  API Token
+                  API 權杖
                 </label>
                 <input
                   type="password"
                   value={tokenInput}
                   onChange={(e) => setTokenInput(e.target.value)}
-                  placeholder="Enter your Netlify API token"
+                  placeholder="輸入您的 Netlify API 權杖"
                   className={classNames(
                     'w-full px-3 py-2 rounded-lg text-sm',
                     'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
@@ -1332,7 +1332,7 @@ export default function NetlifyTab() {
                     rel="noopener noreferrer"
                     className="text-bolt-elements-borderColorActive hover:underline inline-flex items-center gap-1"
                   >
-                    Get your token
+                    取得您的權杖
                     <div className="i-ph:arrow-square-out w-4 h-4" />
                   </a>
                 </div>
@@ -1353,12 +1353,12 @@ export default function NetlifyTab() {
                   {isConnecting ? (
                     <>
                       <div className="i-ph:spinner-gap animate-spin" />
-                      Connecting...
+                      連線中...
                     </>
                   ) : (
                     <>
                       <div className="i-ph:plug-charging w-4 h-4" />
-                      Connect
+                      連線
                     </>
                   )}
                 </button>
@@ -1376,11 +1376,11 @@ export default function NetlifyTab() {
                   )}
                 >
                   <div className="i-ph:plug w-4 h-4" />
-                  Disconnect
+                  中斷連線
                 </button>
                 <span className="text-sm text-bolt-elements-textSecondary flex items-center gap-1">
                   <div className="i-ph:check-circle w-4 h-4 text-green-500" />
-                  Connected to Netlify
+                  已連線至 Netlify
                 </span>
               </div>
               {renderStats()}

@@ -570,7 +570,7 @@ function FileContextMenu({
       {isCreatingFile && (
         <InlineInput
           depth={depth}
-          placeholder="Enter file name..."
+          placeholder="輸入檔案名稱..."
           onSubmit={handleCreateFile}
           onCancel={() => setIsCreatingFile(false)}
         />
@@ -578,7 +578,7 @@ function FileContextMenu({
       {isCreatingFolder && (
         <InlineInput
           depth={depth}
-          placeholder="Enter folder name..."
+          placeholder="輸入資料夾名稱..."
           onSubmit={handleCreateFolder}
           onCancel={() => setIsCreatingFolder(false)}
         />
