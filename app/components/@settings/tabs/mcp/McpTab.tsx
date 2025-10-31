@@ -5,22 +5,186 @@ import { toast } from 'react-toastify';
 import { useMCPStore } from '~/lib/stores/mcp';
 import McpServerList from '~/components/@settings/tabs/mcp/McpServerList';
 
-const EXAMPLE_MCP_CONFIG: MCPConfig = {
-  mcpServers: {
-    everything: {
-      type: 'stdio',
-      command: 'npx',
-      args: ['-y', '@modelcontextprotocol/server-everything'],
+// MCP 配置模板
+const MCP_CONFIG_TEMPLATES = {
+  basic: {
+    name: '基本範例',
+    description: '包含基本的 MCP server 範例配置',
+    config: {
+      mcpServers: {
+        everything: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-everything'],
+        },
+        deepwiki: {
+          type: 'streamable-http',
+          url: 'https://mcp.deepwiki.com/mcp',
+        },
+      },
     },
-    deepwiki: {
-      type: 'streamable-http',
-      url: 'https://mcp.deepwiki.com/mcp',
+  },
+  official: {
+    name: '官方伺服器套件',
+    description: '包含所有官方參考 MCP servers（filesystem、fetch、git、memory 等）',
+    config: {
+      mcpServers: {
+        fetch: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-fetch'],
+        },
+        filesystem: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-filesystem', process.cwd()],
+        },
+        git: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-git'],
+        },
+        memory: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-memory'],
+        },
+        time: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-time'],
+        },
+      },
     },
-    'local-sse': {
-      type: 'sse',
-      url: 'http://localhost:8000/sse',
-      headers: {
-        Authorization: 'Bearer mytoken123',
+  },
+  development: {
+    name: '開發者工具套件',
+    description: '適合軟體開發的工具組合（GitHub、Git、檔案系統）',
+    config: {
+      mcpServers: {
+        github: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-github'],
+          env: {
+            GITHUB_PERSONAL_ACCESS_TOKEN: '<your_github_token>',
+          },
+        },
+        git: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-git'],
+        },
+        filesystem: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-filesystem', process.cwd()],
+        },
+        fetch: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-fetch'],
+        },
+      },
+    },
+  },
+  database: {
+    name: '資料庫工具套件',
+    description: '資料庫管理工具（SQLite、PostgreSQL）',
+    config: {
+      mcpServers: {
+        sqlite: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-sqlite', '--db-path', './database.db'],
+        },
+        postgresql: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-postgres'],
+          env: {
+            POSTGRES_CONNECTION_STRING: '<your_postgres_connection_string>',
+          },
+        },
+      },
+    },
+  },
+  automation: {
+    name: '自動化工具套件',
+    description: '網頁自動化與搜尋工具（Puppeteer、Brave Search）',
+    config: {
+      mcpServers: {
+        puppeteer: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-puppeteer'],
+        },
+        'brave-search': {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-brave-search'],
+          env: {
+            BRAVE_API_KEY: '<your_brave_api_key>',
+          },
+        },
+      },
+    },
+  },
+  complete: {
+    name: '完整功能套件',
+    description: '包含所有常用的 MCP servers（推薦進階使用者）',
+    config: {
+      mcpServers: {
+        fetch: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-fetch'],
+        },
+        filesystem: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-filesystem', process.cwd()],
+        },
+        git: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-git'],
+        },
+        github: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-github'],
+          env: {
+            GITHUB_PERSONAL_ACCESS_TOKEN: '<your_github_token>',
+          },
+        },
+        memory: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-memory'],
+        },
+        time: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-time'],
+        },
+        sqlite: {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-sqlite', '--db-path', './database.db'],
+        },
+        'brave-search': {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-brave-search'],
+          env: {
+            BRAVE_API_KEY: '<your_brave_api_key>',
+          },
+        },
+        deepwiki: {
+          type: 'streamable-http',
+          url: 'https://mcp.deepwiki.com/mcp',
+        },
       },
     },
   },
@@ -40,6 +204,7 @@ export default function McpTab() {
   const [error, setError] = useState<string | null>(null);
   const [isCheckingServers, setIsCheckingServers] = useState(false);
   const [expandedServer, setExpandedServer] = useState<string | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('basic');
 
   useEffect(() => {
     if (!isInitialized) {
@@ -93,9 +258,15 @@ export default function McpTab() {
     }
   };
 
-  const handleLoadExample = () => {
-    setMCPConfigText(JSON.stringify(EXAMPLE_MCP_CONFIG, null, 2));
-    setError(null);
+  const handleLoadTemplate = (templateKey: string) => {
+    const template = MCP_CONFIG_TEMPLATES[templateKey as keyof typeof MCP_CONFIG_TEMPLATES];
+
+    if (template) {
+      setMCPConfigText(JSON.stringify(template.config, null, 2));
+      setSelectedTemplate(templateKey);
+      setError(null);
+      toast.success(`已載入「${template.name}」模板`);
+    }
   };
 
   const checkServerAvailability = async () => {
@@ -158,6 +329,33 @@ export default function McpTab() {
         <h2 className="text-base font-medium text-bolt-elements-textPrimary mb-3">配置</h2>
 
         <div className="space-y-4">
+          {/* 模板選擇器 */}
+          <div>
+            <label htmlFor="template-selector" className="block text-sm text-bolt-elements-textSecondary mb-2">
+              快速載入模板
+            </label>
+            <select
+              id="template-selector"
+              value={selectedTemplate}
+              onChange={(e) => handleLoadTemplate(e.target.value)}
+              className={classNames(
+                'w-full px-3 py-2 rounded-lg text-sm',
+                'bg-white dark:bg-bolt-elements-background-depth-4',
+                'border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark',
+                'text-bolt-elements-textPrimary',
+                'focus:outline-none focus:ring-2 focus:ring-blue-500',
+              )}
+            >
+              {Object.entries(MCP_CONFIG_TEMPLATES).map(([key, template]) => (
+                <option key={key} value={key}>
+                  {template.name} - {template.description}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-xs text-bolt-elements-textTertiary">
+              選擇預設模板快速開始，或手動編輯下方的 JSON 配置
+            </p>
+          </div>
           <div>
             <label htmlFor="mcp-config" className="block text-sm text-bolt-elements-textSecondary mb-2">
               配置 JSON
@@ -207,16 +405,76 @@ export default function McpTab() {
         </div>
       </section>
 
-      <div className="flex flex-wrap justify-between gap-3 mt-6">
-        <button
-          onClick={handleLoadExample}
-          className="px-4 py-2 rounded-lg text-sm border border-bolt-elements-borderColor
-                    bg-bolt-elements-background-depth-2 text-bolt-elements-textSecondary
-                    hover:bg-bolt-elements-background-depth-3"
-        >
-          載入範例
-        </button>
+      {/* MCP Servers 說明文檔 */}
+      <section aria-labelledby="mcp-docs-heading" className="mt-6">
+        <details className="group">
+          <summary className="cursor-pointer list-none">
+            <div className="flex items-center gap-2 text-bolt-elements-textPrimary hover:text-bolt-elements-textSecondary transition-colors">
+              <div className="i-ph:book-open w-4 h-4" />
+              <h3 className="text-sm font-medium">MCP Servers 說明文檔</h3>
+              <div className="i-ph:caret-down w-4 h-4 group-open:rotate-180 transition-transform" />
+            </div>
+          </summary>
+          <div className="mt-3 p-4 rounded-lg bg-bolt-elements-background-depth-2 text-sm space-y-3">
+            <div className="space-y-2">
+              <h4 className="font-medium text-bolt-elements-textPrimary">官方伺服器</h4>
+              <ul className="space-y-1.5 text-bolt-elements-textSecondary">
+                <li>
+                  <strong>fetch:</strong> 擷取網頁內容並轉換為 LLM 可用格式
+                </li>
+                <li>
+                  <strong>filesystem:</strong> 提供安全的檔案系統操作，可配置存取控制
+                </li>
+                <li>
+                  <strong>git:</strong> 讀取、搜尋和操作 Git 倉庫
+                </li>
+                <li>
+                  <strong>github:</strong> 整合 GitHub（需要 Personal Access Token）
+                </li>
+                <li>
+                  <strong>memory:</strong> 基於知識圖譜的持久記憶系統
+                </li>
+                <li>
+                  <strong>time:</strong> 時間與時區轉換功能
+                </li>
+                <li>
+                  <strong>sequential-thinking:</strong> 動態反思性問題解決
+                </li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-medium text-bolt-elements-textPrimary">資料庫工具</h4>
+              <ul className="space-y-1.5 text-bolt-elements-textSecondary">
+                <li>
+                  <strong>sqlite:</strong> SQLite 資料庫管理
+                </li>
+                <li>
+                  <strong>postgresql:</strong> PostgreSQL 資料庫整合
+                </li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-medium text-bolt-elements-textPrimary">自動化工具</h4>
+              <ul className="space-y-1.5 text-bolt-elements-textSecondary">
+                <li>
+                  <strong>puppeteer:</strong> 瀏覽器自動化工具
+                </li>
+                <li>
+                  <strong>brave-search:</strong> Brave 搜尋引擎整合（需要 API Key）
+                </li>
+              </ul>
+            </div>
+            <div className="pt-2 border-t border-bolt-elements-borderColor">
+              <p className="text-xs text-bolt-elements-textTertiary">
+                💡 提示：使用 <code className="px-1 py-0.5 rounded bg-bolt-elements-background-depth-3">npx</code>{' '}
+                啟動的伺服器會自動安裝，無需手動安裝套件
+              </p>
+            </div>
+          </div>
+        </details>
+      </section>
 
+      <div className="flex flex-wrap justify-end gap-3 mt-6">
         <div className="flex gap-2">
           <button
             onClick={handleSave}
