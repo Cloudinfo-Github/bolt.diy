@@ -216,6 +216,19 @@ export default class AzureOpenAIProvider extends BaseProvider {
     );
   }
 
+  /**
+   * 檢測模型是否需要使用 Responses API
+   * gpt-5-codex 僅支援 Responses API，不支援 Chat Completions API
+   */
+  private _requiresResponsesAPI(model: string): boolean {
+    const responsesOnlyModels = [
+      'gpt-5-codex',
+
+      // 可以在這裡添加其他只支援 Responses API 的模型
+    ];
+    return responsesOnlyModels.includes(model);
+  }
+
   getModelInstance(options: {
     model: string;
     serverEnv: Env;
@@ -246,9 +259,12 @@ export default class AzureOpenAIProvider extends BaseProvider {
 
     // 檢測是否為 Azure AI Foundry 端點
     if (baseUrl && this._isAzureAIFoundry(baseUrl)) {
+      const requiresResponsesAPI = this._requiresResponsesAPI(model);
+
       console.log('[AzureOpenAI] ====== Detected Azure AI Foundry endpoint ======');
       console.log('[AzureOpenAI] Base URL:', baseUrl);
       console.log('[AzureOpenAI] Model:', model);
+      console.log('[AzureOpenAI] Requires Responses API:', requiresResponsesAPI);
 
       /*
        * Azure AI Foundry v1 API: https://xxx.services.ai.azure.com/openai/v1/
@@ -269,8 +285,14 @@ export default class AzureOpenAIProvider extends BaseProvider {
         },
       });
 
-      // 直接使用模型名稱（如 gpt-5, gpt-4o 等）
-      return openai(model) as unknown as LanguageModelV1;
+      // 根據模型選擇使用 Responses API 或 Chat Completions API
+      if (requiresResponsesAPI) {
+        console.log('[AzureOpenAI] Using Responses API for', model);
+        return openai.responses(model) as unknown as LanguageModelV1;
+      } else {
+        console.log('[AzureOpenAI] Using Chat Completions API for', model);
+        return openai(model) as unknown as LanguageModelV1;
+      }
     } else {
       console.log('[AzureOpenAI] Using traditional Azure OpenAI endpoint');
 
