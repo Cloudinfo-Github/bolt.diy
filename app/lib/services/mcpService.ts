@@ -200,7 +200,22 @@ export class MCPService {
       `Creating STDIO client for '${serverName}' with command: '${config.command}' ${config.args?.join(' ') || ''}`,
     );
 
-    const client = await experimental_createMCPClient({ transport: new Experimental_StdioMCPTransport(config) });
+    // Windows compatibility: wrap npx with cmd.exe to avoid spawn issues
+    const adjustedConfig = { ...config };
+
+    if (process.platform === 'win32' && config.command === 'npx') {
+      /*
+       * Use cmd.exe /c to execute npx on Windows
+       * This avoids the spawn EINVAL error when trying to execute .cmd files directly
+       */
+      adjustedConfig.command = 'cmd.exe';
+      adjustedConfig.args = ['/c', 'npx', ...(config.args || [])];
+      logger.debug(`Adjusted for Windows: cmd.exe /c npx ${config.args?.join(' ') || ''}`);
+    }
+
+    const client = await experimental_createMCPClient({
+      transport: new Experimental_StdioMCPTransport(adjustedConfig),
+    });
 
     return Object.assign(client, { serverName });
   }

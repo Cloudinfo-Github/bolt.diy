@@ -5,11 +5,14 @@ import { toast } from 'react-toastify';
 import { useMCPStore } from '~/lib/stores/mcp';
 import McpServerList from '~/components/@settings/tabs/mcp/McpServerList';
 
-// MCP 配置模板
+/*
+ * MCP 配置模板
+ * Note: Server-side mcpService automatically adjusts 'npx' to 'npx.cmd' on Windows
+ */
 const MCP_CONFIG_TEMPLATES = {
   basic: {
-    name: '基本範例',
-    description: '包含基本的 MCP server 範例配置',
+    name: '基本範例（推薦）',
+    description: '包含基本的 MCP server 範例配置 - 已驗證可用',
     config: {
       mcpServers: {
         everything: {
@@ -24,163 +27,104 @@ const MCP_CONFIG_TEMPLATES = {
       },
     },
   },
-  official: {
-    name: '官方伺服器套件',
-    description: '包含所有官方參考 MCP servers（filesystem、fetch、git、memory 等）',
+  typescript: {
+    name: 'TypeScript 官方伺服器',
+    description: '所有可用的官方 TypeScript MCP servers（npm 套件）',
     config: {
       mcpServers: {
-        fetch: {
+        everything: {
           type: 'stdio',
           command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-fetch'],
+          args: ['-y', '@modelcontextprotocol/server-everything'],
         },
         filesystem: {
           type: 'stdio',
           command: 'npx',
           args: ['-y', '@modelcontextprotocol/server-filesystem', process.cwd()],
-        },
-        git: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-git'],
         },
         memory: {
           type: 'stdio',
           command: 'npx',
           args: ['-y', '@modelcontextprotocol/server-memory'],
         },
+        'sequential-thinking': {
+          type: 'stdio',
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-sequential-thinking'],
+        },
+      },
+    },
+  },
+  python: {
+    name: 'Python MCP 伺服器',
+    description: '基於 Python 的官方 MCP servers（需要安裝 Python 和 uvx）',
+    config: {
+      mcpServers: {
+        fetch: {
+          type: 'stdio',
+          command: 'uvx',
+          args: ['mcp-server-fetch'],
+        },
+        git: {
+          type: 'stdio',
+          command: 'uvx',
+          args: ['mcp-server-git', '--repository', process.cwd()],
+        },
         time: {
           type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-time'],
+          command: 'uvx',
+          args: ['mcp-server-time'],
         },
       },
     },
   },
-  development: {
-    name: '開發者工具套件',
-    description: '適合軟體開發的工具組合（GitHub、Git、檔案系統）',
+  community: {
+    name: '社群伺服器',
+    description: '來自社群的熱門 MCP servers（HTTP 型態）',
     config: {
       mcpServers: {
-        github: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-github'],
-          env: {
-            GITHUB_PERSONAL_ACCESS_TOKEN: '<your_github_token>',
-          },
+        deepwiki: {
+          type: 'streamable-http',
+          url: 'https://mcp.deepwiki.com/mcp',
         },
-        git: {
+      },
+    },
+  },
+  mixed: {
+    name: '混合配置',
+    description: '結合 TypeScript、Python 和社群伺服器（適合進階使用者）',
+    config: {
+      mcpServers: {
+        // TypeScript servers (npm)
+        everything: {
           type: 'stdio',
           command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-git'],
+          args: ['-y', '@modelcontextprotocol/server-everything'],
         },
         filesystem: {
           type: 'stdio',
           command: 'npx',
           args: ['-y', '@modelcontextprotocol/server-filesystem', process.cwd()],
-        },
-        fetch: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-fetch'],
-        },
-      },
-    },
-  },
-  database: {
-    name: '資料庫工具套件',
-    description: '資料庫管理工具（SQLite、PostgreSQL）',
-    config: {
-      mcpServers: {
-        sqlite: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-sqlite', '--db-path', './database.db'],
-        },
-        postgresql: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-postgres'],
-          env: {
-            POSTGRES_CONNECTION_STRING: '<your_postgres_connection_string>',
-          },
-        },
-      },
-    },
-  },
-  automation: {
-    name: '自動化工具套件',
-    description: '網頁自動化與搜尋工具（Puppeteer、Brave Search）',
-    config: {
-      mcpServers: {
-        puppeteer: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-puppeteer'],
-        },
-        'brave-search': {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-brave-search'],
-          env: {
-            BRAVE_API_KEY: '<your_brave_api_key>',
-          },
-        },
-      },
-    },
-  },
-  complete: {
-    name: '完整功能套件',
-    description: '包含所有常用的 MCP servers（推薦進階使用者）',
-    config: {
-      mcpServers: {
-        fetch: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-fetch'],
-        },
-        filesystem: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-filesystem', process.cwd()],
-        },
-        git: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-git'],
-        },
-        github: {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-github'],
-          env: {
-            GITHUB_PERSONAL_ACCESS_TOKEN: '<your_github_token>',
-          },
         },
         memory: {
           type: 'stdio',
           command: 'npx',
           args: ['-y', '@modelcontextprotocol/server-memory'],
         },
-        time: {
+
+        // Python servers (uvx)
+        fetch: {
           type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-time'],
+          command: 'uvx',
+          args: ['mcp-server-fetch'],
         },
-        sqlite: {
+        git: {
           type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-sqlite', '--db-path', './database.db'],
+          command: 'uvx',
+          args: ['mcp-server-git', '--repository', process.cwd()],
         },
-        'brave-search': {
-          type: 'stdio',
-          command: 'npx',
-          args: ['-y', '@modelcontextprotocol/server-brave-search'],
-          env: {
-            BRAVE_API_KEY: '<your_brave_api_key>',
-          },
-        },
+
+        // Community servers (HTTP)
         deepwiki: {
           type: 'streamable-http',
           url: 'https://mcp.deepwiki.com/mcp',
@@ -416,58 +360,87 @@ export default function McpTab() {
             </div>
           </summary>
           <div className="mt-3 p-4 rounded-lg bg-bolt-elements-background-depth-2 text-sm space-y-3">
+            {/* TypeScript (npm) Servers */}
             <div className="space-y-2">
-              <h4 className="font-medium text-bolt-elements-textPrimary">官方伺服器</h4>
-              <ul className="space-y-1.5 text-bolt-elements-textSecondary">
+              <h4 className="font-medium text-bolt-elements-textPrimary flex items-center gap-2">
+                <span className="px-2 py-0.5 text-xs rounded bg-blue-500/20 text-blue-600 dark:text-blue-400">
+                  TypeScript
+                </span>
+                官方 npm 伺服器（可直接使用）
+              </h4>
+              <ul className="space-y-1.5 text-bolt-elements-textSecondary pl-4">
                 <li>
-                  <strong>fetch:</strong> 擷取網頁內容並轉換為 LLM 可用格式
+                  <strong>everything:</strong> 測試伺服器，包含所有 MCP 協議功能範例
                 </li>
                 <li>
                   <strong>filesystem:</strong> 提供安全的檔案系統操作，可配置存取控制
                 </li>
                 <li>
+                  <strong>memory:</strong> 基於知識圖譜的持久記憶系統，可儲存對話歷史
+                </li>
+                <li>
+                  <strong>sequential-thinking:</strong> 動態反思性問題解決，增強推理能力
+                </li>
+              </ul>
+            </div>
+
+            {/* Python Servers */}
+            <div className="space-y-2">
+              <h4 className="font-medium text-bolt-elements-textPrimary flex items-center gap-2">
+                <span className="px-2 py-0.5 text-xs rounded bg-green-500/20 text-green-600 dark:text-green-400">
+                  Python
+                </span>
+                官方 Python 伺服器（需要 Python 環境）
+              </h4>
+              <ul className="space-y-1.5 text-bolt-elements-textSecondary pl-4">
+                <li>
+                  <strong>fetch:</strong> 擷取網頁內容並轉換為 LLM 可用的 Markdown 格式
+                </li>
+                <li>
                   <strong>git:</strong> 讀取、搜尋和操作 Git 倉庫
                 </li>
                 <li>
-                  <strong>github:</strong> 整合 GitHub（需要 Personal Access Token）
-                </li>
-                <li>
-                  <strong>memory:</strong> 基於知識圖譜的持久記憶系統
-                </li>
-                <li>
-                  <strong>time:</strong> 時間與時區轉換功能
-                </li>
-                <li>
-                  <strong>sequential-thinking:</strong> 動態反思性問題解決
+                  <strong>time:</strong> 時間與時區轉換功能，支援 IANA 時區
                 </li>
               </ul>
+              <p className="text-xs text-bolt-elements-textTertiary italic pl-4">
+                ℹ️ 需要安裝 Python 和 uvx（
+                <code className="px-1 py-0.5 rounded bg-bolt-elements-background-depth-3">pip install uv</code>）
+              </p>
             </div>
+
+            {/* Community HTTP Servers */}
             <div className="space-y-2">
-              <h4 className="font-medium text-bolt-elements-textPrimary">資料庫工具</h4>
-              <ul className="space-y-1.5 text-bolt-elements-textSecondary">
+              <h4 className="font-medium text-bolt-elements-textPrimary flex items-center gap-2">
+                <span className="px-2 py-0.5 text-xs rounded bg-purple-500/20 text-purple-600 dark:text-purple-400">
+                  HTTP
+                </span>
+                社群伺服器（無需安裝）
+              </h4>
+              <ul className="space-y-1.5 text-bolt-elements-textSecondary pl-4">
                 <li>
-                  <strong>sqlite:</strong> SQLite 資料庫管理
-                </li>
-                <li>
-                  <strong>postgresql:</strong> PostgreSQL 資料庫整合
-                </li>
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h4 className="font-medium text-bolt-elements-textPrimary">自動化工具</h4>
-              <ul className="space-y-1.5 text-bolt-elements-textSecondary">
-                <li>
-                  <strong>puppeteer:</strong> 瀏覽器自動化工具
-                </li>
-                <li>
-                  <strong>brave-search:</strong> Brave 搜尋引擎整合（需要 API Key）
+                  <strong>deepwiki:</strong> 深度 Wiki 搜尋與知識查詢服務
                 </li>
               </ul>
             </div>
-            <div className="pt-2 border-t border-bolt-elements-borderColor">
+
+            {/* Tips */}
+            <div className="pt-2 border-t border-bolt-elements-borderColor space-y-2">
               <p className="text-xs text-bolt-elements-textTertiary">
-                💡 提示：使用 <code className="px-1 py-0.5 rounded bg-bolt-elements-background-depth-3">npx</code>{' '}
-                啟動的伺服器會自動安裝，無需手動安裝套件
+                💡 <strong>TypeScript 伺服器</strong>：使用{' '}
+                <code className="px-1 py-0.5 rounded bg-bolt-elements-background-depth-3">npx</code> 啟動，會自動安裝
+              </p>
+              <p className="text-xs text-bolt-elements-textTertiary">
+                🐍 <strong>Python 伺服器</strong>：使用{' '}
+                <code className="px-1 py-0.5 rounded bg-bolt-elements-background-depth-3">uvx</code> 啟動，需要 Python
+                3.8+
+              </p>
+              <p className="text-xs text-bolt-elements-textTertiary">
+                🌐 <strong>HTTP 伺服器</strong>：通過 URL 連接，無需本地安裝任何工具
+              </p>
+              <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                ⚠️ <strong>注意</strong>：已測試的伺服器為 TypeScript 和 HTTP 類型。Python 伺服器需要額外配置 Python
+                環境。
               </p>
             </div>
           </div>
