@@ -19,6 +19,8 @@ import { ColorSchemeDialog } from '~/components/ui/ColorSchemeDialog';
 import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
+import { useStore } from '@nanostores/react';
+import { webSearchEnabledStore, updateWebSearchEnabled } from '~/lib/stores/settings';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -64,6 +66,8 @@ interface ChatBoxProps {
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
+  const webSearchEnabled = useStore(webSearchEnabledStore);
+
   return (
     <div
       className={classNames(
@@ -262,6 +266,23 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           <div className="flex gap-1 items-center">
             <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
             <McpTools />
+            <IconButton
+              title={webSearchEnabled ? '網路搜尋已啟用' : '網路搜尋已停用'}
+              className={classNames(
+                'transition-all flex items-center gap-1 px-1.5',
+                webSearchEnabled
+                  ? '!bg-bolt-elements-item-backgroundAccent !text-bolt-elements-item-contentAccent'
+                  : 'bg-bolt-elements-item-backgroundDefault text-bolt-elements-item-contentDefault',
+              )}
+              onClick={() => {
+                const newValue = !webSearchEnabled;
+                updateWebSearchEnabled(newValue);
+                toast.success(`網路搜尋已${newValue ? '啟用' : '停用'}`);
+              }}
+            >
+              <div className="i-ph:magnifying-glass text-xl" />
+              {webSearchEnabled ? <span className="text-xs">搜尋</span> : <span />}
+            </IconButton>
             <IconButton title="上傳檔案" className="transition-all" onClick={() => props.handleFileUpload()}>
               <div className="i-ph:paperclip text-xl"></div>
             </IconButton>
