@@ -1,0 +1,47 @@
+{
+  "title": "聊天",
+  "newChat": "新對話",
+  "send": "發送",
+  "sending": "發送中...",
+  "stop": "停止",
+  "retry": "重試",
+  "regenerate": "重新生成",
+  "copy": "複製",
+  "copied": "已複製",
+  "delete": "刪除",
+  "edit": "編輯",
+  "continue": "繼續",
+  "thinking": "思考中...",
+  "generating": "生成中...",
+  "placeholder": "輸入訊息...",
+  "emptyState": {
+    "title": "開始新對話",
+    "description": "選擇一個模型並開始對話"
+  },
+  "history": {
+    "title": "聊天記錄",
+    "empty": "沒有聊天記錄",
+    "search": "搜尋聊天記錄",
+    "today": "今天",
+    "yesterday": "昨天",
+    "lastWeek": "上週",
+    "lastMonth": "上個月",
+    "older": "更早"
+  },
+  "model": {
+    "select": "選擇模型",
+    "current": "當前模型",
+    "switch": "切換模型"
+  },
+  "attachment": {
+    "add": "添加附件",
+    "remove": "移除附件",
+    "upload": "上傳檔案"
+  },
+  "export": {
+    "title": "匯出對話",
+    "markdown": "匯出為 Markdown",
+    "json": "匯出為 JSON",
+    "text": "匯出為文字"
+  }
+}

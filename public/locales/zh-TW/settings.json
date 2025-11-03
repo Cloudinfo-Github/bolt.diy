@@ -1,0 +1,81 @@
+{
+  "title": "設定",
+  "general": "一般",
+  "providers": "提供者",
+  "features": "功能",
+  "debug": "偵錯",
+  "appearance": "外觀",
+  "theme": {
+    "title": "主題",
+    "light": "淺色",
+    "dark": "深色",
+    "system": "系統"
+  },
+  "language": {
+    "title": "語言",
+    "select": "選擇語言"
+  },
+  "save": "儲存",
+  "cancel": "取消",
+  "reset": "重置",
+  "apply": "套用",
+  "close": "關閉",
+  "apiKeys": {
+    "title": "API 金鑰",
+    "add": "新增 API 金鑰",
+    "edit": "編輯 API 金鑰",
+    "delete": "刪除 API 金鑰",
+    "placeholder": "輸入 API 金鑰",
+    "saved": "API 金鑰已儲存",
+    "deleted": "API 金鑰已刪除"
+  },
+  "models": {
+    "title": "模型",
+    "select": "選擇模型",
+    "custom": "自訂模型",
+    "default": "預設模型"
+  },
+  "notifications": {
+    "title": "通知",
+    "enable": "啟用通知",
+    "disable": "停用通知",
+    "sound": "音效",
+    "desktop": "桌面通知",
+    "allNotifications": "所有通知",
+    "noNotifications": "沒有通知",
+    "noNotificationsDescription": "您已經查看所有通知了！",
+    "filterNotifications": "篩選通知",
+    "clearAllNotifications": "全部清除",
+    "updateAvailable": "更新可用",
+    "checkForUpdates": "檢查更新",
+    "viewChanges": "檢視變更",
+    "currentVersion": "目前版本",
+    "latestVersion": "最新版本",
+    "branch": "分支",
+    "category": "類別",
+    "filters": {
+      "all": "所有通知",
+      "system": "系統",
+      "update": "更新",
+      "error": "錯誤",
+      "warning": "警告",
+      "info": "資訊",
+      "provider": "提供者",
+      "network": "網路"
+    }
+  },
+  "data": {
+    "title": "資料",
+    "export": "匯出資料",
+    "import": "匯入資料",
+    "clear": "清除資料",
+    "clearConfirm": "確定要清除所有資料嗎？"
+  },
+  "about": {
+    "title": "關於",
+    "version": "版本",
+    "updates": "檢查更新",
+    "documentation": "文件",
+    "support": "支援"
+  }
+}

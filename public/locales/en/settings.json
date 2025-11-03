@@ -1,0 +1,81 @@
+{
+  "title": "Settings",
+  "general": "General",
+  "providers": "Providers",
+  "features": "Features",
+  "debug": "Debug",
+  "appearance": "Appearance",
+  "theme": {
+    "title": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "title": "Language",
+    "select": "Select Language"
+  },
+  "save": "Save",
+  "cancel": "Cancel",
+  "reset": "Reset",
+  "apply": "Apply",
+  "close": "Close",
+  "apiKeys": {
+    "title": "API Keys",
+    "add": "Add API Key",
+    "edit": "Edit API Key",
+    "delete": "Delete API Key",
+    "placeholder": "Enter API Key",
+    "saved": "API Key Saved",
+    "deleted": "API Key Deleted"
+  },
+  "models": {
+    "title": "Models",
+    "select": "Select Model",
+    "custom": "Custom Model",
+    "default": "Default Model"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "enable": "Enable Notifications",
+    "disable": "Disable Notifications",
+    "sound": "Sound",
+    "desktop": "Desktop Notifications",
+    "allNotifications": "All Notifications",
+    "noNotifications": "No notifications",
+    "noNotificationsDescription": "You're all caught up!",
+    "filterNotifications": "Filter Notifications",
+    "clearAllNotifications": "Clear All",
+    "updateAvailable": "Update Available",
+    "checkForUpdates": "Check for Updates",
+    "viewChanges": "View Changes",
+    "currentVersion": "Current Version",
+    "latestVersion": "Latest Version",
+    "branch": "Branch",
+    "category": "Category",
+    "filters": {
+      "all": "All Notifications",
+      "system": "System",
+      "update": "Update",
+      "error": "Error",
+      "warning": "Warning",
+      "info": "Info",
+      "provider": "Provider",
+      "network": "Network"
+    }
+  },
+  "data": {
+    "title": "Data",
+    "export": "Export Data",
+    "import": "Import Data",
+    "clear": "Clear Data",
+    "clearConfirm": "Are you sure you want to clear all data?"
+  },
+  "about": {
+    "title": "About",
+    "version": "Version",
+    "updates": "Check for Updates",
+    "documentation": "Documentation",
+    "support": "Support"
+  }
+}

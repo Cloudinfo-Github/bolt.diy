@@ -1,0 +1,20 @@
+{
+  "selectRepository": "Select Repository",
+  "noRepositoriesFound": "No repositories found",
+  "loadingRepositories": "Loading repositories...",
+  "recentRepositories": "Recent Repositories",
+  "refreshConnection": "Refresh Connection",
+  "failedToLoad": "Failed to load repositories",
+  "searchRepositories": "Search repositories...",
+  "sortByUpdated": "Recently updated",
+  "sortByStars": "Most starred",
+  "sortByName": "Name (A-Z)",
+  "sortByCreated": "Recently created",
+  "filterAll": "All repositories",
+  "filterOwn": "Own repositories",
+  "filterForked": "Forked repositories",
+  "filterArchived": "Archived repositories",
+  "showingCount": "Showing {{start}} to {{end}} of {{total}} repositories",
+  "pageIndicator": "{{current}} of {{total}}",
+  "noMatchingRepositories": "No repositories found matching your search criteria."
+}

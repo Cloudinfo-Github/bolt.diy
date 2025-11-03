@@ -1,0 +1,20 @@
+{
+  "selectRepository": "選擇儲存庫",
+  "noRepositoriesFound": "未找到儲存庫",
+  "loadingRepositories": "正在載入儲存庫...",
+  "recentRepositories": "最近的儲存庫",
+  "refreshConnection": "重新整理連線",
+  "failedToLoad": "無法載入儲存庫",
+  "searchRepositories": "搜尋儲存庫...",
+  "sortByUpdated": "最近更新",
+  "sortByStars": "最多星標",
+  "sortByName": "名稱 (A-Z)",
+  "sortByCreated": "最近建立",
+  "filterAll": "所有儲存庫",
+  "filterOwn": "自己的儲存庫",
+  "filterForked": "分支儲存庫",
+  "filterArchived": "已封存的儲存庫",
+  "showingCount": "顯示第 {{start}} 到 {{end}} 個，共 {{total}} 個儲存庫",
+  "pageIndicator": "第 {{current}} 頁，共 {{total}} 頁",
+  "noMatchingRepositories": "未找到符合搜尋條件的儲存庫。"
+}

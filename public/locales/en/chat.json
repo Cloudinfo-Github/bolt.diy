@@ -1,0 +1,47 @@
+{
+  "title": "Chat",
+  "newChat": "New Chat",
+  "send": "Send",
+  "sending": "Sending...",
+  "stop": "Stop",
+  "retry": "Retry",
+  "regenerate": "Regenerate",
+  "copy": "Copy",
+  "copied": "Copied",
+  "delete": "Delete",
+  "edit": "Edit",
+  "continue": "Continue",
+  "thinking": "Thinking...",
+  "generating": "Generating...",
+  "placeholder": "Type a message...",
+  "emptyState": {
+    "title": "Start a New Chat",
+    "description": "Select a model and start chatting"
+  },
+  "history": {
+    "title": "Chat History",
+    "empty": "No chat history",
+    "search": "Search chat history",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "lastWeek": "Last Week",
+    "lastMonth": "Last Month",
+    "older": "Older"
+  },
+  "model": {
+    "select": "Select Model",
+    "current": "Current Model",
+    "switch": "Switch Model"
+  },
+  "attachment": {
+    "add": "Add Attachment",
+    "remove": "Remove Attachment",
+    "upload": "Upload File"
+  },
+  "export": {
+    "title": "Export Chat",
+    "markdown": "Export as Markdown",
+    "json": "Export as JSON",
+    "text": "Export as Text"
+  }
+}

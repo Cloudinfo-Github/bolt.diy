@@ -1,0 +1,63 @@
+{
+  "title": "部署",
+  "deploy": "部署",
+  "deploying": "部署中...",
+  "deployed": "已部署",
+  "failed": "部署失敗",
+  "cancel": "取消部署",
+  "retry": "重試部署",
+  "platform": {
+    "title": "選擇平台",
+    "github": "GitHub Pages",
+    "gitlab": "GitLab Pages",
+    "vercel": "Vercel",
+    "netlify": "Netlify",
+    "cloudflare": "Cloudflare Pages"
+  },
+  "repository": {
+    "title": "儲存庫",
+    "select": "選擇儲存庫",
+    "create": "建立新儲存庫",
+    "name": "儲存庫名稱",
+    "private": "私有儲存庫",
+    "public": "公開儲存庫"
+  },
+  "branch": {
+    "title": "分支",
+    "select": "選擇分支",
+    "create": "建立新分支",
+    "name": "分支名稱",
+    "default": "預設分支"
+  },
+  "settings": {
+    "title": "部署設定",
+    "buildCommand": "建置命令",
+    "outputDirectory": "輸出目錄",
+    "environmentVariables": "環境變數"
+  },
+  "status": {
+    "pending": "等待中",
+    "building": "建置中",
+    "deploying": "部署中",
+    "success": "成功",
+    "failed": "失敗",
+    "cancelled": "已取消"
+  },
+  "logs": {
+    "title": "部署日誌",
+    "view": "檢視日誌",
+    "download": "下載日誌"
+  },
+  "preview": {
+    "title": "預覽",
+    "open": "開啟預覽",
+    "url": "預覽 URL"
+  },
+  "messages": {
+    "selectPlatform": "請選擇部署平台",
+    "selectRepository": "請選擇儲存庫",
+    "deploying": "正在部署到 {{platform}}...",
+    "success": "成功部署到 {{platform}}",
+    "failed": "部署失敗：{{error}}"
+  }
+}

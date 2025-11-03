@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Dialog, DialogButton, DialogDescription, DialogRoot, DialogTitle } from '~/components/ui/Dialog';
 import { ThemeSwitch } from '~/components/ui/ThemeSwitch';
+import { LanguageSwitcher } from '~/components/ui/LanguageSwitcher';
 import { ControlPanel } from '~/components/@settings/core/ControlPanel';
 import { SettingsButton, HelpButton } from '~/components/ui/SettingsButton';
 import { Button } from '~/components/ui/Button';
@@ -529,7 +530,10 @@ export const Menu = () => {
             <div className="flex items-center gap-3">
               <SettingsButton onClick={handleSettingsClick} />
             </div>
-            <ThemeSwitch />
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher />
+              <ThemeSwitch />
+            </div>
           </div>
         </div>
       </motion.div>

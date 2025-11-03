@@ -335,12 +335,12 @@ function FileContextMenu({
             const success = await workbenchStore.createFile(filePath, binaryContent);
 
             if (success) {
-              toast.success(`File ${file.name} uploaded successfully`);
+              toast.success(`檔案 ${file.name} 上傳成功`);
             } else {
-              toast.error(`Failed to upload file ${file.name}`);
+              toast.error(`上傳檔案 ${file.name} 失敗`);
             }
           } catch (error) {
-            toast.error(`Error uploading ${file.name}`);
+            toast.error(`上傳 ${file.name} 時發生錯誤`);
             logger.error(error);
           }
         }
@@ -356,9 +356,9 @@ function FileContextMenu({
     const success = await workbenchStore.createFile(newFilePath, '');
 
     if (success) {
-      toast.success('File created successfully');
+      toast.success('檔案建立成功');
     } else {
-      toast.error('Failed to create file');
+      toast.error('建立檔案失敗');
     }
 
     setIsCreatingFile(false);
@@ -369,9 +369,9 @@ function FileContextMenu({
     const success = await workbenchStore.createFolder(newFolderPath);
 
     if (success) {
-      toast.success('Folder created successfully');
+      toast.success('資料夾建立成功');
     } else {
-      toast.error('Failed to create folder');
+      toast.error('建立資料夾失敗');
     }
 
     setIsCreatingFolder(false);
@@ -379,7 +379,7 @@ function FileContextMenu({
 
   const handleDelete = async () => {
     try {
-      if (!confirm(`Are you sure you want to delete ${isFolder ? 'folder' : 'file'}: ${fileName}?`)) {
+      if (!confirm(`確定要刪除${isFolder ? '資料夾' : '檔案'}：${fileName} 嗎？`)) {
         return;
       }
 
@@ -392,12 +392,12 @@ function FileContextMenu({
       }
 
       if (success) {
-        toast.success(`${isFolder ? 'Folder' : 'File'} deleted successfully`);
+        toast.success(`${isFolder ? '資料夾' : '檔案'}刪除成功`);
       } else {
-        toast.error(`Failed to delete ${isFolder ? 'folder' : 'file'}`);
+        toast.error(`刪除${isFolder ? '資料夾' : '檔案'}失敗`);
       }
     } catch (error) {
-      toast.error(`Error deleting ${isFolder ? 'folder' : 'file'}`);
+      toast.error(`刪除${isFolder ? '資料夾' : '檔案'}時發生錯誤`);
       logger.error(error);
     }
   };
@@ -412,12 +412,12 @@ function FileContextMenu({
       const success = workbenchStore.lockFile(fullPath);
 
       if (success) {
-        toast.success(`File locked successfully`);
+        toast.success(`檔案鎖定成功`);
       } else {
-        toast.error(`Failed to lock file`);
+        toast.error(`鎖定檔案失敗`);
       }
     } catch (error) {
-      toast.error(`Error locking file`);
+      toast.error(`鎖定檔案時發生錯誤`);
       logger.error(error);
     }
   };
@@ -432,12 +432,12 @@ function FileContextMenu({
       const success = workbenchStore.unlockFile(fullPath);
 
       if (success) {
-        toast.success(`File unlocked successfully`);
+        toast.success(`檔案解鎖成功`);
       } else {
-        toast.error(`Failed to unlock file`);
+        toast.error(`解鎖檔案失敗`);
       }
     } catch (error) {
-      toast.error(`Error unlocking file`);
+      toast.error(`解鎖檔案時發生錯誤`);
       logger.error(error);
     }
   };
@@ -452,12 +452,12 @@ function FileContextMenu({
       const success = workbenchStore.lockFolder(fullPath);
 
       if (success) {
-        toast.success(`Folder locked successfully`);
+        toast.success(`資料夾鎖定成功`);
       } else {
-        toast.error(`Failed to lock folder`);
+        toast.error(`鎖定資料夾失敗`);
       }
     } catch (error) {
-      toast.error(`Error locking folder`);
+      toast.error(`鎖定資料夾時發生錯誤`);
       logger.error(error);
     }
   };
@@ -472,12 +472,12 @@ function FileContextMenu({
       const success = workbenchStore.unlockFolder(fullPath);
 
       if (success) {
-        toast.success(`Folder unlocked successfully`);
+        toast.success(`資料夾解鎖成功`);
       } else {
-        toast.error(`Failed to unlock folder`);
+        toast.error(`解鎖資料夾失敗`);
       }
     } catch (error) {
-      toast.error(`Error unlocking folder`);
+      toast.error(`解鎖資料夾時發生錯誤`);
       logger.error(error);
     }
   };

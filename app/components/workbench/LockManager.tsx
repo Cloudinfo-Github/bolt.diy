@@ -105,7 +105,7 @@ export function LockManager() {
   // Handle unlocking selected items
   const handleUnlockSelected = () => {
     if (selectedItems.size === 0) {
-      toast.error('No items selected to unlock.');
+      toast.error('沒有選擇要解鎖的項目。');
       return;
     }
 
@@ -125,7 +125,7 @@ export function LockManager() {
     });
 
     if (unlockedCount > 0) {
-      toast.success(`Unlocked ${unlockedCount} selected item(s).`);
+      toast.success(`已解鎖 ${unlockedCount} 個選定項目。`);
       setSelectedItems(new Set()); // Clear selection after unlocking
     }
   };
@@ -161,9 +161,9 @@ export function LockManager() {
           value={filter}
           onChange={(e) => setFilter(e.target.value as any)}
         >
-          <option value="all">All</option>
-          <option value="files">Files</option>
-          <option value="folders">Folders</option>
+          <option value="all">全部</option>
+          <option value="files">檔案</option>
+          <option value="folders">資料夾</option>
         </select>
       </div>
 
@@ -177,7 +177,7 @@ export function LockManager() {
             aria-label="選擇所有項目"
             disabled={filteredAndSortedItems.length === 0} // Disable if no items to select
           />
-          <span>All</span>
+          <span>全部</span>
         </div>
         {selectedItems.size > 0 && (
           <button
@@ -239,7 +239,7 @@ export function LockManager() {
                       workbenchStore.unlockFolder(item.path);
                     }
 
-                    toast.success(`${item.path.replace('/home/project/', '')} unlocked`);
+                    toast.success(`${item.path.replace('/home/project/', '')} 已解鎖`);
                   }}
                   title="解鎖"
                 >
@@ -254,7 +254,7 @@ export function LockManager() {
       {/* Footer */}
       <div className="px-2 py-1 border-t border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 text-xs text-bolt-elements-textTertiary flex justify-between items-center">
         <div>
-          {filteredAndSortedItems.length} item(s) • {selectedItems.size} selected
+          {filteredAndSortedItems.length} 個項目 • 已選擇 {selectedItems.size} 個
         </div>
       </div>
     </div>

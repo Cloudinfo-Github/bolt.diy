@@ -1,0 +1,63 @@
+{
+  "title": "Deploy",
+  "deploy": "Deploy",
+  "deploying": "Deploying...",
+  "deployed": "Deployed",
+  "failed": "Deploy Failed",
+  "cancel": "Cancel Deploy",
+  "retry": "Retry Deploy",
+  "platform": {
+    "title": "Select Platform",
+    "github": "GitHub Pages",
+    "gitlab": "GitLab Pages",
+    "vercel": "Vercel",
+    "netlify": "Netlify",
+    "cloudflare": "Cloudflare Pages"
+  },
+  "repository": {
+    "title": "Repository",
+    "select": "Select Repository",
+    "create": "Create New Repository",
+    "name": "Repository Name",
+    "private": "Private Repository",
+    "public": "Public Repository"
+  },
+  "branch": {
+    "title": "Branch",
+    "select": "Select Branch",
+    "create": "Create New Branch",
+    "name": "Branch Name",
+    "default": "Default Branch"
+  },
+  "settings": {
+    "title": "Deploy Settings",
+    "buildCommand": "Build Command",
+    "outputDirectory": "Output Directory",
+    "environmentVariables": "Environment Variables"
+  },
+  "status": {
+    "pending": "Pending",
+    "building": "Building",
+    "deploying": "Deploying",
+    "success": "Success",
+    "failed": "Failed",
+    "cancelled": "Cancelled"
+  },
+  "logs": {
+    "title": "Deploy Logs",
+    "view": "View Logs",
+    "download": "Download Logs"
+  },
+  "preview": {
+    "title": "Preview",
+    "open": "Open Preview",
+    "url": "Preview URL"
+  },
+  "messages": {
+    "selectPlatform": "Please select a deploy platform",
+    "selectRepository": "Please select a repository",
+    "deploying": "Deploying to {{platform}}...",
+    "success": "Successfully deployed to {{platform}}",
+    "failed": "Deploy failed: {{error}}"
+  }
+}

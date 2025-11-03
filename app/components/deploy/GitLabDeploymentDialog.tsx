@@ -78,7 +78,7 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
   const fetchRecentRepos = async (token: string, gitlabUrl = 'https://gitlab.com') => {
     if (!token) {
       logStore.logError('No GitLab token available');
-      toast.error('GitLab authentication required');
+      toast.error('需要 GitLab 驗證');
 
       return;
     }
@@ -92,7 +92,7 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
     } catch (error) {
       console.error('Failed to fetch GitLab repositories:', error);
       logStore.logError('Failed to fetch GitLab repositories', { error });
-      toast.error('Failed to fetch recent repositories');
+      toast.error('無法取得最近的儲存庫');
     } finally {
       setIsFetchingRepos(false);
     }
@@ -105,12 +105,12 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
     const connection = getLocalStorage('gitlab_connection');
 
     if (!connection?.token || !connection?.user) {
-      toast.error('Please connect your GitLab account in Settings > Connections first');
+      toast.error('請先在設定 > 連線中連接您的 GitLab 帳戶');
       return;
     }
 
     if (!repoName.trim()) {
-      toast.error('Repository name is required');
+      toast.error('需要儲存庫名稱');
       return;
     }
 
@@ -129,7 +129,7 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
 
       // Warn user if repository name was changed
       if (sanitizedRepoName !== repoName && sanitizedRepoName !== repoName.toLowerCase()) {
-        toast.info(`Repository name sanitized to "${sanitizedRepoName}" to meet GitLab requirements`);
+        toast.info(`儲存庫名稱已清理為「${sanitizedRepoName}」以符合 GitLab 要求`);
       }
 
       // Check if project exists using the sanitized name
@@ -163,14 +163,14 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
         toast.info('Uploading files to existing repository...');
         await apiService.updateProjectWithFiles(existingProject.id, files);
         setCreatedRepoUrl(existingProject.http_url_to_repo);
-        toast.success('Repository updated successfully!');
+        toast.success('儲存庫更新成功！');
       } else {
         // Create new project with files
         toast.info('Creating new repository...');
 
         const newProject = await apiService.createProjectWithFiles(sanitizedRepoName, isPrivate, files);
         setCreatedRepoUrl(newProject.http_url_to_repo);
-        toast.success('Repository created successfully!');
+        toast.success('儲存庫建立成功！');
       }
 
       // Set pushed files for display
@@ -320,7 +320,7 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
                       <motion.button
                         onClick={() => {
                           navigator.clipboard.writeText(createdRepoUrl);
-                          toast.success('URL copied to clipboard');
+                          toast.success('網址已複製到剪貼簿');
                         }}
                         className="p-2 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary dark:text-bolt-elements-textSecondary-dark dark:hover:text-bolt-elements-textPrimary-dark bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-4 rounded-lg border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark"
                         whileHover={{ scale: 1.05 }}
@@ -371,7 +371,7 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
                     <motion.button
                       onClick={() => {
                         navigator.clipboard.writeText(createdRepoUrl);
-                        toast.success('URL copied to clipboard');
+                        toast.success('網址已複製到剪貼簿');
                       }}
                       className="px-4 py-2 rounded-lg bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark hover:bg-bolt-elements-background-depth-3 dark:hover:bg-bolt-elements-background-depth-4 text-sm inline-flex items-center gap-2 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark"
                       whileHover={{ scale: 1.02 }}
@@ -611,7 +611,7 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between mb-2">
                       <label className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark">
-                        Recent Repositories
+                        最近的儲存庫
                       </label>
                       <span className="text-xs text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark">
                         {filteredRepos.length} of {recentRepos.length}

@@ -99,7 +99,7 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
   const fetchRecentRepos = async (token: string) => {
     if (!token) {
       logStore.logError('No GitHub token available');
-      toast.error('GitHub authentication required');
+      toast.error('需要 GitHub 驗證');
 
       return;
     }
@@ -131,7 +131,7 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
           }
 
           if (response.status === 401) {
-            toast.error('GitHub token expired. Please reconnect your account.');
+            toast.error('GitHub 權杖已過期。請重新連接您的帳戶。');
 
             // Clear invalid token
             const connection = getLocalStorage('github_connection');
@@ -144,14 +144,14 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
             // Rate limit exceeded
             const resetTime = response.headers.get('x-ratelimit-reset');
             const resetDate = resetTime ? new Date(parseInt(resetTime) * 1000).toLocaleTimeString() : 'soon';
-            toast.error(`GitHub API rate limit exceeded. Limit resets at ${resetDate}`);
+            toast.error(`GitHub API 速率限制已超過。限制將在 ${resetDate} 重置`);
           } else {
             logStore.logError('Failed to fetch GitHub repositories', {
               status: response.status,
               statusText: response.statusText,
               error: errorData,
             });
-            toast.error(`Failed to fetch repositories: ${errorData.message || response.statusText}`);
+            toast.error(`無法取得儲存庫：${errorData.message || response.statusText}`);
           }
 
           return;
@@ -168,7 +168,7 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
           }
         } catch (parseError) {
           logStore.logError('Failed to parse GitHub repositories response', { parseError });
-          toast.error('Failed to parse repository data');
+          toast.error('無法解析儲存庫資料');
           setRecentRepos([]);
 
           return;
@@ -178,7 +178,7 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
       setRecentRepos(allRepos);
     } catch (error) {
       logStore.logError('Failed to fetch GitHub repositories', { error });
-      toast.error('Failed to fetch recent repositories');
+      toast.error('無法取得最近的儲存庫');
     } finally {
       setIsFetchingRepos(false);
     }
@@ -191,12 +191,12 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
     const connection = getLocalStorage('github_connection');
 
     if (!connection?.token || !connection?.user) {
-      toast.error('Please connect your GitHub account in Settings > Connections first');
+      toast.error('請先在設定 > 連線中連接您的 GitHub 帳戶');
       return;
     }
 
     if (!repoName.trim()) {
-      toast.error('Repository name is required');
+      toast.error('需要儲存庫名稱');
       return;
     }
 
@@ -204,19 +204,19 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
     const sanitizedName = sanitizeRepoName(repoName);
 
     if (!sanitizedName || sanitizedName.length < 1) {
-      toast.error('Repository name must contain at least one alphanumeric character');
+      toast.error('儲存庫名稱必須至少包含一個字母或數字');
       return;
     }
 
     if (sanitizedName.length > 100) {
-      toast.error('Repository name is too long (maximum 100 characters)');
+      toast.error('儲存庫名稱太長（最多 100 個字元）');
       return;
     }
 
     // Update the repo name field with the sanitized version if it was changed
     if (sanitizedName !== repoName) {
       setRepoName(sanitizedName);
-      toast.info(`Repository name sanitized to: ${sanitizedName}`);
+      toast.info(`儲存庫名稱已清理為：${sanitizedName}`);
     }
 
     setIsLoading(true);
@@ -518,7 +518,7 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
       }
 
       // Show error with retry suggestion if applicable
-      const finalMessage = isRetryable ? `${errorMessage} Click to retry.` : errorMessage;
+      const finalMessage = isRetryable ? `${errorMessage} 點擊重試。` : errorMessage;
       toast.error(finalMessage);
 
       // Log detailed error for debugging
@@ -862,17 +862,17 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
                             e.target.removeAttribute('data-sanitized');
                           }
                         }}
-                        placeholder="my-awesome-project"
+                        placeholder="我的專案"
                         className="w-full pl-10 px-4 py-2 rounded-lg bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark placeholder-bolt-elements-textTertiary dark:placeholder-bolt-elements-textTertiary-dark focus:outline-none focus:ring-2 focus:ring-purple-500"
                         required
                         maxLength={100}
                         pattern="[a-zA-Z0-9\-_\s]+"
-                        title="Repository name can contain letters, numbers, hyphens, underscores, and spaces"
+                        title="儲存庫名稱可以包含字母、數字、連字符、底線和空格"
                       />
                     </div>
                     {repoName && sanitizeRepoName(repoName) !== repoName && (
                       <p className="text-xs text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark mt-1">
-                        Will be created as:{' '}
+                        將建立為：{' '}
                         <span className="font-mono text-purple-600 dark:text-purple-400">
                           {sanitizeRepoName(repoName)}
                         </span>
@@ -883,10 +883,10 @@ export function GitHubDeploymentDialog({ isOpen, onClose, projectName, files }: 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between mb-2">
                       <label className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark">
-                        Recent Repositories
+                        最近的儲存庫
                       </label>
                       <span className="text-xs text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark">
-                        {filteredRepos.length} of {recentRepos.length}
+                        {filteredRepos.length} 個，共 {recentRepos.length} 個
                       </span>
                     </div>
 

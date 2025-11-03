@@ -1,0 +1,67 @@
+{
+  "title": "工作台",
+  "preview": "預覽",
+  "editor": "編輯器",
+  "terminal": "終端機",
+  "files": "檔案",
+  "explorer": "檔案總管",
+  "search": "搜尋",
+  "run": "執行",
+  "debug": "偵錯",
+  "extensions": "擴充功能",
+  "file": {
+    "new": "新建檔案",
+    "open": "開啟檔案",
+    "save": "儲存",
+    "saveAs": "另存為",
+    "saveAll": "全部儲存",
+    "close": "關閉",
+    "closeAll": "全部關閉",
+    "rename": "重新命名",
+    "delete": "刪除",
+    "copy": "複製",
+    "paste": "貼上",
+    "cut": "剪下"
+  },
+  "folder": {
+    "new": "新建資料夾",
+    "open": "開啟資料夾",
+    "rename": "重新命名",
+    "delete": "刪除"
+  },
+  "terminal": {
+    "new": "新建終端機",
+    "clear": "清除",
+    "split": "分割",
+    "kill": "終止"
+  },
+  "preview": {
+    "refresh": "重新整理",
+    "open": "在瀏覽器中開啟",
+    "fullscreen": "全螢幕",
+    "responsive": "響應式模式",
+    "device": {
+      "desktop": "桌面",
+      "tablet": "平板",
+      "mobile": "手機"
+    }
+  },
+  "status": {
+    "ready": "就緒",
+    "running": "執行中",
+    "building": "建置中",
+    "error": "錯誤",
+    "stopped": "已停止"
+  },
+  "messages": {
+    "fileCreated": "已建立檔案",
+    "fileSaved": "已儲存檔案",
+    "fileDeleted": "已刪除檔案",
+    "folderCreated": "已建立資料夾",
+    "folderDeleted": "已刪除資料夾",
+    "buildSuccess": "建置成功",
+    "buildFailed": "建置失敗",
+    "serverStarted": "伺服器已啟動",
+    "serverStopped": "伺服器已停止"
+  }
+}

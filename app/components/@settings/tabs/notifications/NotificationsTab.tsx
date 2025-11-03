@@ -3,9 +3,10 @@ import { motion } from 'framer-motion';
 import { logStore } from '~/lib/stores/logs';
 import { useStore } from '@nanostores/react';
 import { formatDistanceToNow } from 'date-fns';
-import { zhTW } from 'date-fns/locale';
+import { zhTW, enUS } from 'date-fns/locale';
 import { classNames } from '~/utils/classNames';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface NotificationDetails {
   type?: string;
@@ -19,8 +20,12 @@ interface NotificationDetails {
 type FilterType = 'all' | 'system' | 'error' | 'warning' | 'update' | 'info' | 'provider' | 'network';
 
 const NotificationsTab = () => {
+  const { t, language } = useI18n('settings');
   const [filter, setFilter] = useState<FilterType>('all');
   const logs = useStore(logStore.logs);
+
+  // Select appropriate date-fns locale based on current language
+  const dateLocale = language === 'zh-TW' ? zhTW : enUS;
 
   useEffect(() => {
     const startTime = performance.now();
@@ -132,9 +137,15 @@ const NotificationsTab = () => {
         <div className="flex flex-col gap-2">
           <p className="text-sm text-gray-600 dark:text-gray-400">{details.message}</p>
           <div className="flex flex-col gap-1 text-xs text-gray-500 dark:text-gray-500">
-            <p>目前版本: {details.currentVersion}</p>
-            <p>最新版本: {details.latestVersion}</p>
-            <p>分支: {details.branch}</p>
+            <p>
+              {t('notifications.currentVersion')}: {details.currentVersion}
+            </p>
+            <p>
+              {t('notifications.latestVersion')}: {details.latestVersion}
+            </p>
+            <p>
+              {t('notifications.branch')}: {details.branch}
+            </p>
           </div>
           <button
             onClick={() => details.updateUrl && handleUpdateAction(details.updateUrl)}
@@ -150,7 +161,7 @@ const NotificationsTab = () => {
             )}
           >
             <span className="i-ph:git-branch text-lg" />
-            檢視變更
+            {t('notifications.viewChanges')}
           </button>
         </div>
       );
@@ -160,14 +171,14 @@ const NotificationsTab = () => {
   };
 
   const filterOptions: { id: FilterType; label: string; icon: string; color: string }[] = [
-    { id: 'all', label: '所有通知', icon: 'i-ph:bell', color: '#9333ea' },
-    { id: 'system', label: '系統', icon: 'i-ph:gear', color: '#6b7280' },
-    { id: 'update', label: '更新', icon: 'i-ph:arrow-circle-up', color: '#9333ea' },
-    { id: 'error', label: '錯誤', icon: 'i-ph:warning-circle', color: '#ef4444' },
-    { id: 'warning', label: '警告', icon: 'i-ph:warning', color: '#f59e0b' },
-    { id: 'info', label: '資訊', icon: 'i-ph:info', color: '#3b82f6' },
-    { id: 'provider', label: '提供者', icon: 'i-ph:robot', color: '#10b981' },
-    { id: 'network', label: '網路', icon: 'i-ph:wifi-high', color: '#6366f1' },
+    { id: 'all', label: t('notifications.filters.all'), icon: 'i-ph:bell', color: '#9333ea' },
+    { id: 'system', label: t('notifications.filters.system'), icon: 'i-ph:gear', color: '#6b7280' },
+    { id: 'update', label: t('notifications.filters.update'), icon: 'i-ph:arrow-circle-up', color: '#9333ea' },
+    { id: 'error', label: t('notifications.filters.error'), icon: 'i-ph:warning-circle', color: '#ef4444' },
+    { id: 'warning', label: t('notifications.filters.warning'), icon: 'i-ph:warning', color: '#f59e0b' },
+    { id: 'info', label: t('notifications.filters.info'), icon: 'i-ph:info', color: '#3b82f6' },
+    { id: 'provider', label: t('notifications.filters.provider'), icon: 'i-ph:robot', color: '#10b981' },
+    { id: 'network', label: t('notifications.filters.network'), icon: 'i-ph:wifi-high', color: '#6366f1' },
   ];
 
   return (
@@ -190,7 +201,7 @@ const NotificationsTab = () => {
                 className={classNames('text-lg', filterOptions.find((opt) => opt.id === filter)?.icon || 'i-ph:funnel')}
                 style={{ color: filterOptions.find((opt) => opt.id === filter)?.color }}
               />
-              {filterOptions.find((opt) => opt.id === filter)?.label || '篩選通知'}
+              {filterOptions.find((opt) => opt.id === filter)?.label || t('notifications.filterNotifications')}
               <span className="i-ph:caret-down text-lg text-gray-500 dark:text-gray-400" />
             </button>
           </DropdownMenu.Trigger>
@@ -234,7 +245,7 @@ const NotificationsTab = () => {
           )}
         >
           <span className="i-ph:trash text-lg text-gray-500 dark:text-gray-400 group-hover:text-purple-500 transition-colors" />
-          全部清除
+          {t('notifications.clearAllNotifications')}
         </button>
       </div>
 
@@ -252,8 +263,12 @@ const NotificationsTab = () => {
           >
             <span className="i-ph:bell-slash text-4xl text-gray-400 dark:text-gray-600" />
             <div className="flex flex-col gap-1">
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white">沒有通知</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">您已經查看所有通知了！</p>
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                {t('notifications.noNotifications')}
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t('notifications.noNotificationsDescription')}
+              </p>
             </div>
           </motion.div>
         ) : (
@@ -280,13 +295,13 @@ const NotificationsTab = () => {
                       <h3 className="text-sm font-medium text-gray-900 dark:text-white">{log.message}</h3>
                       {log.details && renderNotificationDetails(log.details as NotificationDetails)}
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        類別: {log.category}
+                        {t('notifications.category')}: {log.category}
                         {log.subCategory ? ` > ${log.subCategory}` : ''}
                       </p>
                     </div>
                   </div>
                   <time className="shrink-0 text-xs text-gray-500 dark:text-gray-400">
-                    {formatDistanceToNow(new Date(log.timestamp), { addSuffix: true, locale: zhTW })}
+                    {formatDistanceToNow(new Date(log.timestamp), { addSuffix: true, locale: dateLocale })}
                   </time>
                 </div>
               </motion.div>

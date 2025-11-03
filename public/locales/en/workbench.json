@@ -1,0 +1,67 @@
+{
+  "title": "Workbench",
+  "preview": "Preview",
+  "editor": "Editor",
+  "terminal": "Terminal",
+  "files": "Files",
+  "explorer": "Explorer",
+  "search": "Search",
+  "run": "Run",
+  "debug": "Debug",
+  "extensions": "Extensions",
+  "file": {
+    "new": "New File",
+    "open": "Open File",
+    "save": "Save",
+    "saveAs": "Save As",
+    "saveAll": "Save All",
+    "close": "Close",
+    "closeAll": "Close All",
+    "rename": "Rename",
+    "delete": "Delete",
+    "copy": "Copy",
+    "paste": "Paste",
+    "cut": "Cut"
+  },
+  "folder": {
+    "new": "New Folder",
+    "open": "Open Folder",
+    "rename": "Rename",
+    "delete": "Delete"
+  },
+  "terminal": {
+    "new": "New Terminal",
+    "clear": "Clear",
+    "split": "Split",
+    "kill": "Kill"
+  },
+  "preview": {
+    "refresh": "Refresh",
+    "open": "Open in Browser",
+    "fullscreen": "Fullscreen",
+    "responsive": "Responsive Mode",
+    "device": {
+      "desktop": "Desktop",
+      "tablet": "Tablet",
+      "mobile": "Mobile"
+    }
+  },
+  "status": {
+    "ready": "Ready",
+    "running": "Running",
+    "building": "Building",
+    "error": "Error",
+    "stopped": "Stopped"
+  },
+  "messages": {
+    "fileCreated": "File Created",
+    "fileSaved": "File Saved",
+    "fileDeleted": "File Deleted",
+    "folderCreated": "Folder Created",
+    "folderDeleted": "Folder Deleted",
+    "buildSuccess": "Build Successful",
+    "buildFailed": "Build Failed",
+    "serverStarted": "Server Started",
+    "serverStopped": "Server Stopped"
+  }
+}
