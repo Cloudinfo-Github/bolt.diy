@@ -1,23 +1,46 @@
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import { useI18n } from '~/i18n/hooks/useI18n';
 import { supportedLanguages, type SupportedLanguage } from '~/i18n/config';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { classNames } from '~/utils/classNames';
+import Cookies from 'js-cookie';
 
 interface LanguageSwitcherProps {
   className?: string;
 }
 
-export const LanguageSwitcher = memo(({ className }: LanguageSwitcherProps) => {
+export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
   const { language, changeLanguage } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
+  const [isChanging, setIsChanging] = useState(false);
 
   const currentLanguage = (language as SupportedLanguage) || 'zh-TW';
   const currentLanguageInfo = supportedLanguages[currentLanguage];
 
   const handleLanguageChange = async (lng: SupportedLanguage) => {
-    await changeLanguage(lng);
+    if (isChanging) {
+      return;
+    }
+
+    setIsChanging(true);
     setIsOpen(false);
+
+    try {
+      // Save to cookie
+      Cookies.set('bolt_i18n', lng, { expires: 365 });
+
+      // Save to localStorage
+      localStorage.setItem('bolt_i18n', lng);
+
+      // Change language
+      await changeLanguage(lng);
+
+      // Force reload to ensure all components update
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to change language:', error);
+      setIsChanging(false);
+    }
   };
 
   return (
@@ -31,11 +54,13 @@ export const LanguageSwitcher = memo(({ className }: LanguageSwitcherProps) => {
             'hover:bg-bolt-elements-background-depth-2',
             'transition-colors duration-200',
             'text-sm font-medium',
+            isChanging && 'opacity-50 cursor-not-allowed',
             className,
           )}
           title="切換語言 / Switch Language"
+          disabled={isChanging}
         >
-          <span className="i-ph:translate text-lg" />
+          <span className={classNames('i-ph:translate text-lg', isChanging && 'animate-spin')} />
           <span>{currentLanguageInfo?.nativeName}</span>
           <span className="i-ph:caret-down text-sm" />
         </button>
@@ -85,6 +110,4 @@ export const LanguageSwitcher = memo(({ className }: LanguageSwitcherProps) => {
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
   );
-});
-
-LanguageSwitcher.displayName = 'LanguageSwitcher';
+};
