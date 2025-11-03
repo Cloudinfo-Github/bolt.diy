@@ -10,6 +10,7 @@ import { createScopedLogger } from '~/utils/logger';
 import { createFilesContext, extractPropertiesFromMessage } from './utils';
 import { discussPrompt } from '~/lib/common/prompts/discuss-prompt';
 import type { DesignScheme } from '~/types/design-scheme';
+import { createWebSearchTool } from './tavily-tool';
 
 export type Messages = Message[];
 
@@ -273,6 +274,19 @@ export async function streamText(props: {
     ),
   );
 
+  // 建立可用的工具陣列
+  const tools: Record<string, any> = {};
+
+  // 加入 Tavily 網路搜尋工具（如果有 API key）
+  const webSearchTool = createWebSearchTool(serverEnv);
+
+  if (webSearchTool) {
+    tools.webSearch = webSearchTool;
+    logger.info('Tavily 網路搜尋工具已啟用');
+  } else {
+    logger.info('Tavily 網路搜尋工具未啟用（未找到 TAVILY_API_KEY）');
+  }
+
   const streamParams = {
     model: provider.getModelInstance({
       model: modelDetails.name,
@@ -287,6 +301,9 @@ export async function streamText(props: {
 
     // Set temperature to 1 for reasoning models (required by OpenAI API)
     ...(isReasoning ? { temperature: 1 } : {}),
+
+    // 加入工具（如果有的話）
+    ...(Object.keys(tools).length > 0 ? { tools } : {}),
   };
 
   // DEBUG: Log final streaming parameters
