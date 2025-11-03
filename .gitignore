@@ -46,3 +46,8 @@ docs/instructions/Roadmap.md
 .cursorrules
 *.md
 .qodo
+
+# MCP test files
+mcp-*-test.json
+nul
+uvx.bat

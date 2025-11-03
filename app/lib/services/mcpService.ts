@@ -200,17 +200,27 @@ export class MCPService {
       `Creating STDIO client for '${serverName}' with command: '${config.command}' ${config.args?.join(' ') || ''}`,
     );
 
-    // Windows compatibility: wrap npx with cmd.exe to avoid spawn issues
+    // Windows compatibility: wrap npx and uvx with cmd.exe/python to avoid spawn issues
     const adjustedConfig = { ...config };
 
-    if (process.platform === 'win32' && config.command === 'npx') {
-      /*
-       * Use cmd.exe /c to execute npx on Windows
-       * This avoids the spawn EINVAL error when trying to execute .cmd files directly
-       */
-      adjustedConfig.command = 'cmd.exe';
-      adjustedConfig.args = ['/c', 'npx', ...(config.args || [])];
-      logger.debug(`Adjusted for Windows: cmd.exe /c npx ${config.args?.join(' ') || ''}`);
+    if (process.platform === 'win32') {
+      if (config.command === 'npx') {
+        /*
+         * Use cmd.exe /c to execute npx on Windows
+         * This avoids the spawn EINVAL error when trying to execute .cmd files directly
+         */
+        adjustedConfig.command = 'cmd.exe';
+        adjustedConfig.args = ['/c', 'npx', ...(config.args || [])];
+        logger.debug(`Adjusted for Windows: cmd.exe /c npx ${config.args?.join(' ') || ''}`);
+      } else if (config.command === 'uvx') {
+        /*
+         * Use python -m uv tool run to execute uvx on Windows
+         * uvx is not available as a standalone command on Windows
+         */
+        adjustedConfig.command = 'python';
+        adjustedConfig.args = ['-m', 'uv', 'tool', 'run', ...(config.args || [])];
+        logger.debug(`Adjusted for Windows: python -m uv tool run ${config.args?.join(' ') || ''}`);
+      }
     }
 
     const client = await experimental_createMCPClient({
