@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { IconButton } from '~/components/ui/IconButton';
 import type { ProviderInfo } from '~/types/model';
 import Cookies from 'js-cookie';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface APIKeyManagerProps {
   provider: ProviderInfo;
@@ -33,6 +34,7 @@ export function getApiKeysFromCookies() {
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, setApiKey }) => {
+  const { t } = useI18n('settings');
   const [isEditing, setIsEditing] = useState(false);
   const [tempKey, setTempKey] = useState(apiKey);
   const [isEnvKeySet, setIsEnvKeySet] = useState(false);
@@ -89,23 +91,25 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
     <div className="flex items-center justify-between py-3 px-1">
       <div className="flex items-center gap-2 flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-bolt-elements-textSecondary">{provider?.name} API Key:</span>
+          <span className="text-sm font-medium text-bolt-elements-textSecondary">
+            {t('apiKeys.manager.label', { provider: provider?.name })}
+          </span>
           {!isEditing && (
             <div className="flex items-center gap-2">
               {apiKey ? (
                 <>
                   <div className="i-ph:check-circle-fill text-green-500 w-4 h-4" />
-                  <span className="text-xs text-green-500">透過介面設定</span>
+                  <span className="text-xs text-green-500">{t('apiKeys.manager.status.setViaUI')}</span>
                 </>
               ) : isEnvKeySet ? (
                 <>
                   <div className="i-ph:check-circle-fill text-green-500 w-4 h-4" />
-                  <span className="text-xs text-green-500">透過環境變數設定</span>
+                  <span className="text-xs text-green-500">{t('apiKeys.manager.status.setViaEnv')}</span>
                 </>
               ) : (
                 <>
                   <div className="i-ph:x-circle-fill text-red-500 w-4 h-4" />
-                  <span className="text-xs text-red-500">未設定（請透過介面或環境變數設定）</span>
+                  <span className="text-xs text-red-500">{t('apiKeys.manager.status.notSet')}</span>
                 </>
               )}
             </div>
@@ -119,7 +123,7 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
             <input
               type="password"
               value={tempKey}
-              placeholder="輸入 API 金鑰"
+              placeholder={t('apiKeys.placeholder')}
               onChange={(e) => setTempKey(e.target.value)}
               className="w-[300px] px-3 py-1.5 text-sm rounded border border-bolt-elements-borderColor
                         bg-bolt-elements-prompt-background text-bolt-elements-textPrimary
@@ -127,14 +131,14 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
             />
             <IconButton
               onClick={handleSave}
-              title="儲存 API 金鑰"
+              title={t('apiKeys.manager.actions.save')}
               className="bg-green-500/10 hover:bg-green-500/20 text-green-500"
             >
               <div className="i-ph:check w-4 h-4" />
             </IconButton>
             <IconButton
               onClick={() => setIsEditing(false)}
-              title="取消"
+              title={t('apiKeys.manager.actions.cancel')}
               className="bg-red-500/10 hover:bg-red-500/20 text-red-500"
             >
               <div className="i-ph:x w-4 h-4" />
@@ -145,7 +149,7 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
             {
               <IconButton
                 onClick={() => setIsEditing(true)}
-                title="編輯 API 金鑰"
+                title={t('apiKeys.manager.actions.edit')}
                 className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-500"
               >
                 <div className="i-ph:pencil-simple w-4 h-4" />
@@ -154,10 +158,12 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
             {provider?.getApiKeyLink && !apiKey && (
               <IconButton
                 onClick={() => window.open(provider?.getApiKeyLink)}
-                title="取得 API 金鑰"
+                title={t('apiKeys.manager.actions.get')}
                 className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-500 flex items-center gap-2"
               >
-                <span className="text-xs whitespace-nowrap">{provider?.labelForGetApiKey || '取得 API 金鑰'}</span>
+                <span className="text-xs whitespace-nowrap">
+                  {provider?.labelForGetApiKey || t('apiKeys.manager.actions.get')}
+                </span>
                 <div className={`${provider?.icon || 'i-ph:key'} w-4 h-4`} />
               </IconButton>
             )}

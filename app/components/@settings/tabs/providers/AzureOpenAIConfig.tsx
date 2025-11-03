@@ -5,6 +5,7 @@ import { classNames } from '~/utils/classNames';
 import { FaSave, FaSync, FaCheckCircle, FaExclamationCircle, FaCloud } from 'react-icons/fa';
 import Cookies from 'js-cookie';
 import { getApiKeysFromCookies } from '~/components/chat/APIKeyManager';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface AzureOpenAIConfigProps {
   onSave?: (config: AzureConfig) => void;
@@ -19,6 +20,8 @@ interface AzureConfig {
 }
 
 export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) => {
+  const { t } = useI18n('settings');
+
   const [config, setConfig] = useState<AzureConfig>({
     api_key: '',
     endpoint: '',
@@ -98,11 +101,11 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
       };
       localStorage.setItem('azure_openai_config', JSON.stringify(configToSave));
 
-      toast.success('Azure OpenAI 配置已儲存到瀏覽器');
+      toast.success(t('providers.azure.toast.configSaved'));
       onSave?.(config);
     } catch (error) {
       console.error('Error saving configuration:', error);
-      toast.error('儲存配置失敗');
+      toast.error(t('providers.azure.toast.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -111,7 +114,7 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
   const handleSyncToEnv = async () => {
     // Validate required fields
     if (!config.api_key || !config.endpoint) {
-      toast.error('請至少填寫 API Key 和 Endpoint');
+      toast.error(t('providers.azure.toast.validationError'));
       return;
     }
 
@@ -132,7 +135,7 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
       const data = (await response.json()) as { message?: string; error?: string };
 
       if (response.ok) {
-        toast.success('✅ 配置已同步到 .env.local！\n請重新啟動開發伺服器以套用變更。', {
+        toast.success(t('providers.azure.toast.syncSuccess'), {
           autoClose: 5000,
         });
         setIsEnvConfigured(true);
@@ -144,7 +147,7 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
       }
     } catch (error: any) {
       console.error('Error syncing to .env.local:', error);
-      toast.error(`同步失敗：${error.message}`);
+      toast.error(t('providers.azure.toast.syncFailed', { error: error.message }));
     } finally {
       setIsSyncing(false);
     }
@@ -163,13 +166,13 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
           <FaCloud className="w-6 h-6 text-blue-500" />
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">Azure OpenAI 配置</h3>
-          <p className="text-sm text-bolt-elements-textSecondary">配置 Azure OpenAI Service 連線資訊</p>
+          <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">{t('providers.azure.title')}</h3>
+          <p className="text-sm text-bolt-elements-textSecondary">{t('providers.azure.description')}</p>
         </div>
         {isEnvConfigured && (
           <div className="flex items-center gap-2 text-green-500 text-sm">
             <FaCheckCircle />
-            <span>.env.local 已配置</span>
+            <span>{t('providers.azure.envConfigured')}</span>
           </div>
         )}
       </div>
@@ -179,13 +182,13 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
         {/* API Key */}
         <div>
           <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-2">
-            API Key <span className="text-red-500">*</span>
+            {t('providers.azure.apiKey.label')} <span className="text-red-500">*</span>
           </label>
           <input
             type="password"
             value={config.api_key}
             onChange={(e) => handleChange('api_key', e.target.value)}
-            placeholder="輸入您的 Azure OpenAI API Key"
+            placeholder={t('providers.azure.apiKey.placeholder')}
             className={classNames(
               'w-full px-4 py-2 rounded-lg border',
               'bg-bolt-elements-background text-bolt-elements-textPrimary',
@@ -195,29 +198,29 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
             )}
           />
           <p className="text-xs text-bolt-elements-textSecondary mt-1">
-            從{' '}
+            {t('providers.azure.apiKey.helpText')}{' '}
             <a
               href="https://portal.azure.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"
             >
-              Azure Portal
-            </a>{' '}
-            取得
+              {t('providers.azure.apiKey.helpLink')}
+            </a>
+            {t('providers.azure.apiKey.helpTextEnd') && ` ${t('providers.azure.apiKey.helpTextEnd')}`}
           </p>
         </div>
 
         {/* Endpoint */}
         <div>
           <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-2">
-            Endpoint URL <span className="text-red-500">*</span>
+            {t('providers.azure.endpoint.label')} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             value={config.endpoint}
             onChange={(e) => handleChange('endpoint', e.target.value)}
-            placeholder="https://your-resource.services.ai.azure.com"
+            placeholder={t('providers.azure.endpoint.placeholder')}
             className={classNames(
               'w-full px-4 py-2 rounded-lg border',
               'bg-bolt-elements-background text-bolt-elements-textPrimary',
@@ -228,39 +231,45 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
           />
           <div className="mt-2 space-y-2">
             <p className="text-xs text-bolt-elements-textSecondary">
-              <strong>支援兩種端點類型：</strong>
+              <strong>{t('providers.azure.endpoint.supportedTypes')}</strong>
             </p>
             <div className="bg-green-500/10 border border-green-500/20 rounded p-2">
               <p className="text-xs text-green-600 font-semibold mb-1">
-                ✨ 推薦：Azure AI Foundry v1 API（一次配置，所有模型可用）
+                ✨ {t('providers.azure.endpoint.recommended.title')}
               </p>
               <code className="text-xs bg-bolt-elements-background-depth-3 px-2 py-1 rounded block">
-                https://your-resource.services.ai.azure.com/openai/v1/
+                {t('providers.azure.endpoint.recommended.example')}
               </code>
-              <p className="text-xs text-green-600 mt-1">支援 GPT-5, GPT-4o, DeepSeek 等所有模型，無需部署配置</p>
+              <p className="text-xs text-green-600 mt-1">{t('providers.azure.endpoint.recommended.description')}</p>
             </div>
             <div className="bg-blue-500/10 border border-blue-500/20 rounded p-2">
-              <p className="text-xs text-blue-600 font-semibold mb-1">傳統 Azure OpenAI（需要為每個模型創建部署）</p>
+              <p className="text-xs text-blue-600 font-semibold mb-1">
+                {t('providers.azure.endpoint.traditional.title')}
+              </p>
               <code className="text-xs bg-bolt-elements-background-depth-3 px-2 py-1 rounded block">
-                https://your-resource.openai.azure.com
+                {t('providers.azure.endpoint.traditional.example')}
               </code>
-              <p className="text-xs text-blue-600 mt-1">需要填寫 Deployment Name</p>
+              <p className="text-xs text-blue-600 mt-1">{t('providers.azure.endpoint.traditional.description')}</p>
             </div>
           </div>
         </div>
 
         {/* Optional Fields */}
         <div className="pt-2 border-t border-bolt-elements-borderColor">
-          <p className="text-sm font-medium text-bolt-elements-textPrimary mb-3">可選配置</p>
+          <p className="text-sm font-medium text-bolt-elements-textPrimary mb-3">
+            {t('providers.azure.optionalConfig')}
+          </p>
 
           {/* Resource Name */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-bolt-elements-textSecondary mb-2">Resource Name</label>
+            <label className="block text-sm font-medium text-bolt-elements-textSecondary mb-2">
+              {t('providers.azure.resourceName.label')}
+            </label>
             <input
               type="text"
               value={config.resource_name}
               onChange={(e) => handleChange('resource_name', e.target.value)}
-              placeholder="your-resource-name"
+              placeholder={t('providers.azure.resourceName.placeholder')}
               className={classNames(
                 'w-full px-4 py-2 rounded-lg border',
                 'bg-bolt-elements-background text-bolt-elements-textPrimary',
@@ -269,22 +278,24 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
                 'placeholder:text-bolt-elements-textTertiary',
               )}
             />
-            <p className="text-xs text-bolt-elements-textSecondary mt-1">替代 endpoint URL 使用（選填）</p>
+            <p className="text-xs text-bolt-elements-textSecondary mt-1">
+              {t('providers.azure.resourceName.helpText')}
+            </p>
           </div>
 
           {/* Deployment Name */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-bolt-elements-textSecondary mb-2">
-              Deployment Name
+              {t('providers.azure.deploymentName.label')}
               {config.endpoint && config.endpoint.includes('.openai.azure.com') && (
-                <span className="text-red-500 ml-1">*（必填）</span>
+                <span className="text-red-500 ml-1">*{t('providers.azure.deploymentName.requiredForTraditional')}</span>
               )}
             </label>
             <input
               type="text"
               value={config.deployment_name}
               onChange={(e) => handleChange('deployment_name', e.target.value)}
-              placeholder="gpt-4o-deployment"
+              placeholder={t('providers.azure.deploymentName.placeholder')}
               className={classNames(
                 'w-full px-4 py-2 rounded-lg border',
                 'bg-bolt-elements-background text-bolt-elements-textPrimary',
@@ -297,36 +308,38 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
             />
             <div className="mt-1 space-y-1">
               <p className="text-xs text-bolt-elements-textSecondary">
-                在{' '}
+                {t('providers.azure.deploymentName.helpText')}{' '}
                 <a
                   href="https://portal.azure.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
                 >
-                  Azure Portal
+                  {t('providers.azure.deploymentName.helpLink')}
                 </a>{' '}
-                的 Model deployments 頁面找到
+                {t('providers.azure.deploymentName.helpTextMiddle')}
               </p>
               {config.endpoint && config.endpoint.includes('.openai.azure.com') && (
                 <p className="text-xs text-yellow-500 font-medium">
-                  ⚠️ 傳統 Azure OpenAI 端點需要填寫 Deployment Name（不是模型名稱）
+                  ⚠️ {t('providers.azure.deploymentName.warningTraditional')}
                 </p>
               )}
               {config.endpoint && config.endpoint.includes('.services.ai.azure.com') && (
-                <p className="text-xs text-green-500">ℹ️ Azure AI Foundry 端點可以留空，將使用模型名稱</p>
+                <p className="text-xs text-green-500">ℹ️ {t('providers.azure.deploymentName.infoFoundry')}</p>
               )}
             </div>
           </div>
 
           {/* API Version */}
           <div>
-            <label className="block text-sm font-medium text-bolt-elements-textSecondary mb-2">API Version</label>
+            <label className="block text-sm font-medium text-bolt-elements-textSecondary mb-2">
+              {t('providers.azure.apiVersion.label')}
+            </label>
             <input
               type="text"
               value={config.api_version}
               onChange={(e) => handleChange('api_version', e.target.value)}
-              placeholder="2025-04-01-preview"
+              placeholder={t('providers.azure.apiVersion.placeholder')}
               className={classNames(
                 'w-full px-4 py-2 rounded-lg border',
                 'bg-bolt-elements-background text-bolt-elements-textPrimary',
@@ -335,9 +348,7 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
                 'placeholder:text-bolt-elements-textTertiary',
               )}
             />
-            <p className="text-xs text-bolt-elements-textSecondary mt-1">
-              Azure OpenAI API 版本（預設：2025-04-01-preview）
-            </p>
+            <p className="text-xs text-bolt-elements-textSecondary mt-1">{t('providers.azure.apiVersion.helpText')}</p>
           </div>
         </div>
       </div>
@@ -358,7 +369,7 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
           whileTap={{ scale: 0.98 }}
         >
           <FaSave />
-          {isSaving ? '儲存中...' : '儲存到瀏覽器'}
+          {isSaving ? t('providers.azure.buttons.saving') : t('providers.azure.buttons.saveToBrowser')}
         </motion.button>
 
         <motion.button
@@ -375,7 +386,7 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
           whileTap={{ scale: 0.98 }}
         >
           <FaSync className={isSyncing ? 'animate-spin' : ''} />
-          {isSyncing ? '同步中...' : '同步到 .env.local'}
+          {isSyncing ? t('providers.azure.buttons.syncing') : t('providers.azure.buttons.syncToEnv')}
         </motion.button>
       </div>
 
@@ -384,12 +395,12 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
         <div className="flex items-start gap-3">
           <FaExclamationCircle className="text-blue-500 mt-0.5 flex-shrink-0" />
           <div className="text-sm text-bolt-elements-textPrimary space-y-2">
-            <p className="font-medium">配置說明：</p>
+            <p className="font-medium">{t('providers.azure.info.title')}</p>
             <ul className="list-disc list-inside space-y-1 text-bolt-elements-textSecondary">
-              <li>「儲存到瀏覽器」：配置儲存在瀏覽器 Cookies 和 LocalStorage 中</li>
-              <li>「同步到 .env.local」：配置寫入專案的 .env.local 檔案（永久保存）</li>
-              <li>同步後需要重新啟動開發伺服器（pnpm run dev）才能生效</li>
-              <li>如果已在 .env.local 中配置，系統會自動使用該配置</li>
+              <li>{t('providers.azure.info.saveToBrowser')}</li>
+              <li>{t('providers.azure.info.syncToEnv')}</li>
+              <li>{t('providers.azure.info.restartRequired')}</li>
+              <li>{t('providers.azure.info.autoUseEnv')}</li>
             </ul>
           </div>
         </div>

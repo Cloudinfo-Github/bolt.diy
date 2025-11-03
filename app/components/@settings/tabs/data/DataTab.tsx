@@ -9,6 +9,7 @@ import { getAllChats, type Chat } from '~/lib/persistence/chats';
 import { DataVisualization } from './DataVisualization';
 import { classNames } from '~/utils/classNames';
 import { toast } from 'react-toastify';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 // Create a custom hook to connect to the boltHistory database
 function useBoltHistoryDB() {
@@ -74,6 +75,8 @@ interface ChatItem {
 }
 
 export function DataTab() {
+  const { t } = useI18n('settings');
+
   // Use our custom hook for the boltHistory database
   const { db, isLoading: dbLoading } = useBoltHistoryDB();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -88,13 +91,17 @@ export function DataTab() {
 
   // State for settings categories and available chats
   const [settingsCategories] = useState<SettingsCategory[]>([
-    { id: 'core', label: '核心設定', description: '使用者資料和主要設定' },
-    { id: 'providers', label: '提供者', description: 'API 金鑰和提供者配置' },
-    { id: 'features', label: '功能', description: '功能標記和設定' },
-    { id: 'ui', label: 'UI', description: '使用者介面配置和偏好設定' },
-    { id: 'connections', label: '連接', description: '外部服務連接' },
-    { id: 'debug', label: 'Debug', description: '除錯設定和日誌' },
-    { id: 'updates', label: '更新', description: '更新設定和通知' },
+    { id: 'core', label: t('data.categories.core'), description: t('data.categories.coreDescription') },
+    { id: 'providers', label: t('data.categories.providers'), description: t('data.categories.providersDescription') },
+    { id: 'features', label: t('data.categories.features'), description: t('data.categories.featuresDescription') },
+    { id: 'ui', label: t('data.categories.ui'), description: t('data.categories.uiDescription') },
+    {
+      id: 'connections',
+      label: t('data.categories.connections'),
+      description: t('data.categories.connectionsDescription'),
+    },
+    { id: 'debug', label: t('data.categories.debug'), description: t('data.categories.debugDescription') },
+    { id: 'updates', label: t('data.categories.updates'), description: t('data.categories.updatesDescription') },
   ]);
 
   const [availableChats, setAvailableChats] = useState<ExtendedChat[]>([]);
@@ -160,10 +167,14 @@ export function DataTab() {
         })
         .catch((error) => {
           console.error('Error loading chats:', error);
-          toast.error('載入對話失敗：' + (error instanceof Error ? error.message : '未知錯誤'));
+          toast.error(
+            t('data.loadConversationsFailed', {
+              error: error instanceof Error ? error.message : t('github.unknownError'),
+            }),
+          );
         });
     }
-  }, [db]);
+  }, [db, t]);
 
   // Handle file input changes
   const handleFileInputChange = useCallback(
@@ -229,10 +240,10 @@ export function DataTab() {
       <ConfirmationDialog
         isOpen={showResetInlineConfirm}
         onClose={() => setShowResetInlineConfirm(false)}
-        title="重置所有設定？"
-        description="這將把所有設定重置為預設值。此操作無法復原。"
-        confirmLabel="重置設定"
-        cancelLabel="取消"
+        title={t('data.resetSettingsConfirm')}
+        description={t('data.resetSettingsConfirmDescription')}
+        confirmLabel={t('data.resetSettingsButton')}
+        cancelLabel={t('cancel')}
         variant="destructive"
         isLoading={isResetting}
         onConfirm={handleResetSettings}
@@ -242,10 +253,10 @@ export function DataTab() {
       <ConfirmationDialog
         isOpen={showDeleteInlineConfirm}
         onClose={() => setShowDeleteInlineConfirm(false)}
-        title="刪除所有對話？"
-        description="這將永久刪除您所有的對話記錄。此操作無法復原。"
-        confirmLabel="全部刪除"
-        cancelLabel="取消"
+        title={t('data.deleteAllChatsConfirm')}
+        description={t('data.deleteAllChatsConfirmDescription')}
+        confirmLabel={t('data.deleteAll')}
+        cancelLabel={t('cancel')}
         variant="destructive"
         isLoading={isDeleting}
         onConfirm={handleResetChatsWithState}
@@ -255,35 +266,35 @@ export function DataTab() {
       <SelectionDialog
         isOpen={showSettingsSelection}
         onClose={() => setShowSettingsSelection(false)}
-        title="選擇要匯出的設定"
+        title={t('data.selectExportCategories')}
         items={settingsCategories}
         onConfirm={(selectedIds) => {
           handleExportSelectedSettings(selectedIds);
           setShowSettingsSelection(false);
         }}
-        confirmLabel="匯出所選項目"
+        confirmLabel={t('data.exportSelected')}
       />
 
       {/* Chats Selection Dialog */}
       <SelectionDialog
         isOpen={showChatsSelection}
         onClose={() => setShowChatsSelection(false)}
-        title="選擇要匯出的對話"
+        title={t('data.selectExportChats')}
         items={chatItems}
         onConfirm={(selectedIds) => {
           handleExportSelectedChats(selectedIds);
           setShowChatsSelection(false);
         }}
-        confirmLabel="匯出所選項目"
+        confirmLabel={t('data.exportSelected')}
       />
 
       {/* Chats Section */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">對話</h2>
+        <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">{t('data.conversations')}</h2>
         {dbLoading ? (
           <div className="flex items-center justify-center p-4">
             <div className="i-ph-spinner-gap-bold animate-spin w-6 h-6 mr-2" />
-            <span>載入對話資料庫中...</span>
+            <span>{t('data.loadingDatabase')}</span>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -294,10 +305,10 @@ export function DataTab() {
                     <div className="i-ph-download-duotone w-5 h-5" />
                   </motion.div>
                   <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                    匯出所有對話
+                    {t('data.exportAllChats')}
                   </CardTitle>
                 </div>
-                <CardDescription>將所有對話匯出為 JSON 檔案。</CardDescription>
+                <CardDescription>{t('data.exportAllChatsDescription')}</CardDescription>
               </CardHeader>
               <CardFooter>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -305,7 +316,7 @@ export function DataTab() {
                     onClick={async () => {
                       try {
                         if (!db) {
-                          toast.error('資料庫不可用');
+                          toast.error(t('data.databaseUnavailable'));
                           return;
                         }
 
@@ -316,14 +327,18 @@ export function DataTab() {
                         });
 
                         if (availableChats.length === 0) {
-                          toast.warning('沒有可匯出的對話');
+                          toast.warning(t('data.warningNoChats'));
                           return;
                         }
 
                         await handleExportAllChats();
                       } catch (error) {
                         console.error('Error exporting chats:', error);
-                        toast.error(`Failed to export chats: ${error instanceof Error ? error.message : '未知錯誤'}`);
+                        toast.error(
+                          t('data.exportError', {
+                            error: error instanceof Error ? error.message : t('github.unknownError'),
+                          }),
+                        );
                       }
                     }}
                     disabled={isExporting || availableChats.length === 0}
@@ -337,12 +352,12 @@ export function DataTab() {
                     {isExporting ? (
                       <>
                         <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                        匯出中...
+                        {t('data.exporting')}
                       </>
                     ) : availableChats.length === 0 ? (
-                      '沒有可匯出的對話'
+                      t('data.noConversations')
                     ) : (
-                      '全部匯出'
+                      t('data.exportSelected')
                     )}
                   </Button>
                 </motion.div>
@@ -356,10 +371,10 @@ export function DataTab() {
                     <div className="i-ph:list-checks w-5 h-5" />
                   </motion.div>
                   <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                    匯出所選對話
+                    {t('data.exportSelectedChats')}
                   </CardTitle>
                 </div>
-                <CardDescription>選擇要匯出的特定對話。</CardDescription>
+                <CardDescription>{t('data.exportSelectedChatsDescription')}</CardDescription>
               </CardHeader>
               <CardFooter>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -376,10 +391,10 @@ export function DataTab() {
                     {isExporting ? (
                       <>
                         <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                        匯出中...
+                        {t('data.exporting')}
                       </>
                     ) : (
-                      '選擇對話'
+                      t('data.selecting')
                     )}
                   </Button>
                 </motion.div>
@@ -393,10 +408,10 @@ export function DataTab() {
                     <div className="i-ph-upload-duotone w-5 h-5" />
                   </motion.div>
                   <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                    匯入對話
+                    {t('data.importChats')}
                   </CardTitle>
                 </div>
-                <CardDescription>從 JSON 檔案匯入對話。</CardDescription>
+                <CardDescription>{t('data.importChatsDescription')}</CardDescription>
               </CardHeader>
               <CardFooter>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -413,10 +428,10 @@ export function DataTab() {
                     {isImporting ? (
                       <>
                         <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                        匯入中...
+                        {t('data.importing')}
                       </>
                     ) : (
-                      '匯入對話'
+                      t('data.importChats')
                     )}
                   </Button>
                 </motion.div>
@@ -434,10 +449,10 @@ export function DataTab() {
                     <div className="i-ph-trash-duotone w-5 h-5" />
                   </motion.div>
                   <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                    刪除所有對話
+                    {t('data.deleteAllChats')}
                   </CardTitle>
                 </div>
-                <CardDescription>刪除所有對話記錄。</CardDescription>
+                <CardDescription>{t('data.deleteAllChatsDescription')}</CardDescription>
               </CardHeader>
               <CardFooter>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -454,10 +469,10 @@ export function DataTab() {
                     {isDeleting ? (
                       <>
                         <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                        刪除中...
+                        {t('data.deleting')}
                       </>
                     ) : (
-                      '全部刪除'
+                      t('data.deleteAll')
                     )}
                   </Button>
                 </motion.div>
@@ -469,7 +484,7 @@ export function DataTab() {
 
       {/* Settings Section */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">設定</h2>
+        <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">{t('data.settingsTitle')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Card>
             <CardHeader>
@@ -478,10 +493,10 @@ export function DataTab() {
                   <div className="i-ph-download-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                  匯出所有設定
+                  {t('data.exportAllSettings')}
                 </CardTitle>
               </div>
-              <CardDescription>將所有設定匯出為 JSON 檔案。</CardDescription>
+              <CardDescription>{t('data.exportAllSettingsDescription')}</CardDescription>
             </CardHeader>
             <CardFooter>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -498,10 +513,10 @@ export function DataTab() {
                   {isExporting ? (
                     <>
                       <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                      匯出中...
+                      {t('data.exporting')}
                     </>
                   ) : (
-                    '全部匯出'
+                    t('data.exportSelected')
                   )}
                 </Button>
               </motion.div>
@@ -515,10 +530,10 @@ export function DataTab() {
                   <div className="i-ph-filter-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                  匯出所選設定
+                  {t('data.exportSelectedSettings')}
                 </CardTitle>
               </div>
-              <CardDescription>選擇要匯出的特定設定。</CardDescription>
+              <CardDescription>{t('data.exportSelectedSettingsDescription')}</CardDescription>
             </CardHeader>
             <CardFooter>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -535,10 +550,10 @@ export function DataTab() {
                   {isExporting ? (
                     <>
                       <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                      匯出中...
+                      {t('data.exporting')}
                     </>
                   ) : (
-                    '選擇設定'
+                    t('data.selectSettings')
                   )}
                 </Button>
               </motion.div>
@@ -552,10 +567,10 @@ export function DataTab() {
                   <div className="i-ph-upload-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                  匯入設定
+                  {t('data.importSettings')}
                 </CardTitle>
               </div>
-              <CardDescription>從 JSON 檔案匯入設定。</CardDescription>
+              <CardDescription>{t('data.importSettingsDescription')}</CardDescription>
             </CardHeader>
             <CardFooter>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -572,10 +587,10 @@ export function DataTab() {
                   {isImporting ? (
                     <>
                       <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                      匯入中...
+                      {t('data.importing')}
                     </>
                   ) : (
-                    '匯入設定'
+                    t('data.importSettings')
                   )}
                 </Button>
               </motion.div>
@@ -593,10 +608,10 @@ export function DataTab() {
                   <div className="i-ph-arrow-counter-clockwise-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                  重置所有設定
+                  {t('data.resetAllSettings')}
                 </CardTitle>
               </div>
-              <CardDescription>將所有設定重置為預設值。</CardDescription>
+              <CardDescription>{t('data.resetSettingsDescription')}</CardDescription>
             </CardHeader>
             <CardFooter>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -613,10 +628,10 @@ export function DataTab() {
                   {isResetting ? (
                     <>
                       <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                      重置中...
+                      {t('data.resetting')}
                     </>
                   ) : (
-                    '全部重置'
+                    t('reset')
                   )}
                 </Button>
               </motion.div>
@@ -627,7 +642,7 @@ export function DataTab() {
 
       {/* API Keys Section */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">API 金鑰</h2>
+        <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">{t('data.apiKeys.title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Card>
             <CardHeader>
@@ -636,10 +651,10 @@ export function DataTab() {
                   <div className="i-ph-file-text-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                  下載範本
+                  {t('data.apiKeys.downloadTemplate')}
                 </CardTitle>
               </div>
-              <CardDescription>下載 API 金鑰範本檔案。</CardDescription>
+              <CardDescription>{t('data.apiKeys.downloadTemplateDescription')}</CardDescription>
             </CardHeader>
             <CardFooter>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -656,10 +671,10 @@ export function DataTab() {
                   {isDownloadingTemplate ? (
                     <>
                       <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                      下載中...
+                      {t('data.apiKeys.downloading')}
                     </>
                   ) : (
-                    '下載'
+                    t('data.apiKeys.download')
                   )}
                 </Button>
               </motion.div>
@@ -673,10 +688,10 @@ export function DataTab() {
                   <div className="i-ph-upload-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-bolt-elements-item-contentAccent transition-colors">
-                  匯入 API 金鑰
+                  {t('data.apiKeys.importApiKeys')}
                 </CardTitle>
               </div>
-              <CardDescription>從 JSON 檔案匯入 API 金鑰。</CardDescription>
+              <CardDescription>{t('data.apiKeys.importApiKeysDescription')}</CardDescription>
             </CardHeader>
             <CardFooter>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
@@ -693,10 +708,10 @@ export function DataTab() {
                   {isImportingKeys ? (
                     <>
                       <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                      匯入中...
+                      {t('data.apiKeys.importingKeys')}
                     </>
                   ) : (
-                    '匯入金鑰'
+                    t('data.apiKeys.importKeys')
                   )}
                 </Button>
               </motion.div>
@@ -707,7 +722,7 @@ export function DataTab() {
 
       {/* Data Visualization */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">資料使用量</h2>
+        <h2 className="text-xl font-semibold mb-4 text-bolt-elements-textPrimary">{t('data.dataUsage.title')}</h2>
         <Card>
           <CardContent className="p-5">
             <DataVisualization chats={availableChats} />

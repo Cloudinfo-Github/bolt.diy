@@ -1,6 +1,39 @@
 {
   "title": "Settings",
-  "general": "General",
+  "general": {
+    "title": "General",
+    "preferences": {
+      "title": "Preferences",
+      "language": {
+        "label": "Language"
+      },
+      "notifications": {
+        "label": "Notifications",
+        "enabled": "Notifications enabled",
+        "disabled": "Notifications disabled",
+        "statusEnabled": "enabled",
+        "statusDisabled": "disabled",
+        "toggleSuccess": "Notifications {{status}}"
+      }
+    },
+    "time": {
+      "title": "Time Settings",
+      "timezone": {
+        "label": "Timezone"
+      }
+    },
+    "keyboard": {
+      "title": "Keyboard Shortcuts",
+      "toggleTheme": {
+        "label": "Toggle Theme",
+        "description": "Switch between light and dark mode"
+      }
+    },
+    "toast": {
+      "settingsUpdated": "Settings updated",
+      "updateFailed": "Failed to update settings"
+    }
+  },
   "providers": "Providers",
   "features": "Features",
   "debug": "Debug",
@@ -99,7 +132,21 @@
     "delete": "Delete API Key",
     "placeholder": "Enter API Key",
     "saved": "API Key Saved",
-    "deleted": "API Key Deleted"
+    "deleted": "API Key Deleted",
+    "manager": {
+      "label": "{{provider}} API Key:",
+      "status": {
+        "setViaUI": "Set via UI",
+        "setViaEnv": "Set via environment variable",
+        "notSet": "Not set (please set via UI or environment variable)"
+      },
+      "actions": {
+        "save": "Save API Key",
+        "cancel": "Cancel",
+        "edit": "Edit API Key",
+        "get": "Get API Key"
+      }
+    }
   },
   "models": {
     "title": "Models",
@@ -148,29 +195,29 @@
       "title": "Main Branch Updates",
       "description": "Get the latest updates from the main branch",
       "tooltip": "Enabled by default to receive updates from the main development branch",
-      "enabled": "Main branch updates enabled",
-      "disabled": "Main branch updates disabled"
+      "toggleEnabled": "Main branch updates enabled",
+      "toggleDisabled": "Main branch updates disabled"
     },
     "autoSelectTemplate": {
       "title": "Auto Select Template",
       "description": "Automatically select starter template",
       "tooltip": "Enabled by default to automatically select the most suitable starter template",
-      "enabled": "Auto select template enabled",
-      "disabled": "Auto select template disabled"
+      "toggleEnabled": "Auto select template enabled",
+      "toggleDisabled": "Auto select template disabled"
     },
     "contextOptimization": {
       "title": "Context Optimization",
       "description": "Optimize context for better responses",
       "tooltip": "Enabled by default to improve AI response quality",
-      "enabled": "Context optimization enabled",
-      "disabled": "Context optimization disabled"
+      "toggleEnabled": "Context optimization enabled",
+      "toggleDisabled": "Context optimization disabled"
     },
     "eventLogs": {
       "title": "Event Logs",
       "description": "Enable detailed event logging and history",
       "tooltip": "Enabled by default to record detailed logs of system events and user actions",
-      "enabled": "Event logs enabled",
-      "disabled": "Event logs disabled"
+      "toggleEnabled": "Event logs enabled",
+      "toggleDisabled": "Event logs disabled"
     },
     "promptLibrary": {
       "title": "Prompt Library",
@@ -191,23 +238,31 @@
     "exportAllChats": "Export All Chats",
     "exportAllChatsDescription": "Export all conversations as a JSON file.",
     "exportSelected": "Export Selected",
+    "exportSelectedChats": "Export Selected Chats",
+    "exportSelectedChatsDescription": "Select specific conversations to export.",
     "exporting": "Exporting...",
     "exportFailed": "Failed to export chats",
+    "exportError": "Failed to export chats: {{error}}",
+    "importChats": "Import Chats",
+    "importChatsDescription": "Import conversations from a JSON file.",
     "importAllChats": "Import All Chats",
     "importAllChatsDescription": "Import conversations from a JSON file.",
     "selectFile": "Select File",
+    "selecting": "Select Chats",
     "importing": "Importing...",
     "importFailed": "Failed to import chats",
     "importSuccess": "{{count}} conversation(s) imported successfully",
     "invalidFile": "Invalid file format",
     "deleteAllChats": "Delete All Chats",
-    "deleteAllChatsDescription": "Permanently delete all your conversation history.",
+    "deleteAllChatsDescription": "Delete all conversation history.",
     "deleteAll": "Delete All",
     "deleting": "Deleting...",
     "deleteFailed": "Failed to delete chats",
     "deleteSuccess": "All chats deleted successfully",
+    "settingsTitle": "Settings",
     "settingsManagement": "Settings Management",
     "resetSettings": "Reset Settings",
+    "resetAllSettings": "Reset All Settings",
     "resetSettingsDescription": "Reset all settings to their default values.",
     "resetSettingsConfirm": "Reset All Settings?",
     "resetSettingsConfirmDescription": "This will reset all settings to their default values. This action cannot be undone.",
@@ -215,6 +270,10 @@
     "resetting": "Resetting...",
     "resetSuccess": "Settings reset successfully",
     "resetFailed": "Failed to reset settings",
+    "exportAllSettings": "Export All Settings",
+    "exportAllSettingsDescription": "Export all settings as a JSON file.",
+    "exportSelectedSettings": "Export Selected Settings",
+    "exportSelectedSettingsDescription": "Select specific settings to export.",
     "exportSettings": "Export Settings",
     "exportSettingsDescription": "Export your settings as a JSON file.",
     "exportingSettings": "Exporting settings...",
@@ -225,6 +284,7 @@
     "importingSettings": "Importing settings...",
     "importSettingsFailed": "Failed to import settings",
     "importSettingsSuccess": "Settings imported successfully",
+    "selectSettings": "Select Settings",
     "deleteAllChatsConfirm": "Delete All Conversations?",
     "deleteAllChatsConfirmDescription": "This will permanently delete all your conversation history. This action cannot be undone.",
     "selectExportCategories": "Select Settings to Export",
@@ -245,7 +305,22 @@
       "updates": "Updates",
       "updatesDescription": "Update settings and notifications"
     },
-    "loadConversationsFailed": "Failed to load conversations"
+    "loadConversationsFailed": "Failed to load conversations: {{error}}",
+    "warningNoChats": "No conversations to export",
+    "apiKeys": {
+      "title": "API Keys",
+      "downloadTemplate": "Download Template",
+      "downloadTemplateDescription": "Download API keys template file.",
+      "downloading": "Downloading...",
+      "download": "Download",
+      "importApiKeys": "Import API Keys",
+      "importApiKeysDescription": "Import API keys from a JSON file.",
+      "importKeys": "Import Keys",
+      "importingKeys": "Importing..."
+    },
+    "dataUsage": {
+      "title": "Data Usage"
+    }
   },
   "about": {
     "title": "About",
@@ -301,10 +376,73 @@
     },
     "azure": {
       "title": "Azure OpenAI Configuration",
-      "endpoint": "Endpoint",
-      "apiKey": "API Key",
-      "deploymentName": "Deployment Name",
-      "apiVersion": "API Version"
+      "description": "Configure Azure OpenAI Service connection information",
+      "envConfigured": ".env.local configured",
+      "apiKey": {
+        "label": "API Key",
+        "required": "Required",
+        "placeholder": "Enter your Azure OpenAI API Key",
+        "helpText": "Get from",
+        "helpLink": "Azure Portal",
+        "helpTextEnd": ""
+      },
+      "endpoint": {
+        "label": "Endpoint URL",
+        "required": "Required",
+        "placeholder": "https://your-resource.services.ai.azure.com",
+        "supportedTypes": "Two endpoint types supported:",
+        "recommended": {
+          "title": "Recommended: Azure AI Foundry v1 API (one configuration for all models)",
+          "example": "https://your-resource.services.ai.azure.com/openai/v1/",
+          "description": "Supports all models including GPT-5, GPT-4o, DeepSeek without deployment configuration"
+        },
+        "traditional": {
+          "title": "Traditional Azure OpenAI (requires deployment for each model)",
+          "example": "https://your-resource.openai.azure.com",
+          "description": "Requires Deployment Name"
+        }
+      },
+      "optionalConfig": "Optional Configuration",
+      "resourceName": {
+        "label": "Resource Name",
+        "placeholder": "your-resource-name",
+        "helpText": "Alternative to endpoint URL (optional)"
+      },
+      "deploymentName": {
+        "label": "Deployment Name",
+        "requiredForTraditional": "(Required)",
+        "placeholder": "gpt-4o-deployment",
+        "helpText": "Find in",
+        "helpLink": "Azure Portal",
+        "helpTextMiddle": "Model deployments page",
+        "warningTraditional": "Traditional Azure OpenAI endpoint requires Deployment Name (not model name)",
+        "infoFoundry": "Azure AI Foundry endpoint can be left empty, will use model name"
+      },
+      "apiVersion": {
+        "label": "API Version",
+        "placeholder": "2025-04-01-preview",
+        "helpText": "Azure OpenAI API version (default: 2025-04-01-preview)"
+      },
+      "buttons": {
+        "saveToBrowser": "Save to Browser",
+        "saving": "Saving...",
+        "syncToEnv": "Sync to .env.local",
+        "syncing": "Syncing..."
+      },
+      "toast": {
+        "configSaved": "Azure OpenAI configuration saved to browser",
+        "saveFailed": "Failed to save configuration",
+        "validationError": "Please fill in at least API Key and Endpoint",
+        "syncSuccess": "Configuration synced to .env.local!\nPlease restart the development server to apply changes.",
+        "syncFailed": "Sync failed: {{error}}"
+      },
+      "info": {
+        "title": "Configuration Instructions:",
+        "saveToBrowser": "\"Save to Browser\": Configuration stored in browser Cookies and LocalStorage",
+        "syncToEnv": "\"Sync to .env.local\": Configuration written to project's .env.local file (permanent)",
+        "restartRequired": "After syncing, restart the development server (pnpm run dev) for changes to take effect",
+        "autoUseEnv": "If already configured in .env.local, the system will use that configuration automatically"
+      }
     }
   },
   "github": {
@@ -330,7 +468,9 @@
       "repos": "Loading repositories",
       "stats": "Calculating statistics",
       "cache": "Updating cache"
-    }
+    },
+    "api": "API",
+    "apiLimit": "API: {{remaining}}/{{limit}}"
   },
   "gitlab": {
     "title": "GitLab Integration",

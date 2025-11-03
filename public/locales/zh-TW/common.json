@@ -83,5 +83,10 @@
     "clearSearch": "清除搜尋",
     "closeDialog": "關閉對話框",
     "breadcrumbNavigation": "麵包屑導航"
+  },
+  "app": {
+    "initialized": "應用程式已初始化",
+    "debugLoggerReady": "偵錯日誌已就緒",
+    "debugLoggerInitError": "無法初始化偵錯日誌"
   }
 }

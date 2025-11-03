@@ -1,6 +1,39 @@
 {
   "title": "設定",
-  "general": "一般",
+  "general": {
+    "title": "一般",
+    "preferences": {
+      "title": "偏好設定",
+      "language": {
+        "label": "語言"
+      },
+      "notifications": {
+        "label": "通知",
+        "enabled": "通知已啟用",
+        "disabled": "通知已停用",
+        "statusEnabled": "啟用",
+        "statusDisabled": "停用",
+        "toggleSuccess": "通知已{{status}}"
+      }
+    },
+    "time": {
+      "title": "時間設定",
+      "timezone": {
+        "label": "時區"
+      }
+    },
+    "keyboard": {
+      "title": "鍵盤快捷鍵",
+      "toggleTheme": {
+        "label": "切換主題",
+        "description": "在淺色和深色模式之間切換"
+      }
+    },
+    "toast": {
+      "settingsUpdated": "設定已更新",
+      "updateFailed": "無法更新設定"
+    }
+  },
   "providers": "提供者",
   "features": "功能",
   "debug": "偵錯",
@@ -99,7 +132,21 @@
     "delete": "刪除 API 金鑰",
     "placeholder": "輸入 API 金鑰",
     "saved": "API 金鑰已儲存",
-    "deleted": "API 金鑰已刪除"
+    "deleted": "API 金鑰已刪除",
+    "manager": {
+      "label": "{{provider}} API Key:",
+      "status": {
+        "setViaUI": "透過介面設定",
+        "setViaEnv": "透過環境變數設定",
+        "notSet": "未設定（請透過介面或環境變數設定）"
+      },
+      "actions": {
+        "save": "儲存 API 金鑰",
+        "cancel": "取消",
+        "edit": "編輯 API 金鑰",
+        "get": "取得 API 金鑰"
+      }
+    }
   },
   "models": {
     "title": "模型",
@@ -148,29 +195,29 @@
       "title": "主分支更新",
       "description": "從主分支獲取最新更新",
       "tooltip": "預設啟用以接收來自主開發分支的更新",
-      "enabled": "主分支更新已啟用",
-      "disabled": "主分支更新已停用"
+      "toggleEnabled": "主分支更新已啟用",
+      "toggleDisabled": "主分支更新已停用"
     },
     "autoSelectTemplate": {
       "title": "自動選擇範本",
       "description": "自動選擇起始範本",
       "tooltip": "預設啟用以自動選擇最合適的起始範本",
-      "enabled": "自動選擇範本已啟用",
-      "disabled": "自動選擇範本已停用"
+      "toggleEnabled": "自動選擇範本已啟用",
+      "toggleDisabled": "自動選擇範本已停用"
     },
     "contextOptimization": {
       "title": "上下文優化",
       "description": "優化上下文以獲得更好的回應",
       "tooltip": "預設啟用以改善 AI 回應品質",
-      "enabled": "上下文優化已啟用",
-      "disabled": "上下文優化已停用"
+      "toggleEnabled": "上下文優化已啟用",
+      "toggleDisabled": "上下文優化已停用"
     },
     "eventLogs": {
       "title": "事件日誌",
       "description": "啟用詳細的事件日誌和歷史記錄",
       "tooltip": "預設啟用以記錄系統事件和使用者動作的詳細日誌",
-      "enabled": "事件日誌已啟用",
-      "disabled": "事件日誌已停用"
+      "toggleEnabled": "事件日誌已啟用",
+      "toggleDisabled": "事件日誌已停用"
     },
     "promptLibrary": {
       "title": "提示詞庫",
@@ -191,23 +238,31 @@
     "exportAllChats": "匯出所有對話",
     "exportAllChatsDescription": "將所有對話匯出為 JSON 檔案。",
     "exportSelected": "匯出所選項目",
+    "exportSelectedChats": "匯出所選對話",
+    "exportSelectedChatsDescription": "選擇要匯出的特定對話。",
     "exporting": "匯出中...",
     "exportFailed": "匯出對話失敗",
+    "exportError": "匯出對話失敗：{{error}}",
+    "importChats": "匯入對話",
+    "importChatsDescription": "從 JSON 檔案匯入對話。",
     "importAllChats": "匯入所有對話",
     "importAllChatsDescription": "從 JSON 檔案匯入對話。",
     "selectFile": "選擇檔案",
+    "selecting": "選擇對話",
     "importing": "匯入中...",
     "importFailed": "匯入對話失敗",
     "importSuccess": "成功匯入 {{count}} 個對話",
     "invalidFile": "檔案格式無效",
     "deleteAllChats": "刪除所有對話",
-    "deleteAllChatsDescription": "永久刪除您所有的對話記錄。",
+    "deleteAllChatsDescription": "刪除所有對話記錄。",
     "deleteAll": "全部刪除",
     "deleting": "刪除中...",
     "deleteFailed": "刪除對話失敗",
     "deleteSuccess": "已成功刪除所有對話",
+    "settingsTitle": "設定",
     "settingsManagement": "設定管理",
     "resetSettings": "重置設定",
+    "resetAllSettings": "重置所有設定",
     "resetSettingsDescription": "將所有設定重置為預設值。",
     "resetSettingsConfirm": "重置所有設定？",
     "resetSettingsConfirmDescription": "這將把所有設定重置為預設值。此操作無法復原。",
@@ -215,6 +270,10 @@
     "resetting": "重置中...",
     "resetSuccess": "設定已成功重置",
     "resetFailed": "重置設定失敗",
+    "exportAllSettings": "匯出所有設定",
+    "exportAllSettingsDescription": "將所有設定匯出為 JSON 檔案。",
+    "exportSelectedSettings": "匯出所選設定",
+    "exportSelectedSettingsDescription": "選擇要匯出的特定設定。",
     "exportSettings": "匯出設定",
     "exportSettingsDescription": "將您的設定匯出為 JSON 檔案。",
     "exportingSettings": "匯出設定中...",
@@ -225,6 +284,7 @@
     "importingSettings": "匯入設定中...",
     "importSettingsFailed": "匯入設定失敗",
     "importSettingsSuccess": "設定已成功匯入",
+    "selectSettings": "選擇設定",
     "deleteAllChatsConfirm": "刪除所有對話？",
     "deleteAllChatsConfirmDescription": "這將永久刪除您所有的對話記錄。此操作無法復原。",
     "selectExportCategories": "選擇要匯出的設定",
@@ -245,7 +305,22 @@
       "updates": "更新",
       "updatesDescription": "更新設定和通知"
     },
-    "loadConversationsFailed": "載入對話失敗"
+    "loadConversationsFailed": "載入對話失敗：{{error}}",
+    "warningNoChats": "沒有可匯出的對話",
+    "apiKeys": {
+      "title": "API 金鑰",
+      "downloadTemplate": "下載範本",
+      "downloadTemplateDescription": "下載 API 金鑰範本檔案。",
+      "downloading": "下載中...",
+      "download": "下載",
+      "importApiKeys": "匯入 API 金鑰",
+      "importApiKeysDescription": "從 JSON 檔案匯入 API 金鑰。",
+      "importKeys": "匯入金鑰",
+      "importingKeys": "匯入中..."
+    },
+    "dataUsage": {
+      "title": "資料使用量"
+    }
   },
   "about": {
     "title": "關於",
@@ -301,10 +376,73 @@
     },
     "azure": {
       "title": "Azure OpenAI 配置",
-      "endpoint": "端點",
-      "apiKey": "API 金鑰",
-      "deploymentName": "部署名稱",
-      "apiVersion": "API 版本"
+      "description": "配置 Azure OpenAI Service 連線資訊",
+      "envConfigured": ".env.local 已配置",
+      "apiKey": {
+        "label": "API Key",
+        "required": "必填",
+        "placeholder": "輸入您的 Azure OpenAI API Key",
+        "helpText": "從",
+        "helpLink": "Azure Portal",
+        "helpTextEnd": "取得"
+      },
+      "endpoint": {
+        "label": "Endpoint URL",
+        "required": "必填",
+        "placeholder": "https://your-resource.services.ai.azure.com",
+        "supportedTypes": "支援兩種端點類型：",
+        "recommended": {
+          "title": "推薦：Azure AI Foundry v1 API（一次配置，所有模型可用）",
+          "example": "https://your-resource.services.ai.azure.com/openai/v1/",
+          "description": "支援 GPT-5, GPT-4o, DeepSeek 等所有模型，無需部署配置"
+        },
+        "traditional": {
+          "title": "傳統 Azure OpenAI（需要為每個模型創建部署）",
+          "example": "https://your-resource.openai.azure.com",
+          "description": "需要填寫 Deployment Name"
+        }
+      },
+      "optionalConfig": "可選配置",
+      "resourceName": {
+        "label": "Resource Name",
+        "placeholder": "your-resource-name",
+        "helpText": "替代 endpoint URL 使用（選填）"
+      },
+      "deploymentName": {
+        "label": "Deployment Name",
+        "requiredForTraditional": "（必填）",
+        "placeholder": "gpt-4o-deployment",
+        "helpText": "在",
+        "helpLink": "Azure Portal",
+        "helpTextMiddle": "的 Model deployments 頁面找到",
+        "warningTraditional": "傳統 Azure OpenAI 端點需要填寫 Deployment Name（不是模型名稱）",
+        "infoFoundry": "Azure AI Foundry 端點可以留空，將使用模型名稱"
+      },
+      "apiVersion": {
+        "label": "API Version",
+        "placeholder": "2025-04-01-preview",
+        "helpText": "Azure OpenAI API 版本（預設：2025-04-01-preview）"
+      },
+      "buttons": {
+        "saveToBrowser": "儲存到瀏覽器",
+        "saving": "儲存中...",
+        "syncToEnv": "同步到 .env.local",
+        "syncing": "同步中..."
+      },
+      "toast": {
+        "configSaved": "Azure OpenAI 配置已儲存到瀏覽器",
+        "saveFailed": "儲存配置失敗",
+        "validationError": "請至少填寫 API Key 和 Endpoint",
+        "syncSuccess": "配置已同步到 .env.local！\n請重新啟動開發伺服器以套用變更。",
+        "syncFailed": "同步失敗：{{error}}"
+      },
+      "info": {
+        "title": "配置說明：",
+        "saveToBrowser": "「儲存到瀏覽器」：配置儲存在瀏覽器 Cookies 和 LocalStorage 中",
+        "syncToEnv": "「同步到 .env.local」：配置寫入專案的 .env.local 檔案（永久保存）",
+        "restartRequired": "同步後需要重新啟動開發伺服器（pnpm run dev）才能生效",
+        "autoUseEnv": "如果已在 .env.local 中配置，系統會自動使用該配置"
+      }
     }
   },
   "github": {
@@ -330,7 +468,9 @@
       "repos": "正在載入儲存庫",
       "stats": "正在計算統計資料",
       "cache": "正在更新快取"
-    }
+    },
+    "api": "API",
+    "apiLimit": "API：{{remaining}}/{{limit}}"
   },
   "gitlab": {
     "title": "GitLab 整合",

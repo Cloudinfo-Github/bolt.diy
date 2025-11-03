@@ -6,6 +6,7 @@ import { useSettings } from '~/lib/hooks/useSettings';
 import { classNames } from '~/utils/classNames';
 import { toast } from 'react-toastify';
 import { PromptLibrary } from '~/lib/common/prompt-library';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface FeatureToggle {
   id: string;
@@ -16,6 +17,8 @@ interface FeatureToggle {
   beta?: boolean;
   experimental?: boolean;
   tooltip?: string;
+  betaLabel?: string;
+  experimentalLabel?: string;
 }
 
 const FeatureCard = memo(
@@ -50,12 +53,12 @@ const FeatureCard = memo(
               <h4 className="font-medium text-bolt-elements-textPrimary">{feature.title}</h4>
               {feature.beta && (
                 <span className="px-2 py-0.5 text-xs rounded-full bg-blue-500/10 text-blue-500 font-medium">
-                  測試版
+                  {feature.betaLabel}
                 </span>
               )}
               {feature.experimental && (
                 <span className="px-2 py-0.5 text-xs rounded-full bg-orange-500/10 text-orange-500 font-medium">
-                  實驗性
+                  {feature.experimentalLabel}
                 </span>
               )}
             </div>
@@ -108,6 +111,7 @@ const FeatureSection = memo(
 );
 
 export default function FeaturesTab() {
+  const { t } = useI18n('settings');
   const {
     autoSelectTemplate,
     isLatestBranch,
@@ -150,25 +154,33 @@ export default function FeaturesTab() {
       switch (id) {
         case 'latestBranch': {
           enableLatestBranch(enabled);
-          toast.success(`主分支更新已${enabled ? '啟用' : '停用'}`);
+          toast.success(
+            enabled ? t('features.mainBranchUpdates.toggleEnabled') : t('features.mainBranchUpdates.toggleDisabled'),
+          );
           break;
         }
 
         case 'autoSelectTemplate': {
           setAutoSelectTemplate(enabled);
-          toast.success(`自動選擇範本已${enabled ? '啟用' : '停用'}`);
+          toast.success(
+            enabled ? t('features.autoSelectTemplate.toggleEnabled') : t('features.autoSelectTemplate.toggleDisabled'),
+          );
           break;
         }
 
         case 'contextOptimization': {
           enableContextOptimization(enabled);
-          toast.success(`上下文優化已${enabled ? '啟用' : '停用'}`);
+          toast.success(
+            enabled
+              ? t('features.contextOptimization.toggleEnabled')
+              : t('features.contextOptimization.toggleDisabled'),
+          );
           break;
         }
 
         case 'eventLogs': {
           setEventLogs(enabled);
-          toast.success(`事件日誌已${enabled ? '啟用' : '停用'}`);
+          toast.success(enabled ? t('features.eventLogs.toggleEnabled') : t('features.eventLogs.toggleDisabled'));
           break;
         }
 
@@ -176,42 +188,42 @@ export default function FeaturesTab() {
           break;
       }
     },
-    [enableLatestBranch, setAutoSelectTemplate, enableContextOptimization, setEventLogs],
+    [enableLatestBranch, setAutoSelectTemplate, enableContextOptimization, setEventLogs, t],
   );
 
   const features = {
     stable: [
       {
         id: 'latestBranch',
-        title: '主分支更新',
-        description: '從主分支獲取最新更新',
+        title: t('features.mainBranchUpdates.title'),
+        description: t('features.mainBranchUpdates.description'),
         icon: 'i-ph:git-branch',
         enabled: isLatestBranch,
-        tooltip: '預設啟用以接收來自主開發分支的更新',
+        tooltip: t('features.mainBranchUpdates.tooltip'),
       },
       {
         id: 'autoSelectTemplate',
-        title: '自動選擇範本',
-        description: '自動選擇起始範本',
+        title: t('features.autoSelectTemplate.title'),
+        description: t('features.autoSelectTemplate.description'),
         icon: 'i-ph:selection',
         enabled: autoSelectTemplate,
-        tooltip: '預設啟用以自動選擇最合適的起始範本',
+        tooltip: t('features.autoSelectTemplate.tooltip'),
       },
       {
         id: 'contextOptimization',
-        title: '上下文優化',
-        description: '優化上下文以獲得更好的回應',
+        title: t('features.contextOptimization.title'),
+        description: t('features.contextOptimization.description'),
         icon: 'i-ph:brain',
         enabled: contextOptimizationEnabled,
-        tooltip: '預設啟用以改善 AI 回應品質',
+        tooltip: t('features.contextOptimization.tooltip'),
       },
       {
         id: 'eventLogs',
-        title: '事件日誌',
-        description: '啟用詳細的事件日誌和歷史記錄',
+        title: t('features.eventLogs.title'),
+        description: t('features.eventLogs.description'),
         icon: 'i-ph:list-bullets',
         enabled: eventLogs,
-        tooltip: '預設啟用以記錄系統事件和使用者動作的詳細日誌',
+        tooltip: t('features.eventLogs.tooltip'),
       },
     ],
     beta: [],
@@ -220,19 +232,19 @@ export default function FeaturesTab() {
   return (
     <div className="flex flex-col gap-8">
       <FeatureSection
-        title="核心功能"
+        title={t('features.coreFeaturesTitle')}
         features={features.stable}
         icon="i-ph:check-circle"
-        description="為達到最佳效能而預設啟用的必要功能"
+        description={t('features.coreFeaturesDescription')}
         onToggleFeature={handleToggleFeature}
       />
 
       {features.beta.length > 0 && (
         <FeatureSection
-          title="測試版功能"
+          title={t('features.betaFeaturesTitle')}
           features={features.beta}
           icon="i-ph:test-tube"
-          description="已準備好進行測試但可能仍有一些粗糙之處的新功能"
+          description={t('features.betaFeaturesDescription')}
           onToggleFeature={handleToggleFeature}
         />
       )}
@@ -263,15 +275,15 @@ export default function FeaturesTab() {
           </div>
           <div className="flex-1">
             <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-purple-500 transition-colors">
-              提示詞庫
+              {t('features.promptLibrary.title')}
             </h4>
-            <p className="text-xs text-bolt-elements-textSecondary mt-0.5">從庫中選擇提示詞作為系統提示詞</p>
+            <p className="text-xs text-bolt-elements-textSecondary mt-0.5">{t('features.promptLibrary.description')}</p>
           </div>
           <select
             value={promptId}
             onChange={(e) => {
               setPromptId(e.target.value);
-              toast.success('提示詞範本已更新');
+              toast.success(t('features.promptLibrary.templateUpdated'));
             }}
             className={classNames(
               'p-2 rounded-lg text-sm min-w-[200px]',

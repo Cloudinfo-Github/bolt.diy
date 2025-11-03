@@ -5,6 +5,7 @@ import { classNames } from '~/utils/classNames';
 import { Switch } from '~/components/ui/Switch';
 import type { UserProfile } from '~/components/@settings/core/types';
 import { isMac } from '~/utils/os';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 // Helper to get modifier key symbols/text
 const getModifierSymbol = (modifier: string): string => {
@@ -21,6 +22,7 @@ const getModifierSymbol = (modifier: string): string => {
 };
 
 export default function SettingsTab() {
+  const { t } = useI18n('settings');
   const [currentTimezone, setCurrentTimezone] = useState('');
   const [settings, setSettings] = useState<UserProfile>(() => {
     const saved = localStorage.getItem('bolt_user_profile');
@@ -52,10 +54,10 @@ export default function SettingsTab() {
       };
 
       localStorage.setItem('bolt_user_profile', JSON.stringify(updatedProfile));
-      toast.success('設定已更新');
+      toast.success(t('general.toast.settingsUpdated'));
     } catch (error) {
       console.error('Error saving settings:', error);
-      toast.error('無法更新設定');
+      toast.error(t('general.toast.updateFailed'));
     }
   }, [settings]);
 
@@ -70,13 +72,15 @@ export default function SettingsTab() {
       >
         <div className="flex items-center gap-2 mb-4">
           <div className="i-ph:palette-fill w-4 h-4 text-purple-500" />
-          <span className="text-sm font-medium text-bolt-elements-textPrimary">偏好設定</span>
+          <span className="text-sm font-medium text-bolt-elements-textPrimary">{t('general.preferences.title')}</span>
         </div>
 
         <div>
           <div className="flex items-center gap-2 mb-2">
             <div className="i-ph:translate-fill w-4 h-4 text-bolt-elements-textSecondary" />
-            <label className="block text-sm text-bolt-elements-textSecondary">語言</label>
+            <label className="block text-sm text-bolt-elements-textSecondary">
+              {t('general.preferences.language.label')}
+            </label>
           </div>
           <select
             value={settings.language}
@@ -106,11 +110,15 @@ export default function SettingsTab() {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <div className="i-ph:bell-fill w-4 h-4 text-bolt-elements-textSecondary" />
-            <label className="block text-sm text-bolt-elements-textSecondary">通知</label>
+            <label className="block text-sm text-bolt-elements-textSecondary">
+              {t('general.preferences.notifications.label')}
+            </label>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-bolt-elements-textSecondary">
-              {settings.notifications ? '通知已啟用' : '通知已停用'}
+              {settings.notifications
+                ? t('general.preferences.notifications.enabled')
+                : t('general.preferences.notifications.disabled')}
             </span>
             <Switch
               checked={settings.notifications}
@@ -134,7 +142,13 @@ export default function SettingsTab() {
                   }),
                 );
 
-                toast.success(`通知已${checked ? '啟用' : '停用'}`);
+                toast.success(
+                  t('general.preferences.notifications.toggleSuccess', {
+                    status: checked
+                      ? t('general.preferences.notifications.statusEnabled')
+                      : t('general.preferences.notifications.statusDisabled'),
+                  }),
+                );
               }}
             />
           </div>
@@ -150,13 +164,13 @@ export default function SettingsTab() {
       >
         <div className="flex items-center gap-2 mb-4">
           <div className="i-ph:clock-fill w-4 h-4 text-purple-500" />
-          <span className="text-sm font-medium text-bolt-elements-textPrimary">時間設定</span>
+          <span className="text-sm font-medium text-bolt-elements-textPrimary">{t('general.time.title')}</span>
         </div>
 
         <div>
           <div className="flex items-center gap-2 mb-2">
             <div className="i-ph:globe-fill w-4 h-4 text-bolt-elements-textSecondary" />
-            <label className="block text-sm text-bolt-elements-textSecondary">時區</label>
+            <label className="block text-sm text-bolt-elements-textSecondary">{t('general.time.timezone.label')}</label>
           </div>
           <select
             value={settings.timezone}
@@ -184,14 +198,16 @@ export default function SettingsTab() {
       >
         <div className="flex items-center gap-2 mb-4">
           <div className="i-ph:keyboard-fill w-4 h-4 text-purple-500" />
-          <span className="text-sm font-medium text-bolt-elements-textPrimary">鍵盤快捷鍵</span>
+          <span className="text-sm font-medium text-bolt-elements-textPrimary">{t('general.keyboard.title')}</span>
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#1A1A1A]">
             <div className="flex flex-col">
-              <span className="text-sm text-bolt-elements-textPrimary">切換主題</span>
-              <span className="text-xs text-bolt-elements-textSecondary">在淺色和深色模式之間切換</span>
+              <span className="text-sm text-bolt-elements-textPrimary">{t('general.keyboard.toggleTheme.label')}</span>
+              <span className="text-xs text-bolt-elements-textSecondary">
+                {t('general.keyboard.toggleTheme.description')}
+              </span>
             </div>
             <div className="flex items-center gap-1">
               <kbd className="px-2 py-1 text-xs font-semibold text-bolt-elements-textSecondary bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] rounded shadow-sm">

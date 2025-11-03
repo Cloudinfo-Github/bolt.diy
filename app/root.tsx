@@ -115,12 +115,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 import { logStore } from './lib/stores/logs';
+import { useI18n } from './i18n/hooks/useI18n';
 
 export default function App() {
   const theme = useStore(themeStore);
+  const { t } = useI18n('common');
 
   useEffect(() => {
-    logStore.logSystem('應用程式已初始化', {
+    logStore.logSystem(t('app.initialized'), {
       theme,
       platform: navigator.platform,
       userAgent: navigator.userAgent,
@@ -135,16 +137,16 @@ export default function App() {
          * It will only start capturing when enableDebugMode() is called
          */
         const status = debugLogger.getStatus();
-        logStore.logSystem('偵錯日誌已就緒', {
+        logStore.logSystem(t('app.debugLoggerReady'), {
           initialized: status.initialized,
           capturing: status.capturing,
           enabled: status.enabled,
         });
       })
       .catch((error) => {
-        logStore.logError('無法初始化偵錯日誌', error);
+        logStore.logError(t('app.debugLoggerInitError'), error);
       });
-  }, []);
+  }, [t]);
 
   return (
     <Layout>

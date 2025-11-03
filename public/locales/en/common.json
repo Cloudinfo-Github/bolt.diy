@@ -83,5 +83,10 @@
     "clearSearch": "Clear search",
     "closeDialog": "Close dialog",
     "breadcrumbNavigation": "Breadcrumb navigation"
+  },
+  "app": {
+    "initialized": "Application initialized",
+    "debugLoggerReady": "Debug logger ready",
+    "debugLoggerInitError": "Failed to initialize debug logger"
   }
 }
