@@ -108,7 +108,7 @@ export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
                     value={token}
                     onChange={(e) => setToken(e.target.value)}
                     disabled={isConnecting}
-                    placeholder="Enter your GitLab access token"
+                    placeholder="輸入您的 GitLab 存取權杖"
                     className={classNames(
                       'w-full px-3 py-2 rounded-lg text-sm',
                       'bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3',

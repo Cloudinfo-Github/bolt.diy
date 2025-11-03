@@ -75,7 +75,7 @@ export function GitUrlImport() {
           const filesMessage: Message = {
             role: 'assistant',
             content: `Cloning the repo ${repoUrl} into ${workdir}
-<boltArtifact id="imported-files" title="Git Cloned Files"  type="bundled">
+<boltArtifact id="imported-files" title="Git 複製的檔案"  type="bundled">
 ${fileContents
   .map(
     (file) =>

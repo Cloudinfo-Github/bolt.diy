@@ -66,7 +66,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
               type="button"
               onClick={onClear}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-bolt-elements-textTertiary hover:text-bolt-elements-textSecondary p-1 rounded-full hover:bg-bolt-elements-background-depth-2"
-              aria-label="Clear search"
+              aria-label="清除搜尋"
             >
               <span className="i-ph:x w-3.5 h-3.5" />
             </motion.button>

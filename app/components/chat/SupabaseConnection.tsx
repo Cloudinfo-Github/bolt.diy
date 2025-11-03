@@ -120,7 +120,7 @@ export function SupabaseConnection() {
                     value={supabaseConn.token}
                     onChange={(e) => updateToken(e.target.value)}
                     disabled={connecting}
-                    placeholder="Enter your Supabase access token"
+                    placeholder="輸入您的 Supabase 存取權杖"
                     className={classNames(
                       'w-full px-3 py-2 rounded-lg text-sm',
                       'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
@@ -218,7 +218,7 @@ export function SupabaseConnection() {
                         <button
                           onClick={() => fetchSupabaseStats(supabaseConn.token)}
                           className="px-2 py-1 rounded-md text-xs bg-[#F0F0F0] dark:bg-[#252525] text-bolt-elements-textSecondary hover:bg-[#E5E5E5] dark:hover:bg-[#333333] flex items-center gap-1"
-                          title="Refresh projects list"
+                          title="重新整理專案列表"
                         >
                           <div className="i-ph:arrows-clockwise w-3 h-3" />
                           Refresh

@@ -50,7 +50,7 @@ export function McpTools() {
       <div className="flex">
         <IconButton
           onClick={() => setIsDialogOpen(!isDialogOpen)}
-          title="MCP Tools Available"
+          title="可用的 MCP 工具"
           disabled={!isInitialized}
           className="transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >

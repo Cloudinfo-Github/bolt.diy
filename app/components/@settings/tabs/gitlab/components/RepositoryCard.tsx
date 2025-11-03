@@ -24,11 +24,11 @@ export function RepositoryCard({ repo, onClone }: RepositoryCardProps) {
             </h5>
           </div>
           <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
-            <span className="flex items-center gap-1" title="Stars">
+            <span className="flex items-center gap-1" title="星標">
               <div className="i-ph:star w-3.5 h-3.5 text-bolt-elements-icon-warning" />
               {repo.star_count.toLocaleString()}
             </span>
-            <span className="flex items-center gap-1" title="Forks">
+            <span className="flex items-center gap-1" title="分支">
               <div className="i-ph:git-fork w-3.5 h-3.5 text-bolt-elements-icon-info" />
               {repo.forks_count.toLocaleString()}
             </span>
@@ -40,11 +40,11 @@ export function RepositoryCard({ repo, onClone }: RepositoryCardProps) {
         )}
 
         <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
-          <span className="flex items-center gap-1" title="Default Branch">
+          <span className="flex items-center gap-1" title="預設分支">
             <div className="i-ph:git-branch w-3.5 h-3.5" />
             {repo.default_branch}
           </span>
-          <span className="flex items-center gap-1" title="Last Updated">
+          <span className="flex items-center gap-1" title="最後更新">
             <div className="i-ph:clock w-3.5 h-3.5" />
             {new Date(repo.updated_at).toLocaleDateString(undefined, {
               year: 'numeric',
@@ -61,7 +61,7 @@ export function RepositoryCard({ repo, onClone }: RepositoryCardProps) {
                   onClone(repo);
                 }}
                 className="flex items-center gap-1 px-2 py-1 rounded text-xs bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary transition-colors"
-                title="Clone repository"
+                title="複製儲存庫"
               >
                 <div className="i-ph:git-branch w-3.5 h-3.5" />
                 Clone

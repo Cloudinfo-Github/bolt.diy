@@ -226,33 +226,33 @@ export function RepositoryCard({
               {repository.name}
             </h5>
             {repository.fork && (
-              <span title="Forked repository">
+              <span title="分支儲存庫">
                 <GitFork className="w-3 h-3 text-bolt-elements-textTertiary" />
               </span>
             )}
             {repository.archived && (
-              <span title="Archived repository">
+              <span title="已封存儲存庫">
                 <Archive className="w-3 h-3 text-bolt-elements-textTertiary" />
               </span>
             )}
           </div>
           <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
-            <span className="flex items-center gap-1" title="Stars">
+            <span className="flex items-center gap-1" title="星標">
               <Star className="w-3.5 h-3.5 text-bolt-elements-icon-warning" />
               {repository.stargazers_count.toLocaleString()}
             </span>
-            <span className="flex items-center gap-1" title="Forks">
+            <span className="flex items-center gap-1" title="分支">
               <GitFork className="w-3.5 h-3.5 text-bolt-elements-icon-info" />
               {repository.forks_count.toLocaleString()}
             </span>
             {showExtendedMetrics && repository.issues_count !== undefined && (
-              <span className="flex items-center gap-1" title="Open Issues">
+              <span className="flex items-center gap-1" title="未解決問題">
                 <Circle className="w-3.5 h-3.5 text-bolt-elements-icon-error" />
                 {repository.issues_count}
               </span>
             )}
             {showExtendedMetrics && repository.pull_requests_count !== undefined && (
-              <span className="flex items-center gap-1" title="Pull Requests">
+              <span className="flex items-center gap-1" title="拉取請求">
                 <GitPullRequest className="w-3.5 h-3.5 text-bolt-elements-icon-success" />
                 {repository.pull_requests_count}
               </span>
@@ -296,29 +296,29 @@ export function RepositoryCard({
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
-            <span className="flex items-center gap-1" title="Default Branch">
+            <span className="flex items-center gap-1" title="預設分支">
               <GitBranch className="w-3.5 h-3.5" />
               {repository.default_branch}
             </span>
             {showExtendedMetrics && repository.branches_count && (
-              <span className="flex items-center gap-1" title="Total Branches">
+              <span className="flex items-center gap-1" title="總分支數">
                 <GitFork className="w-3.5 h-3.5" />
                 {repository.branches_count}
               </span>
             )}
             {showExtendedMetrics && repository.contributors_count && (
-              <span className="flex items-center gap-1" title="Contributors">
+              <span className="flex items-center gap-1" title="貢獻者">
                 <Users className="w-3.5 h-3.5" />
                 {repository.contributors_count}
               </span>
             )}
             {repository.size && (
-              <span className="flex items-center gap-1" title="Size">
+              <span className="flex items-center gap-1" title="大小">
                 <Database className="w-3.5 h-3.5" />
                 {(repository.size / 1024).toFixed(1)}MB
               </span>
             )}
-            <span className="flex items-center gap-1" title="Last Updated">
+            <span className="flex items-center gap-1" title="最後更新">
               <Clock className="w-3.5 h-3.5" />
               {formatTimeAgo()}
             </span>

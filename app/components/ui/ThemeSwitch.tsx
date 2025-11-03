@@ -21,7 +21,7 @@ export const ThemeSwitch = memo(({ className }: ThemeSwitchProps) => {
         className={className}
         icon={theme === 'dark' ? 'i-ph-sun-dim-duotone' : 'i-ph-moon-stars-duotone'}
         size="xl"
-        title="Toggle Theme"
+        title="切換主題"
         onClick={toggleTheme}
       />
     )

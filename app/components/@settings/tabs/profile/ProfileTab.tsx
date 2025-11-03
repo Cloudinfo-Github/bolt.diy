@@ -83,7 +83,7 @@ export default function ProfileTab() {
               {profile.avatar ? (
                 <img
                   src={profile.avatar}
-                  alt="Profile"
+                  alt="個人資料"
                   className={classNames(
                     'w-full h-full object-cover',
                     'transition-all duration-300 ease-out',

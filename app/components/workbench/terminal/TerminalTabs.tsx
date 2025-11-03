@@ -210,7 +210,7 @@ export const TerminalTabs = memo(() => {
             <IconButton
               className="ml-auto"
               icon="i-ph:caret-down"
-              title="Close"
+              title="關閉"
               size="md"
               onClick={() => workbenchStore.toggleTerminal(false)}
             />

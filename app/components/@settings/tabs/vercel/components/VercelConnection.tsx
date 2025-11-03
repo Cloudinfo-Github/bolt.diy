@@ -140,7 +140,7 @@ export default function VercelConnection() {
                 value={connection.token}
                 onChange={(e) => updateVercelConnection({ ...connection, token: e.target.value })}
                 disabled={connecting}
-                placeholder="Enter your Vercel personal access token"
+                placeholder="輸入您的 Vercel 個人存取權杖"
                 className={classNames(
                   'w-full px-3 py-2 rounded-lg text-sm',
                   'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
@@ -253,7 +253,7 @@ export default function VercelConnection() {
                 src={`https://vercel.com/api/www/avatar?u=${connection.user?.username || connection.user?.user?.username}`}
                 referrerPolicy="no-referrer"
                 crossOrigin="anonymous"
-                alt="User Avatar"
+                alt="使用者頭像"
                 className="w-12 h-12 rounded-full border-2 border-bolt-elements-borderColorActive"
               />
               <div>

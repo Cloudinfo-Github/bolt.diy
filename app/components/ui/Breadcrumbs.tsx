@@ -76,7 +76,7 @@ export function Breadcrumbs({
   };
 
   return (
-    <nav className={classNames('flex items-center', className)} aria-label="Breadcrumbs">
+    <nav className={classNames('flex items-center', className)} aria-label="麵包屑導航">
       <ol className="flex items-center gap-1.5">
         {displayItems.map((item, index) => {
           const isLast = index === displayItems.length - 1;

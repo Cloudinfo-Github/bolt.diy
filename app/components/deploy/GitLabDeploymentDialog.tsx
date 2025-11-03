@@ -631,7 +631,7 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
                     {recentRepos.length === 0 && !isFetchingRepos ? (
                       <EmptyState
                         icon="i-ph:gitlab-logo"
-                        title="No repositories found"
+                        title="未找到儲存庫"
                         description="We couldn't find any repositories in your GitLab account."
                         variant="compact"
                       />
@@ -640,7 +640,7 @@ export function GitLabDeploymentDialog({ isOpen, onClose, projectName, files }: 
                         {filteredRepos.length === 0 && repoSearchQuery.trim() !== '' ? (
                           <EmptyState
                             icon="i-ph:magnifying-glass"
-                            title="No matching repositories"
+                            title="沒有符合的儲存庫"
                             description="Try a different search term"
                             variant="compact"
                           />

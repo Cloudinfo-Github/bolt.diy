@@ -19,7 +19,7 @@ function StatusDashboard({ onBack }: { onBack: () => void }) {
           size="sm"
           onClick={onBack}
           className="bg-transparent hover:bg-transparent text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary transition-all duration-200 p-2"
-          aria-label="Back to Dashboard"
+          aria-label="返回儀表板"
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>

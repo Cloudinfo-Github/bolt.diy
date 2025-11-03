@@ -23,22 +23,20 @@ export function GitHubRepositoryCard({ repo, onClone }: GitHubRepositoryCardProp
               <h5 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-bolt-elements-item-contentAccent transition-colors">
                 {repo.name}
               </h5>
-              {repo.private && (
-                <div className="i-ph:lock w-3 h-3 text-bolt-elements-textTertiary" title="Private repository" />
-              )}
+              {repo.private && <div className="i-ph:lock w-3 h-3 text-bolt-elements-textTertiary" title="私有儲存庫" />}
               {repo.fork && (
-                <div className="i-ph:git-fork w-3 h-3 text-bolt-elements-textTertiary" title="Forked repository" />
+                <div className="i-ph:git-fork w-3 h-3 text-bolt-elements-textTertiary" title="分支儲存庫" />
               )}
               {repo.archived && (
-                <div className="i-ph:archive w-3 h-3 text-bolt-elements-textTertiary" title="Archived repository" />
+                <div className="i-ph:archive w-3 h-3 text-bolt-elements-textTertiary" title="已封存儲存庫" />
               )}
             </div>
             <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
-              <span className="flex items-center gap-1" title="Stars">
+              <span className="flex items-center gap-1" title="星標">
                 <div className="i-ph:star w-3.5 h-3.5 text-bolt-elements-icon-warning" />
                 {repo.stargazers_count.toLocaleString()}
               </span>
-              <span className="flex items-center gap-1" title="Forks">
+              <span className="flex items-center gap-1" title="分支">
                 <div className="i-ph:git-fork w-3.5 h-3.5 text-bolt-elements-icon-info" />
                 {repo.forks_count.toLocaleString()}
               </span>
@@ -50,17 +48,17 @@ export function GitHubRepositoryCard({ repo, onClone }: GitHubRepositoryCardProp
           )}
 
           <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
-            <span className="flex items-center gap-1" title="Default Branch">
+            <span className="flex items-center gap-1" title="預設分支">
               <div className="i-ph:git-branch w-3.5 h-3.5" />
               {repo.default_branch}
             </span>
             {repo.language && (
-              <span className="flex items-center gap-1" title="Primary Language">
+              <span className="flex items-center gap-1" title="主要語言">
                 <div className="w-2 h-2 rounded-full bg-current opacity-60" />
                 {repo.language}
               </span>
             )}
-            <span className="flex items-center gap-1" title="Last Updated">
+            <span className="flex items-center gap-1" title="最後更新">
               <div className="i-ph:clock w-3.5 h-3.5" />
               {new Date(repo.updated_at).toLocaleDateString(undefined, {
                 year: 'numeric',
@@ -108,7 +106,7 @@ export function GitHubRepositoryCard({ repo, onClone }: GitHubRepositoryCardProp
                 onClone(repo);
               }}
               className="flex items-center gap-1 px-2 py-1 rounded text-xs bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary transition-colors"
-              title="Clone repository"
+              title="複製儲存庫"
             >
               <div className="i-ph:git-branch w-3.5 h-3.5" />
               Clone

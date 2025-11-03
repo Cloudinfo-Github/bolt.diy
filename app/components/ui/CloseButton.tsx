@@ -41,7 +41,7 @@ export function CloseButton({ onClick, className, size = 'md' }: CloseButtonProp
       )}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      aria-label="Close"
+      aria-label="關閉"
     >
       <div className={classNames('i-ph:x', iconSizeClasses[size])} />
     </motion.button>

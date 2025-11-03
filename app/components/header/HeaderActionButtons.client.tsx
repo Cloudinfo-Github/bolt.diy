@@ -27,10 +27,10 @@ export function HeaderActionButtons({ chatStarted: _chatStarted }: HeaderActionB
               window.open('https://github.com/stackblitz-labs/bolt.diy/issues/new?template=bug_report.yml', '_blank')
             }
             className="rounded-l-md items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-3 py-1.5 text-xs bg-accent-500 text-white hover:text-bolt-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-bolt-elements-button-primary-backgroundHover outline-accent-500 flex gap-1.5"
-            title="Report Bug"
+            title="回報錯誤"
           >
             <div className="i-ph:bug" />
-            <span>Report Bug</span>
+            <span>回報錯誤</span>
           </button>
           <div className="w-px bg-bolt-elements-borderColor" />
           <button

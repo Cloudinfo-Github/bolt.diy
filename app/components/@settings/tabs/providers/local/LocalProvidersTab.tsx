@@ -319,7 +319,7 @@ export default function LocalProvidersTab() {
               <Switch
                 checked={categoryEnabled}
                 onCheckedChange={handleToggleCategory}
-                aria-label="Toggle all local providers"
+                aria-label="切換所有本地供應商"
               />
             </div>
             <div className="flex items-center gap-2">

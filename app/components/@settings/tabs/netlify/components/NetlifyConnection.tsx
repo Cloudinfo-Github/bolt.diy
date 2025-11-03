@@ -898,7 +898,7 @@ export default function NetlifyConnection() {
               type="password"
               value={tokenInput}
               onChange={(e) => setTokenInput(e.target.value)}
-              placeholder="Enter your Netlify API token"
+              placeholder="輸入您的 Netlify API 權杖"
               className={classNames(
                 'w-full px-3 py-2 rounded-lg text-sm',
                 'bg-[#F8F8F8] dark:bg-[#1A1A1A]',

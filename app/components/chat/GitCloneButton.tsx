@@ -130,7 +130,7 @@ ${skippedFiles.map((f) => `- ${f}`).join('\n')}`
     : ''
 }
 
-<boltArtifact id="imported-files" title="Git Cloned Files" type="bundled">
+<boltArtifact id="imported-files" title="Git 複製的檔案" type="bundled">
 ${fileContents
   .map(
     (file) =>
