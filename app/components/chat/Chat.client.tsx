@@ -25,9 +25,10 @@ import { filesToArtifacts } from '~/utils/fileUtils';
 import { supabaseConnection } from '~/lib/stores/supabase';
 import { defaultDesignScheme, type DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
-import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
+import { type TextUIPart, type FileUIPart, type Attachment } from '@ai-sdk/ui-utils';
 import { useMCPStore } from '~/lib/stores/mcp';
 import type { LlmErrorAlertType } from '~/types/actions';
+import { webSearchEnabledStore } from '~/lib/stores/settings';
 
 const logger = createScopedLogger('Chat');
 
@@ -116,6 +117,7 @@ export const ChatImpl = memo(
     const [chatMode, setChatMode] = useState<'discuss' | 'build'>('build');
     const [selectedElement, setSelectedElement] = useState<ElementInfo | null>(null);
     const mcpSettings = useMCPStore((state) => state.settings);
+    const webSearchEnabled = useStore(webSearchEnabledStore);
 
     const {
       messages,
@@ -149,6 +151,7 @@ export const ChatImpl = memo(
           },
         },
         maxLLMSteps: mcpSettings.maxLLMSteps,
+        webSearchEnabled,
       },
       sendExtraMessageFields: true,
       onError: (e) => {

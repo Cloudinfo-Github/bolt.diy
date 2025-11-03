@@ -66,6 +66,7 @@ export async function streamText(props: {
   messageSliceId?: number;
   chatMode?: 'discuss' | 'build';
   designScheme?: DesignScheme;
+  webSearchEnabled?: boolean;
 }) {
   const {
     messages,
@@ -80,6 +81,7 @@ export async function streamText(props: {
     summary,
     chatMode,
     designScheme,
+    webSearchEnabled,
   } = props;
   let currentModel = DEFAULT_MODEL;
   let currentProvider = DEFAULT_PROVIDER.name;
@@ -277,14 +279,19 @@ export async function streamText(props: {
   // 建立可用的工具陣列
   const tools: Record<string, any> = {};
 
-  // 加入 Tavily 網路搜尋工具（如果有 API key）
-  const webSearchTool = createWebSearchTool(serverEnv);
+  // 加入 Tavily 網路搜尋工具（如果啟用且有 API key）
+  if (webSearchEnabled !== false) {
+    // webSearchEnabled 預設為 true（undefined 視為 true），除非明確設為 false
+    const webSearchTool = createWebSearchTool(serverEnv);
 
-  if (webSearchTool) {
-    tools.webSearch = webSearchTool;
-    logger.info('Tavily 網路搜尋工具已啟用');
+    if (webSearchTool) {
+      tools.webSearch = webSearchTool;
+      logger.info('Tavily 網路搜尋工具已啟用');
+    } else {
+      logger.info('Tavily 網路搜尋工具未啟用（未找到 TAVILY_API_KEY）');
+    }
   } else {
-    logger.info('Tavily 網路搜尋工具未啟用（未找到 TAVILY_API_KEY）');
+    logger.info('Tavily 網路搜尋工具已停用（使用者設定）');
   }
 
   const streamParams = {

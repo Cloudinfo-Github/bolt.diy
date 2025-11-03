@@ -5,6 +5,8 @@ import { classNames } from '~/utils/classNames';
 import { Switch } from '~/components/ui/Switch';
 import type { UserProfile } from '~/components/@settings/core/types';
 import { isMac } from '~/utils/os';
+import { useStore } from '@nanostores/react';
+import { webSearchEnabledStore, updateWebSearchEnabled } from '~/lib/stores/settings';
 
 // Helper to get modifier key symbols/text
 const getModifierSymbol = (modifier: string): string => {
@@ -22,6 +24,7 @@ const getModifierSymbol = (modifier: string): string => {
 
 export default function SettingsTab() {
   const [currentTimezone, setCurrentTimezone] = useState('');
+  const webSearchEnabled = useStore(webSearchEnabledStore);
   const [settings, setSettings] = useState<UserProfile>(() => {
     const saved = localStorage.getItem('bolt_user_profile');
     return saved
@@ -138,6 +141,28 @@ export default function SettingsTab() {
               }}
             />
           </div>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="i-ph:magnifying-glass-fill w-4 h-4 text-bolt-elements-textSecondary" />
+            <label className="block text-sm text-bolt-elements-textSecondary">網路搜尋</label>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-bolt-elements-textSecondary">
+              {webSearchEnabled ? '網路搜尋已啟用（使用 Tavily API）' : '網路搜尋已停用'}
+            </span>
+            <Switch
+              checked={webSearchEnabled}
+              onCheckedChange={(checked) => {
+                updateWebSearchEnabled(checked);
+                toast.success(`網路搜尋已${checked ? '啟用' : '停用'}`);
+              }}
+            />
+          </div>
+          <p className="text-xs text-bolt-elements-textSecondary mt-2">
+            啟用後，AI 可以使用 Tavily API 搜尋即時網路資訊。關閉此選項可節省 API 配額。
+          </p>
         </div>
       </motion.div>
 
