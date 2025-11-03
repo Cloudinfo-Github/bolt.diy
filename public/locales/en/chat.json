@@ -139,5 +139,13 @@
     "noServers": "No MCP servers configured",
     "noServersHint": "Configure servers in Settings → MCP Servers",
     "close": "Close"
+  },
+  "progress": {
+    "analysingRequest": "Analysing Request",
+    "analysisComplete": "Analysis Complete",
+    "determiningFiles": "Determining Files to Read",
+    "codeFilesSelected": "Code Files Selected",
+    "generatingResponse": "Generating Response",
+    "responseGenerated": "Response Generated"
   }
 }

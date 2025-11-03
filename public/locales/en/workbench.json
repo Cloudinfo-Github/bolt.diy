@@ -122,5 +122,28 @@
   "type": {
     "file": "file",
     "folder": "folder"
+  },
+  "tabs": {
+    "files": "Files",
+    "search": "Search",
+    "locks": "Locks"
+  },
+  "actions": {
+    "reset": "Reset"
+  },
+  "artifact": {
+    "projectRestored": "Project Restored",
+    "projectCreated": "Project Created",
+    "restoringProject": "Restoring Project...",
+    "creatingProject": "Creating Project...",
+    "clickToOpen": "Click to open Workbench",
+    "restoreFilesFromSnapshot": "Restore files from snapshot",
+    "initialFilesCreated": "Initial files created",
+    "creatingInitialFiles": "Creating initial files",
+    "actions": {
+      "create": "Create",
+      "runCommand": "Run command",
+      "startApplication": "Start Application"
+    }
   }
 }

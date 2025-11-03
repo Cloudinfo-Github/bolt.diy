@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import type { ProgressAnnotation } from '~/types/context';
 import { classNames } from '~/utils/classNames';
 import { cubicEasingFn } from '~/utils/easings';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 export default function ProgressCompilation({ data }: { data?: ProgressAnnotation[] }) {
   const [progressList, setProgressList] = React.useState<ProgressAnnotation[]>([]);
@@ -86,6 +87,22 @@ export default function ProgressCompilation({ data }: { data?: ProgressAnnotatio
 }
 
 const ProgressItem = ({ progress }: { progress: ProgressAnnotation }) => {
+  const { t } = useI18n('chat');
+
+  // Map English progress messages to translation keys
+  const getTranslatedMessage = (message: string): string => {
+    const messageMap: Record<string, string> = {
+      'Analysing Request': t('progress.analysingRequest'),
+      'Analysis Complete': t('progress.analysisComplete'),
+      'Determining Files to Read': t('progress.determiningFiles'),
+      'Code Files Selected': t('progress.codeFilesSelected'),
+      'Generating Response': t('progress.generatingResponse'),
+      'Response Generated': t('progress.responseGenerated'),
+    };
+
+    return messageMap[message] || message;
+  };
+
   return (
     <motion.div
       className={classNames('flex text-sm gap-3')}
@@ -104,7 +121,7 @@ const ProgressItem = ({ progress }: { progress: ProgressAnnotation }) => {
         </div>
         {/* {x.label} */}
       </div>
-      {progress.message}
+      {getTranslatedMessage(progress.message)}
     </motion.div>
   );
 };

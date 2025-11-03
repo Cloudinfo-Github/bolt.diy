@@ -25,6 +25,7 @@ import { workbenchStore } from '~/lib/stores/workbench';
 import { Search } from './Search'; // <-- Ensure Search is imported
 import { classNames } from '~/utils/classNames'; // <-- Import classNames if not already present
 import { LockManager } from './LockManager'; // <-- Import LockManager
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface EditorPanelProps {
   files?: FileMap;
@@ -60,6 +61,7 @@ export const EditorPanel = memo(
   }: EditorPanelProps) => {
     renderLogger.trace('EditorPanel');
 
+    const { t } = useI18n('workbench');
     const theme = useStore(themeStore);
     const showTerminal = useStore(workbenchStore.showTerminal);
 
@@ -96,7 +98,7 @@ export const EditorPanel = memo(
                             'h-full bg-transparent hover:bg-bolt-elements-background-depth-3 py-0.5 px-2 rounded-lg text-sm font-medium text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary data-[state=active]:text-bolt-elements-textPrimary',
                           )}
                         >
-                          Files
+                          {t('tabs.files')}
                         </Tabs.Trigger>
                         <Tabs.Trigger
                           value="search"
@@ -104,7 +106,7 @@ export const EditorPanel = memo(
                             'h-full bg-transparent hover:bg-bolt-elements-background-depth-3 py-0.5 px-2 rounded-lg text-sm font-medium text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary data-[state=active]:text-bolt-elements-textPrimary',
                           )}
                         >
-                          Search
+                          {t('tabs.search')}
                         </Tabs.Trigger>
                         <Tabs.Trigger
                           value="locks"
@@ -112,7 +114,7 @@ export const EditorPanel = memo(
                             'h-full bg-transparent hover:bg-bolt-elements-background-depth-3 py-0.5 px-2 rounded-lg text-sm font-medium text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary data-[state=active]:text-bolt-elements-textPrimary',
                           )}
                         >
-                          Locks
+                          {t('tabs.locks')}
                         </Tabs.Trigger>
                       </Tabs.List>
                     </div>
@@ -152,11 +154,11 @@ export const EditorPanel = memo(
                       <div className="flex gap-1 ml-auto -mr-1.5">
                         <PanelHeaderButton onClick={onFileSave}>
                           <div className="i-ph:floppy-disk-duotone" />
-                          Save
+                          {t('file.save')}
                         </PanelHeaderButton>
                         <PanelHeaderButton onClick={onFileReset}>
                           <div className="i-ph:clock-counter-clockwise-duotone" />
-                          Reset
+                          {t('actions.reset')}
                         </PanelHeaderButton>
                       </div>
                     )}

@@ -183,6 +183,10 @@ export async function getTemplates(templateName: string, title?: string) {
     filesToImport.ignoreFile = ignoredFiles;
   }
 
+  /*
+   * Note: This message is for the AI assistant's context, not for user display
+   * However, we keep the title parameter for artifact labeling which may be shown to users
+   */
   const assistantMessage = `
 Bolt is initializing your project with the required files using the ${template.name} template.
 <boltArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">

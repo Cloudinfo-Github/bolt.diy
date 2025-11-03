@@ -139,5 +139,13 @@
     "noServers": "未設定 MCP 伺服器",
     "noServersHint": "在「設定」→「MCP 伺服器」中設定伺服器",
     "close": "關閉"
+  },
+  "progress": {
+    "analysingRequest": "分析請求中",
+    "analysisComplete": "分析完成",
+    "determiningFiles": "判斷要讀取的檔案",
+    "codeFilesSelected": "已選擇程式碼檔案",
+    "generatingResponse": "生成回應中",
+    "responseGenerated": "回應已生成"
   }
 }

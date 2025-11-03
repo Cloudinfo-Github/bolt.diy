@@ -122,5 +122,28 @@
   "type": {
     "file": "檔案",
     "folder": "資料夾"
+  },
+  "tabs": {
+    "files": "檔案",
+    "search": "搜尋",
+    "locks": "鎖定"
+  },
+  "actions": {
+    "reset": "重設"
+  },
+  "artifact": {
+    "projectRestored": "專案已還原",
+    "projectCreated": "專案已建立",
+    "restoringProject": "正在還原專案...",
+    "creatingProject": "正在建立專案...",
+    "clickToOpen": "點擊開啟工作台",
+    "restoreFilesFromSnapshot": "從快照還原檔案",
+    "initialFilesCreated": "初始檔案已建立",
+    "creatingInitialFiles": "正在建立初始檔案",
+    "actions": {
+      "create": "建立",
+      "runCommand": "執行命令",
+      "startApplication": "啟動應用程式"
+    }
   }
 }
