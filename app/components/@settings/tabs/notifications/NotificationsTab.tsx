@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { logStore } from '~/lib/stores/logs';
 import { useStore } from '@nanostores/react';
 import { formatDistanceToNow } from 'date-fns';
+import { zhTW } from 'date-fns/locale';
 import { classNames } from '~/utils/classNames';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
@@ -285,7 +286,7 @@ const NotificationsTab = () => {
                     </div>
                   </div>
                   <time className="shrink-0 text-xs text-gray-500 dark:text-gray-400">
-                    {formatDistanceToNow(new Date(log.timestamp), { addSuffix: true })}
+                    {formatDistanceToNow(new Date(log.timestamp), { addSuffix: true, locale: zhTW })}
                   </time>
                 </div>
               </motion.div>

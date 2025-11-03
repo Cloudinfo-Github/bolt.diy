@@ -118,7 +118,7 @@ export default function App() {
   const theme = useStore(themeStore);
 
   useEffect(() => {
-    logStore.logSystem('Application initialized', {
+    logStore.logSystem('應用程式已初始化', {
       theme,
       platform: navigator.platform,
       userAgent: navigator.userAgent,
@@ -133,14 +133,14 @@ export default function App() {
          * It will only start capturing when enableDebugMode() is called
          */
         const status = debugLogger.getStatus();
-        logStore.logSystem('Debug logging ready', {
+        logStore.logSystem('偵錯日誌已就緒', {
           initialized: status.initialized,
           capturing: status.capturing,
           enabled: status.enabled,
         });
       })
       .catch((error) => {
-        logStore.logError('Failed to initialize debug logging', error);
+        logStore.logError('無法初始化偵錯日誌', error);
       });
   }, []);
 
