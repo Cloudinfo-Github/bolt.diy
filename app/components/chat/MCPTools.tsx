@@ -4,8 +4,10 @@ import { Dialog, DialogRoot, DialogClose, DialogTitle, DialogButton } from '~/co
 import { IconButton } from '~/components/ui/IconButton';
 import { useMCPStore } from '~/lib/stores/mcp';
 import McpServerList from '~/components/@settings/tabs/mcp/McpServerList';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 export function McpTools() {
+  const { t } = useI18n('chat');
   const isInitialized = useMCPStore((state) => state.isInitialized);
   const serverTools = useMCPStore((state) => state.serverTools);
   const initialize = useMCPStore((state) => state.initialize);
@@ -50,7 +52,7 @@ export function McpTools() {
       <div className="flex">
         <IconButton
           onClick={() => setIsDialogOpen(!isDialogOpen)}
-          title="可用的 MCP 工具"
+          title={t('mcpTools.title')}
           disabled={!isInitialized}
           className="transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -68,7 +70,7 @@ export function McpTools() {
             <div className="space-y-4 max-h-[80vh] overflow-y-auto pr-2">
               <DialogTitle>
                 <div className="i-bolt:mcp text-xl"></div>
-                MCP tools
+                {t('mcpTools.dialogTitle')}
               </DialogTitle>
 
               <div className="space-y-4">
@@ -91,7 +93,7 @@ export function McpTools() {
                       ) : (
                         <div className="i-ph:arrow-counter-clockwise w-3 h-3" />
                       )}
-                      Check availability
+                      {t('mcpTools.checkAvailability')}
                     </button>
                   </div>
                   {serverEntries.length > 0 ? (
@@ -104,8 +106,8 @@ export function McpTools() {
                     />
                   ) : (
                     <div className="py-4 text-center text-bolt-elements-textSecondary">
-                      <p>No MCP servers configured</p>
-                      <p className="text-xs mt-1">Configure servers in Settings → MCP Servers</p>
+                      <p>{t('mcpTools.noServers')}</p>
+                      <p className="text-xs mt-1">{t('mcpTools.noServersHint')}</p>
                     </div>
                   )}
                 </div>
@@ -116,7 +118,7 @@ export function McpTools() {
               <div className="flex justify-end gap-2 mt-6">
                 <div className="flex gap-2">
                   <DialogClose asChild>
-                    <DialogButton type="secondary">Close</DialogButton>
+                    <DialogButton type="secondary">{t('mcpTools.close')}</DialogButton>
                   </DialogClose>
                 </div>
               </div>

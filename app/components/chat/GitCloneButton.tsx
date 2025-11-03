@@ -11,6 +11,7 @@ import { classNames } from '~/utils/classNames';
 import { Button } from '~/components/ui/Button';
 import type { IChatMetadata } from '~/lib/persistence/db';
 import { X, Github, GitBranch } from 'lucide-react';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 // Import the new repository selector components
 import { GitHubRepositorySelector } from '~/components/@settings/tabs/github/components/GitHubRepositorySelector';
@@ -48,6 +49,7 @@ interface GitCloneButtonProps {
 }
 
 export default function GitCloneButton({ importChat, className }: GitCloneButtonProps) {
+  const { t } = useI18n('repository');
   const { ready, gitClone } = useGit();
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -130,7 +132,7 @@ ${skippedFiles.map((f) => `- ${f}`).join('\n')}`
     : ''
 }
 
-<boltArtifact id="imported-files" title="Git 複製的檔案" type="bundled">
+<boltArtifact id="imported-files" title="${t('gitClone.clonedFiles')}" type="bundled">
 ${fileContents
   .map(
     (file) =>
@@ -150,11 +152,11 @@ ${escapeBoltTags(file.content)}
           messages.push(commandsMessage);
         }
 
-        await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages);
+        await importChat(`${t('gitClone.gitProject')}:${repoUrl.split('/').slice(-1)[0]}`, messages);
       }
     } catch (error) {
       console.error('Error during import:', error);
-      toast.error('Failed to import repository');
+      toast.error(t('gitClone.failedToImport'));
     } finally {
       setLoading(false);
     }
@@ -167,7 +169,7 @@ ${escapeBoltTags(file.content)}
           setSelectedProvider(null);
           setIsDialogOpen(true);
         }}
-        title="複製儲存庫"
+        title={t('gitClone.cloneRepository')}
         variant="default"
         size="lg"
         className={classNames(
@@ -181,7 +183,7 @@ ${escapeBoltTags(file.content)}
         )}
         disabled={!ready || loading}
       >
-        複製儲存庫
+        {t('gitClone.cloneRepository')}
         <div className="flex items-center gap-1 ml-2">
           <Github className="w-4 h-4" />
           <GitBranch className="w-4 h-4" />
@@ -195,7 +197,7 @@ ${escapeBoltTags(file.content)}
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-                  選擇儲存庫提供者
+                  {t('gitClone.selectProvider')}
                 </h3>
                 <button
                   onClick={() => setIsDialogOpen(false)}
@@ -219,7 +221,7 @@ ${escapeBoltTags(file.content)}
                         GitHub
                       </div>
                       <div className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-                        從 GitHub 儲存庫複製
+                        {t('gitClone.cloneFromGitHub')}
                       </div>
                     </div>
                   </div>
@@ -238,7 +240,7 @@ ${escapeBoltTags(file.content)}
                         GitLab
                       </div>
                       <div className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-                        從 GitLab 儲存庫複製
+                        {t('gitClone.cloneFromGitLab')}
                       </div>
                     </div>
                   </div>
@@ -260,10 +262,10 @@ ${escapeBoltTags(file.content)}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-                    匯入 GitHub 儲存庫
+                    {t('gitClone.importGitHubRepository')}
                   </h3>
                   <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-                    從 GitHub 複製儲存庫到您的工作區
+                    {t('gitClone.cloneToWorkspace')}
                   </p>
                 </div>
               </div>
@@ -296,10 +298,10 @@ ${escapeBoltTags(file.content)}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-                    匯入 GitLab 儲存庫
+                    {t('gitClone.importGitLabRepository')}
                   </h3>
                   <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-                    從 GitLab 複製儲存庫到您的工作區
+                    {t('gitClone.cloneToWorkspace')}
                   </p>
                 </div>
               </div>
@@ -321,7 +323,7 @@ ${escapeBoltTags(file.content)}
         </div>
       )}
 
-      {loading && <LoadingOverlay message="正在複製儲存庫，請稍候..." />}
+      {loading && <LoadingOverlay message={t('gitClone.cloningRepository')} />}
     </>
   );
 }

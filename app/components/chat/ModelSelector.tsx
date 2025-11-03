@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import type { KeyboardEvent } from 'react';
 import type { ModelInfo } from '~/lib/modules/llm/types';
 import { classNames } from '~/utils/classNames';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 // Fuzzy search utilities
 const levenshteinDistance = (str1: string, str2: string): number => {
@@ -114,6 +115,7 @@ export const ModelSelector = ({
   providerList,
   modelLoading,
 }: ModelSelectorProps) => {
+  const { t } = useI18n('chat');
   const [modelSearchQuery, setModelSearchQuery] = useState('');
   const [debouncedModelSearchQuery, setDebouncedModelSearchQuery] = useState('');
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
@@ -440,7 +442,7 @@ export const ModelSelector = ({
           tabIndex={0}
         >
           <div className="flex items-center justify-between">
-            <div className="truncate">{provider?.name || 'Select provider'}</div>
+            <div className="truncate">{provider?.name || t('provider.select')}</div>
             <div
               className={classNames(
                 'i-ph:caret-down w-4 h-4 text-bolt-elements-textSecondary opacity-75',
@@ -463,7 +465,7 @@ export const ModelSelector = ({
                   type="text"
                   value={providerSearchQuery}
                   onChange={(e) => setProviderSearchQuery(e.target.value)}
-                  placeholder="搜尋提供者... (⌘K 清除)"
+                  placeholder={t('provider.search')}
                   className={classNames(
                     'w-full pl-8 pr-8 py-1.5 rounded-md text-sm',
                     'bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor',
@@ -473,7 +475,7 @@ export const ModelSelector = ({
                   )}
                   onClick={(e) => e.stopPropagation()}
                   role="searchbox"
-                  aria-label="搜尋供應商"
+                  aria-label={t('provider.searchLabel')}
                 />
                 <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
                   <span className="i-ph:magnifying-glass text-bolt-elements-textTertiary" />
@@ -486,7 +488,7 @@ export const ModelSelector = ({
                       clearProviderSearch();
                     }}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-bolt-elements-background-depth-3 transition-colors"
-                    aria-label="清除搜尋"
+                    aria-label={t('modelSelector.clearSearch')}
                   >
                     <span className="i-ph:x text-bolt-elements-textTertiary text-xs" />
                   </button>
@@ -514,13 +516,11 @@ export const ModelSelector = ({
                 <div className="px-3 py-3 text-sm">
                   <div className="text-bolt-elements-textTertiary mb-1">
                     {debouncedProviderSearchQuery
-                      ? `No providers match "${debouncedProviderSearchQuery}"`
-                      : 'No providers found'}
+                      ? t('provider.noMatch', { query: debouncedProviderSearchQuery })
+                      : t('provider.noProviders')}
                   </div>
                   {debouncedProviderSearchQuery && (
-                    <div className="text-xs text-bolt-elements-textTertiary">
-                      Try searching for provider names like "OpenAI", "Anthropic", or "Google"
-                    </div>
+                    <div className="text-xs text-bolt-elements-textTertiary">{t('provider.searchHelp')}</div>
                   )}
                 </div>
               ) : (
@@ -596,7 +596,7 @@ export const ModelSelector = ({
           tabIndex={0}
         >
           <div className="flex items-center justify-between">
-            <div className="truncate">{modelList.find((m) => m.name === model)?.label || 'Select model'}</div>
+            <div className="truncate">{modelList.find((m) => m.name === model)?.label || t('model.select')}</div>
             <div
               className={classNames(
                 'i-ph:caret-down w-4 h-4 text-bolt-elements-textSecondary opacity-75',
@@ -631,11 +631,13 @@ export const ModelSelector = ({
                     )}
                   >
                     <span className="i-ph:gift text-xs" />
-                    Free models only
+                    {t('modelSelector.freeOnly')}
                   </button>
                   {showFreeModelsOnly && (
                     <span className="text-xs text-bolt-elements-textTertiary">
-                      {filteredModels.length} free model{filteredModels.length !== 1 ? 's' : ''}
+                      {t(`modelSelector.freeModelsCount${filteredModels.length !== 1 ? '_plural' : ''}`, {
+                        count: filteredModels.length,
+                      })}
                     </span>
                   )}
                 </div>
@@ -644,8 +646,10 @@ export const ModelSelector = ({
               {/* Search Result Count */}
               {debouncedModelSearchQuery && filteredModels.length > 0 && (
                 <div className="text-xs text-bolt-elements-textTertiary px-1">
-                  {filteredModels.length} model{filteredModels.length !== 1 ? 's' : ''} found
-                  {filteredModels.length > 5 && ' (showing best matches)'}
+                  {t(`modelSelector.modelsFound${filteredModels.length !== 1 ? '_plural' : ''}`, {
+                    count: filteredModels.length,
+                  })}
+                  {filteredModels.length > 5 && ` ${t('modelSelector.bestMatches')}`}
                 </div>
               )}
 
@@ -656,7 +660,7 @@ export const ModelSelector = ({
                   type="text"
                   value={modelSearchQuery}
                   onChange={(e) => setModelSearchQuery(e.target.value)}
-                  placeholder="搜尋模型... (⌘K 清除)"
+                  placeholder={t('modelSelector.search')}
                   className={classNames(
                     'w-full pl-8 pr-8 py-1.5 rounded-md text-sm',
                     'bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor',
@@ -666,7 +670,7 @@ export const ModelSelector = ({
                   )}
                   onClick={(e) => e.stopPropagation()}
                   role="searchbox"
-                  aria-label="搜尋模型"
+                  aria-label={t('modelSelector.searchLabel')}
                 />
                 <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
                   <span className="i-ph:magnifying-glass text-bolt-elements-textTertiary" />
@@ -679,7 +683,7 @@ export const ModelSelector = ({
                       clearModelSearch();
                     }}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-bolt-elements-background-depth-3 transition-colors"
-                    aria-label="清除搜尋"
+                    aria-label={t('modelSelector.clearSearch')}
                   >
                     <span className="i-ph:x text-bolt-elements-textTertiary text-xs" />
                   </button>
@@ -707,27 +711,26 @@ export const ModelSelector = ({
                 <div className="px-3 py-3 text-sm">
                   <div className="flex items-center gap-2 text-bolt-elements-textTertiary">
                     <span className="i-ph:spinner animate-spin" />
-                    Loading models...
+                    {t('model.loading')}
                   </div>
                 </div>
               ) : filteredModels.length === 0 ? (
                 <div className="px-3 py-3 text-sm">
                   <div className="text-bolt-elements-textTertiary mb-1">
                     {debouncedModelSearchQuery
-                      ? `No models match "${debouncedModelSearchQuery}"${showFreeModelsOnly ? ' (free only)' : ''}`
+                      ? t('modelSelector.noMatch', {
+                          query: debouncedModelSearchQuery,
+                          freeFilter: showFreeModelsOnly ? ' (free only)' : '',
+                        })
                       : showFreeModelsOnly
-                        ? 'No free models available'
-                        : 'No models available'}
+                        ? t('modelSelector.noFreeModels')
+                        : t('modelSelector.noModels')}
                   </div>
                   {debouncedModelSearchQuery && (
-                    <div className="text-xs text-bolt-elements-textTertiary">
-                      Try searching for model names, context sizes (e.g., "128k", "1M"), or capabilities
-                    </div>
+                    <div className="text-xs text-bolt-elements-textTertiary">{t('modelSelector.searchHelp')}</div>
                   )}
                   {showFreeModelsOnly && !debouncedModelSearchQuery && (
-                    <div className="text-xs text-bolt-elements-textTertiary">
-                      Try disabling the "Free models only" filter to see all available models
-                    </div>
+                    <div className="text-xs text-bolt-elements-textTertiary">{t('modelSelector.disableFilter')}</div>
                   )}
                 </div>
               ) : (
@@ -767,21 +770,21 @@ export const ModelSelector = ({
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-xs text-bolt-elements-textTertiary">
-                            {formatContextSize(modelOption.maxTokenAllowed)} tokens
+                            {formatContextSize(modelOption.maxTokenAllowed)} {t('modelSelector.tokens')}
                           </span>
                           {debouncedModelSearchQuery && (modelOption as any).searchScore > 70 && (
                             <span className="text-xs text-green-500 font-medium">
-                              {(modelOption as any).searchScore.toFixed(0)}% match
+                              {t('modelSelector.match', { percent: (modelOption as any).searchScore.toFixed(0) })}
                             </span>
                           )}
                         </div>
                       </div>
                       <div className="flex items-center gap-1 ml-2">
                         {isModelLikelyFree(modelOption, provider?.name) && (
-                          <span className="i-ph:gift text-xs text-purple-400" title="免費模型" />
+                          <span className="i-ph:gift text-xs text-purple-400" title={t('modelSelector.freeModel')} />
                         )}
                         {model === modelOption.name && (
-                          <span className="i-ph:check text-xs text-green-500" title="已選擇" />
+                          <span className="i-ph:check text-xs text-green-500" title={t('modelSelector.selected')} />
                         )}
                       </div>
                     </div>

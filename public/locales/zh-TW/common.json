@@ -54,5 +54,34 @@
   "notifications": "通知",
   "profile": "個人資料",
   "logout": "登出",
-  "login": "登入"
+  "login": "登入",
+  "supabase": {
+    "connectToSupabase": "連接到 Supabase",
+    "accessToken": "存取權杖",
+    "enterToken": "輸入您的 Supabase 存取權杖",
+    "getYourToken": "取得您的權杖",
+    "connecting": "連接中...",
+    "connect": "連接",
+    "connection": "Supabase 連接",
+    "yourProjects": "您的專案",
+    "refreshProjects": "重新整理專案列表",
+    "newProject": "新增專案",
+    "selectProject": "為此對話選擇專案或建立新專案",
+    "selected": "已選擇",
+    "select": "選擇",
+    "noProjectsFound": "未找到專案",
+    "fetchingProjects": "正在取得專案...",
+    "disconnect": "中斷連接",
+    "role": "角色"
+  },
+  "debug": {
+    "reportBug": "回報錯誤",
+    "debugLog": "除錯日誌",
+    "downloadDebugLog": "下載除錯日誌"
+  },
+  "ui": {
+    "clearSearch": "清除搜尋",
+    "closeDialog": "關閉對話框",
+    "breadcrumbNavigation": "麵包屑導航"
+  }
 }

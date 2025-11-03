@@ -13,6 +13,7 @@ import { TAB_LABELS, DEFAULT_TAB_CONFIG, TAB_DESCRIPTIONS } from './constants';
 import { DialogTitle } from '~/components/ui/Dialog';
 import { AvatarDropdown } from './AvatarDropdown';
 import BackgroundRays from '~/components/ui/BackgroundRays';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 // Import all tab components
 import ProfileTab from '~/components/@settings/tabs/profile/ProfileTab';
@@ -45,6 +46,9 @@ const BetaLabel = () => (
 );
 
 export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
+  // i18n
+  const { t } = useI18n('settings');
+
   // State
   const [activeTab, setActiveTab] = useState<TabType | null>(null);
   const [loadingTab, setLoadingTab] = useState<TabType | null>(null);
@@ -177,19 +181,19 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
   const getStatusMessage = (tabId: TabType): string => {
     switch (tabId) {
       case 'features':
-        return `${unviewedFeatures.length} 個新功能${unviewedFeatures.length === 1 ? '' : 's'} 待探索`;
+        return t('controlPanel.newFeatures', { count: unviewedFeatures.length });
       case 'notifications':
-        return `${unreadNotifications.length} 則未讀通知${unreadNotifications.length === 1 ? '' : 's'}`;
+        return t('controlPanel.unreadNotifications', { count: unreadNotifications.length });
       case 'github':
       case 'gitlab':
       case 'supabase':
       case 'vercel':
       case 'netlify':
         return currentIssue === 'disconnected'
-          ? '連接中斷'
+          ? t('controlPanel.connectionDisconnected')
           : currentIssue === 'high-latency'
-            ? '偵測到高延遲'
-            : '偵測到連接問題';
+            ? t('controlPanel.highLatency')
+            : t('controlPanel.connectionIssue');
       default:
         return '';
     }
@@ -261,7 +265,11 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
                       </button>
                     )}
                     <DialogTitle className="text-xl font-semibold text-gray-900 dark:text-white">
-                      {showTabManagement ? '標籤管理' : activeTab ? TAB_LABELS[activeTab] : '控制面板'}
+                      {showTabManagement
+                        ? t('controlPanel.tabManagement')
+                        : activeTab
+                          ? TAB_LABELS[activeTab]
+                          : t('controlPanel.title')}
                     </DialogTitle>
                   </div>
 

@@ -15,6 +15,7 @@ import { useSearchFilter } from '~/lib/hooks/useSearchFilter';
 import { classNames } from '~/utils/classNames';
 import { useStore } from '@nanostores/react';
 import { profileStore } from '~/lib/stores/profile';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 const menuVariants = {
   closed: {
@@ -65,6 +66,7 @@ function CurrentDateTime() {
 }
 
 export const Menu = () => {
+  const { t } = useI18n();
   const { duplicateCurrentChat, exportChat } = useChatHistory();
   const menuRef = useRef<HTMLDivElement>(null);
   const [list, setList] = useState<ChatHistoryItem[]>([]);
@@ -122,7 +124,7 @@ export const Menu = () => {
 
       deleteChat(item.id)
         .then(() => {
-          toast.success('Chat deleted successfully', {
+          toast.success(t('chat:sidebar.chatDeleted'), {
             position: 'bottom-right',
             autoClose: 3000,
           });
@@ -138,7 +140,7 @@ export const Menu = () => {
         })
         .catch((error) => {
           console.error('Failed to delete chat:', error);
-          toast.error('無法刪除對話', {
+          toast.error(t('chat:sidebar.deleteFailed'), {
             position: 'bottom-right',
             autoClose: 3000,
           });
@@ -230,19 +232,19 @@ export const Menu = () => {
 
   const handleBulkDeleteClick = useCallback(() => {
     if (selectedItems.length === 0) {
-      toast.info('請至少選擇一個對話以刪除');
+      toast.info(t('chat:sidebar.selectAtLeastOne'));
       return;
     }
 
     const selectedChats = list.filter((item) => selectedItems.includes(item.id));
 
     if (selectedChats.length === 0) {
-      toast.error('找不到所選的對話');
+      toast.error(t('chat:sidebar.selectedChatsNotFound'));
       return;
     }
 
     setDialogContent({ type: 'bulkDelete', items: selectedChats });
-  }, [selectedItems, list]); // Keep list dependency
+  }, [selectedItems, list, t]); // Keep list dependency
 
   const selectAll = useCallback(() => {
     const allFilteredIds = filteredList.map((item) => item.id);
@@ -346,13 +348,13 @@ export const Menu = () => {
           <div className="flex items-center gap-3">
             <HelpButton onClick={() => window.open('https://stackblitz-labs.github.io/bolt.diy/', '_blank')} />
             <span className="font-medium text-sm text-gray-900 dark:text-white truncate">
-              {profile?.username || '訪客'}
+              {profile?.username || t('chat:sidebar.guest')}
             </span>
             <div className="flex items-center justify-center w-[32px] h-[32px] overflow-hidden bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-500 rounded-full shrink-0">
               {profile?.avatar ? (
                 <img
                   src={profile.avatar}
-                  alt={profile?.username || '使用者'}
+                  alt={profile?.username || t('chat:sidebar.user')}
                   className="w-full h-full object-cover"
                   loading="eager"
                   decoding="sync"
@@ -372,7 +374,7 @@ export const Menu = () => {
                 className="flex-1 flex gap-2 items-center bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-500/20 rounded-lg px-4 py-2 transition-colors"
               >
                 <span className="inline-block i-ph:plus-circle h-4 w-4" />
-                <span className="text-sm font-medium">開始新對話</span>
+                <span className="text-sm font-medium">{t('chat:sidebar.startNewChat')}</span>
               </a>
               <button
                 onClick={toggleSelectionMode}
@@ -382,7 +384,7 @@ export const Menu = () => {
                     ? 'bg-purple-600 dark:bg-purple-500 text-white border border-purple-700 dark:border-purple-600'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700',
                 )}
-                aria-label={selectionMode ? '退出選擇模式' : '進入選擇模式'}
+                aria-label={selectionMode ? t('chat:sidebar.exitSelectionMode') : t('chat:sidebar.enterSelectionMode')}
               >
                 <span className={selectionMode ? 'i-ph:x h-4 w-4' : 'i-ph:check-square h-4 w-4'} />
               </button>
@@ -394,18 +396,18 @@ export const Menu = () => {
               <input
                 className="w-full bg-gray-50 dark:bg-gray-900 relative pl-9 pr-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500/50 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 border border-gray-200 dark:border-gray-800"
                 type="search"
-                placeholder="搜尋對話..."
+                placeholder={t('chat:sidebar.searchChats')}
                 onChange={handleSearchChange}
-                aria-label="搜尋對話"
+                aria-label={t('chat:sidebar.searchChatsLabel')}
               />
             </div>
           </div>
           <div className="flex items-center justify-between text-sm px-4 py-2">
-            <div className="font-medium text-gray-600 dark:text-gray-400">您的對話</div>
+            <div className="font-medium text-gray-600 dark:text-gray-400">{t('chat:sidebar.yourChats')}</div>
             {selectionMode && (
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" onClick={selectAll}>
-                  {selectedItems.length === filteredList.length ? '取消全選' : '全選'}
+                  {selectedItems.length === filteredList.length ? t('chat:sidebar.unselectAll') : t('common:selectAll')}
                 </Button>
                 <Button
                   variant="destructive"
@@ -413,7 +415,7 @@ export const Menu = () => {
                   onClick={handleBulkDeleteClick}
                   disabled={selectedItems.length === 0}
                 >
-                  刪除所選項目
+                  {t('chat:sidebar.deleteSelected')}
                 </Button>
               </div>
             )}
@@ -421,7 +423,7 @@ export const Menu = () => {
           <div className="flex-1 overflow-auto px-3 pb-3">
             {filteredList.length === 0 && (
               <div className="px-4 text-gray-500 dark:text-gray-400 text-sm">
-                {list.length === 0 ? '沒有先前的對話' : '找不到符合的項目'}
+                {list.length === 0 ? t('chat:sidebar.noChats') : t('chat:sidebar.noMatchingItems')}
               </div>
             )}
             <DialogRoot open={dialogContent !== null}>
@@ -455,20 +457,22 @@ export const Menu = () => {
                 {dialogContent?.type === 'delete' && (
                   <>
                     <div className="p-6 bg-white dark:bg-gray-950">
-                      <DialogTitle className="text-gray-900 dark:text-white">刪除對話？</DialogTitle>
+                      <DialogTitle className="text-gray-900 dark:text-white">
+                        {t('chat:sidebar.deleteChat')}
+                      </DialogTitle>
                       <DialogDescription className="mt-2 text-gray-600 dark:text-gray-400">
                         <p>
-                          您即將刪除{' '}
+                          {t('chat:sidebar.deleteConfirmSingle')}{' '}
                           <span className="font-medium text-gray-900 dark:text-white">
                             {dialogContent.item.description}
                           </span>
                         </p>
-                        <p className="mt-2">您確定要刪除此對話嗎？</p>
+                        <p className="mt-2">{t('chat:sidebar.deleteConfirmQuestion')}</p>
                       </DialogDescription>
                     </div>
                     <div className="flex justify-end gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
                       <DialogButton type="secondary" onClick={closeDialog}>
-                        取消
+                        {t('common:cancel')}
                       </DialogButton>
                       <DialogButton
                         type="danger"
@@ -478,7 +482,7 @@ export const Menu = () => {
                           closeDialog();
                         }}
                       >
-                        刪除
+                        {t('common:delete')}
                       </DialogButton>
                     </div>
                   </>
@@ -486,9 +490,11 @@ export const Menu = () => {
                 {dialogContent?.type === 'bulkDelete' && (
                   <>
                     <div className="p-6 bg-white dark:bg-gray-950">
-                      <DialogTitle className="text-gray-900 dark:text-white">刪除所選對話？</DialogTitle>
+                      <DialogTitle className="text-gray-900 dark:text-white">
+                        {t('chat:sidebar.deleteMultipleChats')}
+                      </DialogTitle>
                       <DialogDescription className="mt-2 text-gray-600 dark:text-gray-400">
-                        <p>您即將刪除 {dialogContent.items.length} 個對話：</p>
+                        <p>{t('chat:sidebar.deleteConfirmMultiple', { count: dialogContent.items.length })}</p>
                         <div className="mt-2 max-h-32 overflow-auto border border-gray-100 dark:border-gray-800 rounded-md bg-gray-50 dark:bg-gray-900 p-2">
                           <ul className="list-disc pl-5 space-y-1">
                             {dialogContent.items.map((item) => (
@@ -498,12 +504,12 @@ export const Menu = () => {
                             ))}
                           </ul>
                         </div>
-                        <p className="mt-3">您確定要刪除這些對話嗎？</p>
+                        <p className="mt-3">{t('chat:sidebar.deleteConfirmMultipleQuestion')}</p>
                       </DialogDescription>
                     </div>
                     <div className="flex justify-end gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
                       <DialogButton type="secondary" onClick={closeDialog}>
-                        取消
+                        {t('common:cancel')}
                       </DialogButton>
                       <DialogButton
                         type="danger"
@@ -518,7 +524,7 @@ export const Menu = () => {
                           closeDialog();
                         }}
                       >
-                        刪除
+                        {t('common:delete')}
                       </DialogButton>
                     </div>
                   </>

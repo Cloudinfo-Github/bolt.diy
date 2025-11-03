@@ -7,6 +7,7 @@ import { ScreenshotSelector } from './ScreenshotSelector';
 import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import type { ElementInfo } from './Inspector';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 type ResizeSide = 'left' | 'right' | null;
 
@@ -53,6 +54,7 @@ const WINDOW_SIZES: WindowSize[] = [
 ];
 
 export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
+  const { t } = useI18n('workbench');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -199,7 +201,7 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
         onMouseOut={(e) =>
           (e.currentTarget.style.background = 'var(--bolt-elements-background-depth-3, rgba(0,0,0,.15))')
         }
-        title="拖曳以調整寬度"
+        title={t('preview.dragToResize')}
       >
         <GripIcon />
       </div>
@@ -685,7 +687,7 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
             previews={previews}
           />
           <input
-            title="URL 路徑"
+            title={t('preview.urlPath')}
             ref={inputRef}
             className="w-full bg-transparent outline-none"
             type="text"
@@ -718,10 +720,16 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
           <IconButton
             icon="i-ph:devices"
             onClick={toggleDeviceMode}
-            title={isDeviceModeOn ? '切換到響應式模式' : '切換到裝置模式'}
+            title={isDeviceModeOn ? t('preview.toggleResponsive') : t('preview.toggleDevice')}
           />
 
-          {expoUrl && <IconButton icon="i-ph:qr-code" onClick={() => setIsExpoQrModalOpen(true)} title="顯示 QR 碼" />}
+          {expoUrl && (
+            <IconButton
+              icon="i-ph:qr-code"
+              onClick={() => setIsExpoQrModalOpen(true)}
+              title={t('preview.showQrCode')}
+            />
+          )}
 
           <ExpoQrModal open={isExpoQrModalOpen} onClose={() => setIsExpoQrModalOpen(false)} />
 
@@ -757,7 +765,7 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
             <IconButton
               icon="i-ph:list"
               onClick={() => setIsWindowSizeDropdownOpen(!isWindowSizeDropdownOpen)}
-              title="新視窗選項"
+              title={t('preview.windowOptions')}
             />
 
             {isWindowSizeDropdownOpen && (
@@ -766,7 +774,9 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
                 <div className="absolute right-0 top-full mt-2 z-50 min-w-[240px] max-h-[400px] overflow-y-auto bg-white dark:bg-black rounded-xl shadow-2xl border border-[#E5E7EB] dark:border-[rgba(255,255,255,0.1)] overflow-hidden">
                   <div className="p-3 border-b border-[#E5E7EB] dark:border-[rgba(255,255,255,0.1)]">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-[#111827] dark:text-gray-300">視窗選項</span>
+                      <span className="text-sm font-medium text-[#111827] dark:text-gray-300">
+                        {t('preview.windowOptionsTitle')}
+                      </span>
                     </div>
                     <div className="flex flex-col gap-2">
                       <button
@@ -980,7 +990,7 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
 
                     <iframe
                       ref={iframeRef}
-                      title="預覽"
+                      title={t('preview')}
                       style={{
                         border: 'none',
                         width: isLandscape ? `${selectedWindowSize.height}px` : `${selectedWindowSize.width}px`,
@@ -997,7 +1007,7 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
               ) : (
                 <iframe
                   ref={iframeRef}
-                  title="預覽"
+                  title={t('preview')}
                   className="border-none w-full h-full bg-bolt-elements-background-depth-1"
                   src={iframeUrl}
                   sandbox="allow-scripts allow-forms allow-popups allow-modals allow-storage-access-by-user-activation allow-same-origin"

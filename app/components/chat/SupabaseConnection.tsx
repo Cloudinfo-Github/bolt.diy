@@ -5,8 +5,10 @@ import { useStore } from '@nanostores/react';
 import { chatId } from '~/lib/persistence/useChatHistory';
 import { fetchSupabaseStats } from '~/lib/stores/supabase';
 import { Dialog, DialogRoot, DialogClose, DialogTitle, DialogButton } from '~/components/ui/Dialog';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 export function SupabaseConnection() {
+  const { t } = useI18n('common');
   const {
     connection: supabaseConn,
     connecting,
@@ -110,17 +112,19 @@ export function SupabaseConnection() {
                     crossOrigin="anonymous"
                     src="https://cdn.simpleicons.org/supabase"
                   />
-                  Connect to Supabase
+                  {t('supabase.connectToSupabase')}
                 </DialogTitle>
 
                 <div>
-                  <label className="block text-sm text-bolt-elements-textSecondary mb-2">Access Token</label>
+                  <label className="block text-sm text-bolt-elements-textSecondary mb-2">
+                    {t('supabase.accessToken')}
+                  </label>
                   <input
                     type="password"
                     value={supabaseConn.token}
                     onChange={(e) => updateToken(e.target.value)}
                     disabled={connecting}
-                    placeholder="輸入您的 Supabase 存取權杖"
+                    placeholder={t('supabase.enterToken')}
                     className={classNames(
                       'w-full px-3 py-2 rounded-lg text-sm',
                       'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
@@ -137,7 +141,7 @@ export function SupabaseConnection() {
                       rel="noopener noreferrer"
                       className="text-[#3ECF8E] hover:underline inline-flex items-center gap-1"
                     >
-                      Get your token
+                      {t('supabase.getYourToken')}
                       <div className="i-ph:arrow-square-out w-4 h-4" />
                     </a>
                   </div>
@@ -145,7 +149,7 @@ export function SupabaseConnection() {
 
                 <div className="flex justify-end gap-2 mt-6">
                   <DialogClose asChild>
-                    <DialogButton type="secondary">Cancel</DialogButton>
+                    <DialogButton type="secondary">{t('cancel')}</DialogButton>
                   </DialogClose>
                   <button
                     onClick={handleConnect}
@@ -160,12 +164,12 @@ export function SupabaseConnection() {
                     {connecting ? (
                       <>
                         <div className="i-ph:spinner-gap animate-spin" />
-                        Connecting...
+                        {t('supabase.connecting')}
                       </>
                     ) : (
                       <>
                         <div className="i-ph:plug-charging w-4 h-4" />
-                        Connect
+                        {t('supabase.connect')}
                       </>
                     )}
                   </button>
@@ -182,21 +186,23 @@ export function SupabaseConnection() {
                       crossOrigin="anonymous"
                       src="https://cdn.simpleicons.org/supabase"
                     />
-                    Supabase Connection
+                    {t('supabase.connection')}
                   </DialogTitle>
                 </div>
 
                 <div className="flex items-center gap-4 p-3 bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-lg">
                   <div>
                     <h4 className="text-sm font-medium text-bolt-elements-textPrimary">{supabaseConn.user?.email}</h4>
-                    <p className="text-xs text-bolt-elements-textSecondary">Role: {supabaseConn.user?.role}</p>
+                    <p className="text-xs text-bolt-elements-textSecondary">
+                      {t('supabase.role')}: {supabaseConn.user?.role}
+                    </p>
                   </div>
                 </div>
 
                 {fetchingStats ? (
                   <div className="flex items-center gap-2 text-sm text-bolt-elements-textSecondary">
                     <div className="i-ph:spinner-gap w-4 h-4 animate-spin" />
-                    Fetching projects...
+                    {t('supabase.fetchingProjects')}
                   </div>
                 ) : (
                   <div>
@@ -206,7 +212,7 @@ export function SupabaseConnection() {
                         className="bg-transparent text-left text-sm font-medium text-bolt-elements-textPrimary flex items-center gap-2"
                       >
                         <div className="i-ph:database w-4 h-4" />
-                        Your Projects ({supabaseConn.stats?.totalProjects || 0})
+                        {t('supabase.yourProjects')} ({supabaseConn.stats?.totalProjects || 0})
                         <div
                           className={classNames(
                             'i-ph:caret-down w-4 h-4 transition-transform',
@@ -218,17 +224,17 @@ export function SupabaseConnection() {
                         <button
                           onClick={() => fetchSupabaseStats(supabaseConn.token)}
                           className="px-2 py-1 rounded-md text-xs bg-[#F0F0F0] dark:bg-[#252525] text-bolt-elements-textSecondary hover:bg-[#E5E5E5] dark:hover:bg-[#333333] flex items-center gap-1"
-                          title="重新整理專案列表"
+                          title={t('supabase.refreshProjects')}
                         >
                           <div className="i-ph:arrows-clockwise w-3 h-3" />
-                          Refresh
+                          {t('refresh')}
                         </button>
                         <button
                           onClick={() => handleCreateProject()}
                           className="px-2 py-1 rounded-md text-xs bg-[#3ECF8E] text-white hover:bg-[#3BBF84] flex items-center gap-1"
                         >
                           <div className="i-ph:plus w-3 h-3" />
-                          New Project
+                          {t('supabase.newProject')}
                         </button>
                       </div>
                     </div>
@@ -237,7 +243,7 @@ export function SupabaseConnection() {
                       <>
                         {!supabaseConn.selectedProjectId && (
                           <div className="mb-2 p-3 bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-lg text-sm text-bolt-elements-textSecondary">
-                            Select a project or create a new one for this chat
+                            {t('supabase.selectProject')}
                           </div>
                         )}
 
@@ -270,10 +276,10 @@ export function SupabaseConnection() {
                                     {supabaseConn.selectedProjectId === project.id ? (
                                       <span className="flex items-center gap-1">
                                         <div className="i-ph:check w-3 h-3" />
-                                        Selected
+                                        {t('supabase.selected')}
                                       </span>
                                     ) : (
-                                      'Select'
+                                      t('supabase.select')
                                     )}
                                   </button>
                                 </div>
@@ -283,7 +289,7 @@ export function SupabaseConnection() {
                         ) : (
                           <div className="text-sm text-bolt-elements-textSecondary flex items-center gap-2">
                             <div className="i-ph:info w-4 h-4" />
-                            No projects found
+                            {t('supabase.noProjectsFound')}
                           </div>
                         )}
                       </>
@@ -293,11 +299,11 @@ export function SupabaseConnection() {
 
                 <div className="flex justify-end gap-2 mt-6">
                   <DialogClose asChild>
-                    <DialogButton type="secondary">Close</DialogButton>
+                    <DialogButton type="secondary">{t('close')}</DialogButton>
                   </DialogClose>
                   <DialogButton type="danger" onClick={handleDisconnect}>
                     <div className="i-ph:plugs w-4 h-4" />
-                    Disconnect
+                    {t('supabase.disconnect')}
                   </DialogButton>
                 </div>
               </div>

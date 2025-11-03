@@ -1,6 +1,7 @@
 import React from 'react';
 import { classNames } from '~/utils/classNames';
 import { motion } from 'framer-motion';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface BreadcrumbItem {
   label: string;
@@ -24,6 +25,7 @@ export function Breadcrumbs({
   maxItems = 0,
   renderItem,
 }: BreadcrumbsProps) {
+  const { t } = useI18n('common');
   const displayItems =
     maxItems > 0 && items.length > maxItems
       ? [
@@ -76,7 +78,7 @@ export function Breadcrumbs({
   };
 
   return (
-    <nav className={classNames('flex items-center', className)} aria-label="麵包屑導航">
+    <nav className={classNames('flex items-center', className)} aria-label={t('ui.breadcrumbNavigation')}>
       <ol className="flex items-center gap-1.5">
         {displayItems.map((item, index) => {
           const isLast = index === displayItems.length - 1;

@@ -18,6 +18,10 @@
     "title": "Start a New Chat",
     "description": "Select a model and start chatting"
   },
+  "intro": {
+    "title": "Where ideas begin",
+    "description": "Bring ideas to life in seconds or get help with existing projects."
+  },
   "history": {
     "title": "Chat History",
     "empty": "No chat history",
@@ -31,7 +35,37 @@
   "model": {
     "select": "Select Model",
     "current": "Current Model",
-    "switch": "Switch Model"
+    "switch": "Switch Model",
+    "settings": "Model Settings",
+    "loading": "Loading models..."
+  },
+  "provider": {
+    "select": "Select provider",
+    "search": "Search providers... (⌘K to clear)",
+    "searchLabel": "Search providers",
+    "noMatch": "No providers match \"{{query}}\"",
+    "noProviders": "No providers found",
+    "searchHelp": "Try searching for provider names like \"OpenAI\", \"Anthropic\", or \"Google\""
+  },
+  "modelSelector": {
+    "search": "Search models... (⌘K to clear)",
+    "searchLabel": "Search models",
+    "clearSearch": "Clear search",
+    "freeOnly": "Free models only",
+    "freeModel": "Free model",
+    "selected": "Selected",
+    "noMatch": "No models match \"{{query}}\"{{freeFilter}}",
+    "noModels": "No models available",
+    "noFreeModels": "No free models available",
+    "searchHelp": "Try searching for model names, context sizes (e.g., \"128k\", \"1M\"), or capabilities",
+    "disableFilter": "Try disabling the \"Free models only\" filter to see all available models",
+    "modelsFound": "{{count}} model found",
+    "modelsFound_plural": "{{count}} models found",
+    "freeModelsCount": "{{count}} free model",
+    "freeModelsCount_plural": "{{count}} free models",
+    "bestMatches": "(showing best matches)",
+    "tokens": "tokens",
+    "match": "{{percent}}% match"
   },
   "attachment": {
     "add": "Add Attachment",
@@ -43,5 +77,67 @@
     "markdown": "Export as Markdown",
     "json": "Export as JSON",
     "text": "Export as Text"
+  },
+  "input": {
+    "placeholderBuild": "How can Bolt help you today?",
+    "placeholderDiscuss": "What would you like to discuss?",
+    "newLineHint": "Use <kbd>Shift</kbd> + <kbd>Return</kbd> for a new line"
+  },
+  "features": {
+    "webSearch": "Web Search",
+    "webSearchEnabled": "Web search enabled",
+    "webSearchDisabled": "Web search disabled",
+    "webSearchToggled": "Web search {{status}}",
+    "webSearchEnabled_status": "enabled",
+    "webSearchDisabled_status": "disabled",
+    "enhancePrompt": "Enhance Prompt",
+    "enhancePromptSuccess": "Prompt enhanced!",
+    "discussMode": "Discussion mode",
+    "discuss": "Discuss"
+  },
+  "inspector": {
+    "selectedForInspection": "selected for inspection",
+    "clear": "Clear"
+  },
+  "scroll": {
+    "goToLastMessage": "Go to last message"
+  },
+  "sidebar": {
+    "guest": "Guest",
+    "user": "User",
+    "startNewChat": "Start New Chat",
+    "enterSelectionMode": "Enter selection mode",
+    "exitSelectionMode": "Exit selection mode",
+    "searchChats": "Search chats...",
+    "searchChatsLabel": "Search chats",
+    "yourChats": "Your Chats",
+    "unselectAll": "Unselect All",
+    "deleteSelected": "Delete Selected",
+    "noChats": "No previous chats",
+    "noMatchingItems": "No matching items found",
+    "deleteChat": "Delete Chat?",
+    "deleteConfirmSingle": "You are about to delete",
+    "deleteConfirmQuestion": "Are you sure you want to delete this chat?",
+    "deleteMultipleChats": "Delete Selected Chats?",
+    "deleteConfirmMultiple": "You are about to delete {{count}} chats:",
+    "deleteConfirmMultipleQuestion": "Are you sure you want to delete these chats?",
+    "chatDeleted": "Chat deleted successfully",
+    "deleteFailed": "Failed to delete chat",
+    "selectAtLeastOne": "Please select at least one chat to delete",
+    "selectedChatsNotFound": "Selected chats not found",
+    "actions": {
+      "export": "Export",
+      "duplicate": "Duplicate",
+      "rename": "Rename",
+      "delete": "Delete"
+    }
+  },
+  "mcpTools": {
+    "title": "Available MCP Tools",
+    "dialogTitle": "MCP Tools",
+    "checkAvailability": "Check availability",
+    "noServers": "No MCP servers configured",
+    "noServersHint": "Configure servers in Settings → MCP Servers",
+    "close": "Close"
   }
 }

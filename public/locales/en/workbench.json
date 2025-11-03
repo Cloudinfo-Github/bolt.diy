@@ -54,14 +54,73 @@
     "stopped": "Stopped"
   },
   "messages": {
-    "fileCreated": "File Created",
+    "fileCreated": "File created successfully",
     "fileSaved": "File Saved",
     "fileDeleted": "File Deleted",
-    "folderCreated": "Folder Created",
+    "folderCreated": "Folder created successfully",
     "folderDeleted": "Folder Deleted",
     "buildSuccess": "Build Successful",
     "buildFailed": "Build Failed",
     "serverStarted": "Server Started",
-    "serverStopped": "Server Stopped"
+    "serverStopped": "Server Stopped",
+    "fileUploadSuccess": "File {{filename}} uploaded successfully",
+    "fileUploadFailed": "Failed to upload file {{filename}}",
+    "fileUploadError": "Error uploading {{filename}}",
+    "fileCreateFailed": "Failed to create file",
+    "folderCreateFailed": "Failed to create folder",
+    "fileDeleteFailed": "Failed to delete {{type}}",
+    "fileDeleteError": "Error deleting {{type}}",
+    "fileDeleteSuccess": "{{type}} deleted successfully",
+    "fileLockSuccess": "File locked successfully",
+    "fileLockFailed": "Failed to lock file",
+    "fileLockError": "Error locking file",
+    "fileUnlockSuccess": "File unlocked successfully",
+    "fileUnlockFailed": "Failed to unlock file",
+    "fileUnlockError": "Error unlocking file",
+    "folderLockSuccess": "Folder locked successfully",
+    "folderLockFailed": "Failed to lock folder",
+    "folderLockError": "Error locking folder",
+    "folderUnlockSuccess": "Folder unlocked successfully",
+    "folderUnlockFailed": "Failed to unlock folder",
+    "folderUnlockError": "Error unlocking folder",
+    "confirmDelete": "Are you sure you want to delete {{type}}: {{name}}?"
+  },
+  "fileTree": {
+    "enterFileName": "Enter file name...",
+    "enterFolderName": "Enter folder name..."
+  },
+  "lockManager": {
+    "noSelection": "No items selected for unlocking.",
+    "unlockSuccess": "Unlocked {{count}} selected items.",
+    "searchPlaceholder": "Search...",
+    "filterAll": "All",
+    "filterFiles": "Files",
+    "filterFolders": "Folders",
+    "selectAll": "Select all items",
+    "selectAllLabel": "All",
+    "unlockAll": "Unlock All",
+    "unlockAllTitle": "Unlock all selected items",
+    "noLockedItems": "No locked items found",
+    "unlockTitle": "Unlock",
+    "itemUnlocked": "{{path}} unlocked",
+    "itemsCount": "{{total}} items • {{selected}} selected"
+  },
+  "expoQrModal": {
+    "title": "Preview on Your Mobile Device",
+    "description": "Scan this QR code with the Expo Go app on your mobile device to open your project.",
+    "noUrl": "No Expo URL detected."
+  },
+  "preview": {
+    "dragToResize": "Drag to resize width",
+    "urlPath": "URL Path",
+    "toggleResponsive": "Switch to responsive mode",
+    "toggleDevice": "Switch to device mode",
+    "showQrCode": "Show QR Code",
+    "windowOptions": "New window options",
+    "windowOptionsTitle": "Window Options"
+  },
+  "type": {
+    "file": "file",
+    "folder": "folder"
   }
 }

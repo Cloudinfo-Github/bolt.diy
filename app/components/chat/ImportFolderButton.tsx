@@ -6,6 +6,7 @@ import { createChatFromFolder } from '~/utils/folderImport';
 import { logStore } from '~/lib/stores/logs'; // Assuming logStore is imported from this location
 import { Button } from '~/components/ui/Button';
 import { classNames } from '~/utils/classNames';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface ImportFolderButtonProps {
   className?: string;
@@ -13,6 +14,7 @@ interface ImportFolderButtonProps {
 }
 
 export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ className, importChat }) => {
+  const { t } = useI18n('file');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +30,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
     if (filteredFiles.length === 0) {
       const error = new Error('No valid files found');
       logStore.logError('File import failed - no valid files', error, { folderName: 'Unknown Folder' });
-      toast.error('所選資料夾中找不到檔案');
+      toast.error(t('import.folder.noFilesFound'));
 
       return;
     }
@@ -40,7 +42,10 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
         maxFiles: MAX_FILES,
       });
       toast.error(
-        `此資料夾包含 ${filteredFiles.length.toLocaleString()} 個檔案。本產品尚未針對大型專案進行最佳化。請選擇包含少於 ${MAX_FILES.toLocaleString()} 個檔案的資料夾。`,
+        t('import.folder.tooManyFiles', {
+          fileCount: filteredFiles.length.toLocaleString(),
+          maxFiles: MAX_FILES.toLocaleString(),
+        }),
       );
 
       return;
@@ -49,7 +54,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
     const folderName = filteredFiles[0]?.webkitRelativePath.split('/')[0] || 'Unknown Folder';
     setIsLoading(true);
 
-    const loadingToast = toast.loading(`正在匯入 ${folderName}...`);
+    const loadingToast = toast.loading(t('import.folder.importingProgress', { folderName }));
 
     try {
       const fileChecks = await Promise.all(
@@ -67,7 +72,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
       if (textFiles.length === 0) {
         const error = new Error('No text files found');
         logStore.logError('File import failed - no text files', error, { folderName });
-        toast.error('所選資料夾中找不到文字檔案');
+        toast.error(t('import.folder.noTextFilesFound'));
 
         return;
       }
@@ -77,7 +82,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
           folderName,
           binaryCount: binaryFilePaths.length,
         });
-        toast.info(`略過 ${binaryFilePaths.length} 個二進制檔案`);
+        toast.info(t('import.folder.skippingBinary', { count: binaryFilePaths.length }));
       }
 
       const messages = await createChatFromFolder(textFiles, binaryFilePaths, folderName);
@@ -91,11 +96,11 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
         textFileCount: textFiles.length,
         binaryFileCount: binaryFilePaths.length,
       });
-      toast.success('成功匯入資料夾');
+      toast.success(t('import.folder.success'));
     } catch (error) {
       logStore.logError('Failed to import folder', error, { folderName });
       console.error('Failed to import folder:', error);
-      toast.error('無法匯入資料夾');
+      toast.error(t('import.folder.error'));
     } finally {
       setIsLoading(false);
       toast.dismiss(loadingToast);
@@ -119,7 +124,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
           const input = document.getElementById('folder-import');
           input?.click();
         }}
-        title="匯入資料夾"
+        title={t('import.folder.buttonTitle')}
         variant="default"
         size="lg"
         className={classNames(
@@ -134,7 +139,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
         disabled={isLoading}
       >
         <span className="i-ph:upload-simple w-4 h-4" />
-        {isLoading ? '匯入中...' : '匯入資料夾'}
+        {isLoading ? t('import.folder.importing') : t('import.folder.button')}
       </Button>
     </>
   );

@@ -4,12 +4,14 @@ import { useStore } from '@nanostores/react';
 import { classNames } from '~/utils/classNames';
 import { profileStore } from '~/lib/stores/profile';
 import type { TabType, Profile } from './types';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface AvatarDropdownProps {
   onSelectTab: (tab: TabType) => void;
 }
 
 export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
+  const { t } = useI18n('settings');
   const profile = useStore(profileStore) as Profile;
 
   return (
@@ -23,7 +25,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
           {profile?.avatar ? (
             <img
               src={profile.avatar}
-              alt={profile?.username || '個人資料'}
+              alt={profile?.username || t('avatar.alt')}
               className="w-full h-full rounded-full object-cover"
               loading="eager"
               decoding="sync"
@@ -59,7 +61,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
               {profile?.avatar ? (
                 <img
                   src={profile.avatar}
-                  alt={profile?.username || '個人資料'}
+                  alt={profile?.username || t('avatar.alt')}
                   className={classNames('w-full h-full', 'object-cover', 'transform-gpu', 'image-rendering-crisp')}
                   loading="eager"
                   decoding="sync"
@@ -72,7 +74,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-medium text-sm text-gray-900 dark:text-white truncate">
-                {profile?.username || '訪客'}
+                {profile?.username || t('profile.guest')}
               </div>
               {profile?.bio && <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{profile.bio}</div>}
             </div>
@@ -91,7 +93,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             onClick={() => onSelectTab('profile')}
           >
             <div className="i-ph:user-circle w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
-            編輯個人資料
+            {t('avatar.editProfile')}
           </DropdownMenu.Item>
 
           <DropdownMenu.Item
@@ -107,7 +109,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             onClick={() => onSelectTab('settings')}
           >
             <div className="i-ph:gear-six w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
-            設定
+            {t('avatar.settings')}
           </DropdownMenu.Item>
 
           <div className="my-1 border-t border-gray-200/50 dark:border-gray-800/50" />
@@ -127,7 +129,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             }
           >
             <div className="i-ph:bug w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
-            回報錯誤
+            {t('avatar.reportBug')}
           </DropdownMenu.Item>
 
           <DropdownMenu.Item
@@ -150,7 +152,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             }}
           >
             <div className="i-ph:download w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
-            下載除錯日誌
+            {t('avatar.downloadDebugLog')}
           </DropdownMenu.Item>
 
           <DropdownMenu.Item
@@ -166,7 +168,7 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             onClick={() => window.open('https://stackblitz-labs.github.io/bolt.diy/', '_blank')}
           >
             <div className="i-ph:question w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
-            說明與文件
+            {t('avatar.helpAndDocs')}
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

@@ -21,6 +21,7 @@ import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
 import { useStore } from '@nanostores/react';
 import { webSearchEnabledStore, updateWebSearchEnabled } from '~/lib/stores/settings';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -66,6 +67,7 @@ interface ChatBoxProps {
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
+  const { t } = useI18n('chat');
   const webSearchEnabled = useStore(webSearchEnabledStore);
 
   return (
@@ -160,13 +162,13 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             <code className="bg-accent-500 rounded-4px px-1.5 py-1 mr-0.5 text-white">
               {props?.selectedElement?.tagName}
             </code>
-            selected for inspection
+            {t('inspector.selectedForInspection')}
           </div>
           <button
             className="bg-transparent text-accent-500 pointer-auto"
             onClick={() => props.setSelectedElement?.(null)}
           >
-            Clear
+            {t('inspector.clear')}
           </button>
         </div>
       )}
@@ -240,7 +242,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             minHeight: props.TEXTAREA_MIN_HEIGHT,
             maxHeight: props.TEXTAREA_MAX_HEIGHT,
           }}
-          placeholder={props.chatMode === 'build' ? 'Bolt 今天能幫您什麼忙？' : '您想討論什麼？'}
+          placeholder={props.chatMode === 'build' ? t('input.placeholderBuild') : t('input.placeholderDiscuss')}
           translate="no"
         />
         <ClientOnly>
@@ -267,7 +269,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
             <McpTools />
             <IconButton
-              title={webSearchEnabled ? '網路搜尋已啟用' : '網路搜尋已停用'}
+              title={webSearchEnabled ? t('features.webSearchEnabled') : t('features.webSearchDisabled')}
               className={classNames(
                 'transition-all flex items-center gap-1 px-1.5',
                 webSearchEnabled
@@ -277,22 +279,30 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               onClick={() => {
                 const newValue = !webSearchEnabled;
                 updateWebSearchEnabled(newValue);
-                toast.success(`網路搜尋已${newValue ? '啟用' : '停用'}`);
+                toast.success(
+                  t('features.webSearchToggled', {
+                    status: newValue ? t('features.webSearchEnabled_status') : t('features.webSearchDisabled_status'),
+                  }),
+                );
               }}
             >
               <div className="i-ph:magnifying-glass text-xl" />
-              {webSearchEnabled ? <span className="text-xs">搜尋</span> : <span />}
+              {webSearchEnabled ? <span className="text-xs">{t('features.webSearch')}</span> : <span />}
             </IconButton>
-            <IconButton title="上傳檔案" className="transition-all" onClick={() => props.handleFileUpload()}>
+            <IconButton
+              title={t('attachment.upload')}
+              className="transition-all"
+              onClick={() => props.handleFileUpload()}
+            >
               <div className="i-ph:paperclip text-xl"></div>
             </IconButton>
             <IconButton
-              title="增強提示詞"
+              title={t('features.enhancePrompt')}
               disabled={props.input.length === 0 || props.enhancingPrompt}
               className={classNames('transition-all', props.enhancingPrompt ? 'opacity-100' : '')}
               onClick={() => {
                 props.enhancePrompt?.();
-                toast.success('提示詞已增強！');
+                toast.success(t('features.enhancePromptSuccess'));
               }}
             >
               {props.enhancingPrompt ? (
@@ -310,7 +320,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             />
             {props.chatStarted && (
               <IconButton
-                title="討論模式"
+                title={t('features.discussMode')}
                 className={classNames(
                   'transition-all flex items-center gap-1 px-1.5',
                   props.chatMode === 'discuss'
@@ -322,11 +332,11 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 }}
               >
                 <div className={`i-ph:chats text-xl`} />
-                {props.chatMode === 'discuss' ? <span>討論</span> : <span />}
+                {props.chatMode === 'discuss' ? <span>{t('features.discuss')}</span> : <span />}
               </IconButton>
             )}
             <IconButton
-              title="模型設定"
+              title={t('model.settings')}
               className={classNames('transition-all flex items-center gap-1', {
                 'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent':
                   props.isModelSettingsCollapsed,
@@ -341,10 +351,10 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             </IconButton>
           </div>
           {props.input.length > 3 ? (
-            <div className="text-xs text-bolt-elements-textTertiary">
-              Use <kbd className="kdb px-1.5 py-0.5 rounded bg-bolt-elements-background-depth-2">Shift</kbd> +{' '}
-              <kbd className="kdb px-1.5 py-0.5 rounded bg-bolt-elements-background-depth-2">Return</kbd> a new line
-            </div>
+            <div
+              className="text-xs text-bolt-elements-textTertiary"
+              dangerouslySetInnerHTML={{ __html: t('input.newLineHint') }}
+            />
           ) : null}
           <SupabaseConnection />
           <ExpoQrModal open={props.qrModalOpen} onClose={() => props.setQrModalOpen(false)} />

@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { DeployButton } from '~/components/deploy/DeployButton';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface HeaderActionButtonsProps {
   chatStarted: boolean;
 }
 
 export function HeaderActionButtons({ chatStarted: _chatStarted }: HeaderActionButtonsProps) {
+  const { t } = useI18n('common');
   const [activePreviewIndex] = useState(0);
   const previews = useStore(workbenchStore.previews);
   const activePreview = previews[activePreviewIndex];
@@ -27,10 +29,10 @@ export function HeaderActionButtons({ chatStarted: _chatStarted }: HeaderActionB
               window.open('https://github.com/stackblitz-labs/bolt.diy/issues/new?template=bug_report.yml', '_blank')
             }
             className="rounded-l-md items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-3 py-1.5 text-xs bg-accent-500 text-white hover:text-bolt-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-bolt-elements-button-primary-backgroundHover outline-accent-500 flex gap-1.5"
-            title="回報錯誤"
+            title={t('debug.reportBug')}
           >
             <div className="i-ph:bug" />
-            <span>回報錯誤</span>
+            <span>{t('debug.reportBug')}</span>
           </button>
           <div className="w-px bg-bolt-elements-borderColor" />
           <button
@@ -43,10 +45,10 @@ export function HeaderActionButtons({ chatStarted: _chatStarted }: HeaderActionB
               }
             }}
             className="rounded-r-md items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-3 py-1.5 text-xs bg-accent-500 text-white hover:text-bolt-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-bolt-elements-button-primary-backgroundHover outline-accent-500 flex gap-1.5"
-            title="下載除錯日誌"
+            title={t('debug.downloadDebugLog')}
           >
             <div className="i-ph:download" />
-            <span>除錯日誌</span>
+            <span>{t('debug.debugLog')}</span>
           </button>
         </div>
       )}

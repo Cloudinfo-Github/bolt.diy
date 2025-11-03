@@ -3,6 +3,7 @@ import { workbenchStore } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
 import { Checkbox } from '~/components/ui/Checkbox';
 import { toast } from '~/components/ui/use-toast';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface LockedItem {
   path: string;
@@ -10,6 +11,7 @@ interface LockedItem {
 }
 
 export function LockManager() {
+  const { t } = useI18n('workbench');
   const [lockedItems, setLockedItems] = useState<LockedItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<'all' | 'files' | 'folders'>('all');
@@ -105,7 +107,7 @@ export function LockManager() {
   // Handle unlocking selected items
   const handleUnlockSelected = () => {
     if (selectedItems.size === 0) {
-      toast.error('沒有選擇要解鎖的項目。');
+      toast.error(t('lockManager.noSelection'));
       return;
     }
 
@@ -125,7 +127,7 @@ export function LockManager() {
     });
 
     if (unlockedCount > 0) {
-      toast.success(`已解鎖 ${unlockedCount} 個選定項目。`);
+      toast.success(t('lockManager.unlockSuccess', { count: unlockedCount }));
       setSelectedItems(new Set()); // Clear selection after unlocking
     }
   };
@@ -148,7 +150,7 @@ export function LockManager() {
           <span className="absolute left-2 top-1/2 -translate-y-1/2 text-bolt-elements-textTertiary i-ph:magnifying-glass text-xs pointer-events-none" />
           <input
             type="text"
-            placeholder="搜尋..."
+            placeholder={t('lockManager.searchPlaceholder')}
             className="w-full text-xs pl-6 pr-2 py-0.5 h-6 bg-bolt-elements-background-depth-2 text-bolt-elements-textPrimary rounded border border-bolt-elements-borderColor focus:outline-none"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -161,9 +163,9 @@ export function LockManager() {
           value={filter}
           onChange={(e) => setFilter(e.target.value as any)}
         >
-          <option value="all">全部</option>
-          <option value="files">檔案</option>
-          <option value="folders">資料夾</option>
+          <option value="all">{t('lockManager.filterAll')}</option>
+          <option value="files">{t('lockManager.filterFiles')}</option>
+          <option value="folders">{t('lockManager.filterFolders')}</option>
         </select>
       </div>
 
@@ -174,18 +176,18 @@ export function LockManager() {
             checked={selectAllCheckedState}
             onCheckedChange={handleSelectAll}
             className="w-3 h-3 rounded border-bolt-elements-borderColor mr-2"
-            aria-label="選擇所有項目"
+            aria-label={t('lockManager.selectAll')}
             disabled={filteredAndSortedItems.length === 0} // Disable if no items to select
           />
-          <span>全部</span>
+          <span>{t('lockManager.selectAllLabel')}</span>
         </div>
         {selectedItems.size > 0 && (
           <button
             className="ml-auto px-2 py-0.5 rounded bg-bolt-elements-button-secondary-background hover:bg-bolt-elements-button-secondary-backgroundHover text-bolt-elements-button-secondary-text text-xs flex items-center gap-1"
             onClick={handleUnlockSelected}
-            title="解鎖所有選定項目"
+            title={t('lockManager.unlockAllTitle')}
           >
-            全部解鎖
+            {t('lockManager.unlockAll')}
           </button>
         )}
         <div></div>
@@ -196,7 +198,7 @@ export function LockManager() {
         {filteredAndSortedItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-bolt-elements-textTertiary text-xs gap-2">
             <span className="i-ph:lock-open-duotone text-lg opacity-50" />
-            <span>未找到已鎖定的項目</span>
+            <span>{t('lockManager.noLockedItems')}</span>
           </div>
         ) : (
           <ul className="space-y-1">
@@ -239,9 +241,9 @@ export function LockManager() {
                       workbenchStore.unlockFolder(item.path);
                     }
 
-                    toast.success(`${item.path.replace('/home/project/', '')} 已解鎖`);
+                    toast.success(t('lockManager.itemUnlocked', { path: item.path.replace('/home/project/', '') }));
                   }}
-                  title="解鎖"
+                  title={t('lockManager.unlockTitle')}
                 >
                   <span className="i-ph:lock-open text-xs" />
                 </button>
@@ -253,9 +255,7 @@ export function LockManager() {
 
       {/* Footer */}
       <div className="px-2 py-1 border-t border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 text-xs text-bolt-elements-textTertiary flex justify-between items-center">
-        <div>
-          {filteredAndSortedItems.length} 個項目 • 已選擇 {selectedItems.size} 個
-        </div>
+        <div>{t('lockManager.itemsCount', { total: filteredAndSortedItems.length, selected: selectedItems.size })}</div>
       </div>
     </div>
   );

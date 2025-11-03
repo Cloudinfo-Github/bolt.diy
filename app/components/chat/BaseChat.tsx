@@ -33,6 +33,7 @@ import { ChatBox } from './ChatBox';
 import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import LlmErrorAlert from './LLMApiAlert';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 const TEXTAREA_MIN_HEIGHT = 76;
 
@@ -133,6 +134,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     },
     ref,
   ) => {
+    const { t } = useI18n('chat');
     const TEXTAREA_MAX_HEIGHT = chatStarted ? 400 : 200;
     const [apiKeys, setApiKeys] = useState<Record<string, string>>(getApiKeysFromCookies());
     const [modelList, setModelList] = useState<ModelInfo[]>([]);
@@ -351,10 +353,10 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
             {!chatStarted && (
               <div id="intro" className="mt-[16vh] max-w-2xl mx-auto text-center px-4 lg:px-0">
                 <h1 className="text-3xl lg:text-6xl font-bold text-bolt-elements-textPrimary mb-4 animate-fade-in">
-                  創意從這裡開始
+                  {t('intro.title')}
                 </h1>
                 <p className="text-md lg:text-xl mb-8 text-bolt-elements-textSecondary animate-fade-in animation-delay-200">
-                  在幾秒鐘內將創意變為現實，或獲得現有專案的協助。
+                  {t('intro.description')}
                 </p>
               </div>
             )}
@@ -471,7 +473,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
             <div className="flex flex-col justify-center">
               {!chatStarted && (
                 <div className="flex justify-center gap-2">
-                  {ImportButtons(importChat)}
+                  <ImportButtons importChat={importChat} />
                   <GitCloneButton importChat={importChat} />
                 </div>
               )}
@@ -503,6 +505,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
 );
 
 function ScrollToBottom() {
+  const { t } = useI18n('chat');
   const { isAtBottom, scrollToBottom } = useStickToBottomContext();
 
   return (
@@ -513,7 +516,7 @@ function ScrollToBottom() {
           className="sticky z-50 bottom-0 left-0 right-0 text-4xl rounded-lg px-1.5 py-0.5 flex items-center justify-center mx-auto gap-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor text-bolt-elements-textPrimary text-sm"
           onClick={() => scrollToBottom()}
         >
-          Go to last message
+          {t('scroll.goToLastMessage')}
           <span className="i-ph:arrow-down animate-bounce" />
         </button>
       </>

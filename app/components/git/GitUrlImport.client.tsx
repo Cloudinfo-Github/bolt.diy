@@ -10,6 +10,7 @@ import { useChatHistory } from '~/lib/persistence';
 import { createCommandsMessage, detectProjectCommands, escapeBoltTags } from '~/utils/projectCommands';
 import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { toast } from 'react-toastify';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 const IGNORE_PATTERNS = [
   'node_modules/**',
@@ -37,6 +38,7 @@ const IGNORE_PATTERNS = [
 ];
 
 export function GitUrlImport() {
+  const { t } = useI18n('repository');
   const [searchParams] = useSearchParams();
   const { ready: historyReady, importChat } = useChatHistory();
   const { ready: gitReady, gitClone } = useGit();
@@ -75,7 +77,7 @@ export function GitUrlImport() {
           const filesMessage: Message = {
             role: 'assistant',
             content: `Cloning the repo ${repoUrl} into ${workdir}
-<boltArtifact id="imported-files" title="Git 複製的檔案"  type="bundled">
+<boltArtifact id="imported-files" title="${t('gitClone.clonedFiles')}"  type="bundled">
 ${fileContents
   .map(
     (file) =>
@@ -100,11 +102,13 @@ ${escapeBoltTags(file.content)}
             messages.push(commandsMessage);
           }
 
-          await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages, { gitUrl: repoUrl });
+          await importChat(`${t('gitClone.gitProject')}:${repoUrl.split('/').slice(-1)[0]}`, messages, {
+            gitUrl: repoUrl,
+          });
         }
       } catch (error) {
         console.error('Error during import:', error);
-        toast.error('無法匯入儲存庫');
+        toast.error(t('gitClone.failedToImport'));
         setLoading(false);
         window.location.href = '/';
 
@@ -139,7 +143,7 @@ ${escapeBoltTags(file.content)}
       {() => (
         <>
           <Chat />
-          {loading && <LoadingOverlay message="正在複製儲存庫，請稍候..." />}
+          {loading && <LoadingOverlay message={t('gitClone.cloningRepository')} />}
         </>
       )}
     </ClientOnly>

@@ -4,8 +4,10 @@ import { classNames } from '~/utils/classNames';
 import { profileStore, updateProfile } from '~/lib/stores/profile';
 import { toast } from 'react-toastify';
 import { debounce } from '~/utils/debounce';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 export default function ProfileTab() {
+  const { t } = useI18n('settings');
   const profile = useStore(profileStore);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -14,10 +16,10 @@ export default function ProfileTab() {
     debounce((field: 'username' | 'bio', value: string) => {
       updateProfile({ [field]: value });
 
-      const fieldNames = { username: '使用者名稱', bio: '個人簡介' };
-      toast.success(`${fieldNames[field]}已更新`);
+      const message = field === 'username' ? t('profile.usernameUpdated') : t('profile.bioUpdated');
+      toast.success(message);
     }, 1000),
-    [],
+    [t],
   );
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,19 +39,19 @@ export default function ProfileTab() {
         const base64String = reader.result as string;
         updateProfile({ avatar: base64String });
         setIsUploading(false);
-        toast.success('個人資料圖片已更新');
+        toast.success(t('profile.avatarUpdated'));
       };
 
       reader.onerror = () => {
         console.error('Error reading file:', reader.error);
         setIsUploading(false);
-        toast.error('更新個人資料圖片失敗');
+        toast.error(t('profile.avatarUpdateFailed'));
       };
       reader.readAsDataURL(file);
     } catch (error) {
       console.error('Error uploading avatar:', error);
       setIsUploading(false);
-      toast.error('更新個人資料圖片失敗');
+      toast.error(t('profile.avatarUpdateFailed'));
     }
   };
 
@@ -83,7 +85,7 @@ export default function ProfileTab() {
               {profile.avatar ? (
                 <img
                   src={profile.avatar}
-                  alt="個人資料"
+                  alt={t('profile.avatar')}
                   className={classNames(
                     'w-full h-full object-cover',
                     'transition-all duration-300 ease-out',
@@ -119,14 +121,18 @@ export default function ProfileTab() {
             </div>
 
             <div className="flex-1 pt-1">
-              <label className="block text-base font-medium text-gray-900 dark:text-gray-100 mb-1">個人資料圖片</label>
-              <p className="text-sm text-gray-500 dark:text-gray-400">上傳個人資料圖片或頭像</p>
+              <label className="block text-base font-medium text-gray-900 dark:text-gray-100 mb-1">
+                {t('profile.avatar')}
+              </label>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('profile.avatarDescription')}</p>
             </div>
           </div>
 
           {/* Username Input */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">使用者名稱</label>
+            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+              {t('profile.username')}
+            </label>
             <div className="relative group">
               <div className="absolute left-3.5 top-1/2 -translate-y-1/2">
                 <div className="i-ph:user-circle-fill w-5 h-5 text-gray-400 dark:text-gray-500 transition-colors group-focus-within:text-purple-500" />
@@ -144,14 +150,16 @@ export default function ProfileTab() {
                   'focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50',
                   'transition-all duration-300 ease-out',
                 )}
-                placeholder="輸入您的使用者名稱"
+                placeholder={t('profile.usernamePlaceholder')}
               />
             </div>
           </div>
 
           {/* Bio Input */}
           <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">個人簡介</label>
+            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+              {t('profile.bio')}
+            </label>
             <div className="relative group">
               <div className="absolute left-3.5 top-3">
                 <div className="i-ph:text-aa w-5 h-5 text-gray-400 dark:text-gray-500 transition-colors group-focus-within:text-purple-500" />
@@ -170,7 +178,7 @@ export default function ProfileTab() {
                   'resize-none',
                   'h-32',
                 )}
-                placeholder="介紹您自己"
+                placeholder={t('profile.bioPlaceholder')}
               />
             </div>
           </div>

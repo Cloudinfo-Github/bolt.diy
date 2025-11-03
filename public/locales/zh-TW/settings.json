@@ -20,6 +20,78 @@
   "reset": "重置",
   "apply": "套用",
   "close": "關閉",
+  "back": "返回",
+  "retry": "重試",
+  "loading": "載入中...",
+  "error": "錯誤",
+  "success": "成功",
+  "controlPanel": {
+    "title": "控制面板",
+    "tabManagement": "標籤管理",
+    "newFeatures": "{{count}} 個新功能待探索",
+    "newFeatures_one": "1 個新功能待探索",
+    "newFeatures_other": "{{count}} 個新功能待探索",
+    "unreadNotifications": "{{count}} 則未讀通知",
+    "unreadNotifications_one": "1 則未讀通知",
+    "unreadNotifications_other": "{{count}} 則未讀通知",
+    "connectionDisconnected": "連接中斷",
+    "highLatency": "偵測到高延遲",
+    "connectionIssue": "偵測到連接問題"
+  },
+  "tabs": {
+    "profile": "個人資料",
+    "settings": "設定",
+    "notifications": "通知",
+    "features": "功能",
+    "data": "資料管理",
+    "cloudProviders": "雲端提供者",
+    "localProviders": "本地提供者",
+    "github": "GitHub",
+    "gitlab": "GitLab",
+    "netlify": "Netlify",
+    "vercel": "Vercel",
+    "supabase": "Supabase",
+    "eventLogs": "事件日誌",
+    "mcp": "MCP 伺服器"
+  },
+  "tabDescriptions": {
+    "profile": "管理您的個人資料和帳戶設定",
+    "settings": "配置應用程式偏好設定",
+    "notifications": "查看和管理您的通知",
+    "features": "探索新功能和即將推出的功能",
+    "data": "管理您的資料和儲存空間",
+    "cloudProviders": "配置雲端 AI 提供者和模型",
+    "localProviders": "配置本地 AI 提供者和模型",
+    "github": "連接並管理 GitHub 整合",
+    "gitlab": "連接並管理 GitLab 整合",
+    "netlify": "配置 Netlify 部署設定",
+    "vercel": "管理 Vercel 專案和部署",
+    "supabase": "設定 Supabase 資料庫連接",
+    "eventLogs": "查看系統事件和日誌",
+    "mcp": "配置 MCP（模型上下文協定）伺服器"
+  },
+  "profile": {
+    "title": "個人資料",
+    "avatar": "個人資料圖片",
+    "avatarDescription": "上傳個人資料圖片或頭像",
+    "username": "使用者名稱",
+    "usernamePlaceholder": "輸入您的使用者名稱",
+    "bio": "個人簡介",
+    "bioPlaceholder": "介紹您自己",
+    "guest": "訪客",
+    "usernameUpdated": "使用者名稱已更新",
+    "bioUpdated": "個人簡介已更新",
+    "avatarUpdated": "個人資料圖片已更新",
+    "avatarUpdateFailed": "更新個人資料圖片失敗"
+  },
+  "avatar": {
+    "editProfile": "編輯個人資料",
+    "settings": "設定",
+    "reportBug": "回報錯誤",
+    "downloadDebugLog": "下載除錯日誌",
+    "helpAndDocs": "說明與文件",
+    "alt": "個人資料"
+  },
   "apiKeys": {
     "title": "API 金鑰",
     "add": "新增 API 金鑰",
@@ -64,12 +136,116 @@
       "network": "網路"
     }
   },
+  "features": {
+    "title": "功能",
+    "betaLabel": "測試版",
+    "experimentalLabel": "實驗性",
+    "coreFeaturesTitle": "核心功能",
+    "coreFeaturesDescription": "為達到最佳效能而預設啟用的必要功能",
+    "betaFeaturesTitle": "測試版功能",
+    "betaFeaturesDescription": "已準備好進行測試但可能仍有一些粗糙之處的新功能",
+    "mainBranchUpdates": {
+      "title": "主分支更新",
+      "description": "從主分支獲取最新更新",
+      "tooltip": "預設啟用以接收來自主開發分支的更新",
+      "enabled": "主分支更新已啟用",
+      "disabled": "主分支更新已停用"
+    },
+    "autoSelectTemplate": {
+      "title": "自動選擇範本",
+      "description": "自動選擇起始範本",
+      "tooltip": "預設啟用以自動選擇最合適的起始範本",
+      "enabled": "自動選擇範本已啟用",
+      "disabled": "自動選擇範本已停用"
+    },
+    "contextOptimization": {
+      "title": "上下文優化",
+      "description": "優化上下文以獲得更好的回應",
+      "tooltip": "預設啟用以改善 AI 回應品質",
+      "enabled": "上下文優化已啟用",
+      "disabled": "上下文優化已停用"
+    },
+    "eventLogs": {
+      "title": "事件日誌",
+      "description": "啟用詳細的事件日誌和歷史記錄",
+      "tooltip": "預設啟用以記錄系統事件和使用者動作的詳細日誌",
+      "enabled": "事件日誌已啟用",
+      "disabled": "事件日誌已停用"
+    },
+    "promptLibrary": {
+      "title": "提示詞庫",
+      "description": "從庫中選擇提示詞作為系統提示詞",
+      "templateUpdated": "提示詞範本已更新"
+    }
+  },
   "data": {
     "title": "資料",
     "export": "匯出資料",
     "import": "匯入資料",
     "clear": "清除資料",
-    "clearConfirm": "確定要清除所有資料嗎？"
+    "clearConfirm": "確定要清除所有資料嗎？",
+    "conversations": "對話",
+    "loadingDatabase": "載入對話資料庫中...",
+    "databaseUnavailable": "資料庫不可用",
+    "noConversations": "沒有可匯出的對話",
+    "exportAllChats": "匯出所有對話",
+    "exportAllChatsDescription": "將所有對話匯出為 JSON 檔案。",
+    "exportSelected": "匯出所選項目",
+    "exporting": "匯出中...",
+    "exportFailed": "匯出對話失敗",
+    "importAllChats": "匯入所有對話",
+    "importAllChatsDescription": "從 JSON 檔案匯入對話。",
+    "selectFile": "選擇檔案",
+    "importing": "匯入中...",
+    "importFailed": "匯入對話失敗",
+    "importSuccess": "成功匯入 {{count}} 個對話",
+    "invalidFile": "檔案格式無效",
+    "deleteAllChats": "刪除所有對話",
+    "deleteAllChatsDescription": "永久刪除您所有的對話記錄。",
+    "deleteAll": "全部刪除",
+    "deleting": "刪除中...",
+    "deleteFailed": "刪除對話失敗",
+    "deleteSuccess": "已成功刪除所有對話",
+    "settingsManagement": "設定管理",
+    "resetSettings": "重置設定",
+    "resetSettingsDescription": "將所有設定重置為預設值。",
+    "resetSettingsConfirm": "重置所有設定？",
+    "resetSettingsConfirmDescription": "這將把所有設定重置為預設值。此操作無法復原。",
+    "resetSettingsButton": "重置設定",
+    "resetting": "重置中...",
+    "resetSuccess": "設定已成功重置",
+    "resetFailed": "重置設定失敗",
+    "exportSettings": "匯出設定",
+    "exportSettingsDescription": "將您的設定匯出為 JSON 檔案。",
+    "exportingSettings": "匯出設定中...",
+    "exportSettingsFailed": "匯出設定失敗",
+    "exportSettingsSuccess": "設定已成功匯出",
+    "importSettings": "匯入設定",
+    "importSettingsDescription": "從 JSON 檔案匯入設定。",
+    "importingSettings": "匯入設定中...",
+    "importSettingsFailed": "匯入設定失敗",
+    "importSettingsSuccess": "設定已成功匯入",
+    "deleteAllChatsConfirm": "刪除所有對話？",
+    "deleteAllChatsConfirmDescription": "這將永久刪除您所有的對話記錄。此操作無法復原。",
+    "selectExportCategories": "選擇要匯出的設定",
+    "selectExportChats": "選擇要匯出的對話",
+    "categories": {
+      "core": "核心設定",
+      "coreDescription": "使用者資料和主要設定",
+      "providers": "提供者",
+      "providersDescription": "API 金鑰和提供者配置",
+      "features": "功能",
+      "featuresDescription": "功能標記和設定",
+      "ui": "UI",
+      "uiDescription": "使用者介面配置和偏好設定",
+      "connections": "連接",
+      "connectionsDescription": "外部服務連接",
+      "debug": "Debug",
+      "debugDescription": "除錯設定和日誌",
+      "updates": "更新",
+      "updatesDescription": "更新設定和通知"
+    },
+    "loadConversationsFailed": "載入對話失敗"
   },
   "about": {
     "title": "關於",
@@ -77,5 +253,184 @@
     "updates": "檢查更新",
     "documentation": "文件",
     "support": "支援"
+  },
+  "providers": {
+    "local": {
+      "title": "本地提供者",
+      "setupGuide": {
+        "title": "設定指南",
+        "description": "開始使用本地 AI 提供者",
+        "step1": "步驟 1：安裝 Ollama",
+        "step1Description": "從官方網站下載並安裝 Ollama",
+        "step2": "步驟 2：拉取模型",
+        "step2Description": "執行 'ollama pull llama2' 下載模型",
+        "step3": "步驟 3：啟動伺服器",
+        "step3Description": "Ollama 伺服器在安裝後會自動啟動"
+      },
+      "status": {
+        "title": "狀態儀表板",
+        "healthy": "健康",
+        "unhealthy": "不健康",
+        "unknown": "未知",
+        "checking": "檢查中...",
+        "available": "可用",
+        "unavailable": "不可用",
+        "provider": "提供者",
+        "status": "狀態",
+        "models": "模型",
+        "lastChecked": "最後檢查時間"
+      },
+      "provider": {
+        "healthy": "健康",
+        "unhealthy": "不健康",
+        "unknown": "未知"
+      },
+      "model": {
+        "size": "大小",
+        "modified": "修改時間",
+        "family": "家族"
+      },
+      "noModels": "沒有可用的模型",
+      "loadingModels": "載入模型中...",
+      "errorLoading": "載入提供者時發生錯誤",
+      "retryLoading": "重試"
+    },
+    "cloud": {
+      "title": "雲端提供者",
+      "description": "配置您的雲端 AI 提供者設定"
+    },
+    "azure": {
+      "title": "Azure OpenAI 配置",
+      "endpoint": "端點",
+      "apiKey": "API 金鑰",
+      "deploymentName": "部署名稱",
+      "apiVersion": "API 版本"
+    }
+  },
+  "github": {
+    "title": "GitHub 整合",
+    "notConnected": "尚未建立連線",
+    "testingConnection": "正在測試連線...",
+    "connectedAs": "已成功連線為 {{username}}",
+    "connectionTestFailed": "連線測試失敗",
+    "connectionFailed": "連線失敗：{{error}}",
+    "unknownError": "未知錯誤",
+    "checkingConnection": "正在檢查 GitHub 連線...",
+    "connectionError": "連線錯誤",
+    "reloadPage": "重新載入頁面",
+    "description": "連接您的 GitHub 帳戶以啟用進階儲存庫管理功能、統計資料和無縫整合。",
+    "integration": "GitHub 整合",
+    "integrationDescription": "使用進階儲存庫功能和全面統計資料管理您的 GitHub 整合",
+    "allRepositories": "所有儲存庫 ({{count}})",
+    "showMore": "顯示更多 {{count}} 個儲存庫",
+    "loadingStatsFailed": "無法載入統計資料",
+    "loadingStats": "正在載入 GitHub 統計資料...",
+    "loadingSteps": {
+      "user": "正在取得使用者資訊",
+      "repos": "正在載入儲存庫",
+      "stats": "正在計算統計資料",
+      "cache": "正在更新快取"
+    }
+  },
+  "gitlab": {
+    "title": "GitLab 整合",
+    "description": "連接您的 GitLab 帳戶",
+    "connect": "連接 GitLab",
+    "disconnect": "中斷連接",
+    "connected": "已連接",
+    "connectionStatus": "連接狀態",
+    "auth": {
+      "title": "GitLab 認證",
+      "description": "連接您的 GitLab 帳戶以啟用儲存庫管理",
+      "personalAccessToken": "個人存取權杖",
+      "tokenPlaceholder": "輸入您的 GitLab 個人存取權杖",
+      "tokenHelp": "建立一個具有 'api' 和 'read_repository' 範圍的權杖",
+      "createToken": "建立權杖",
+      "connect": "連接",
+      "cancel": "取消",
+      "connecting": "連接中...",
+      "connectionSuccess": "成功連接到 GitLab",
+      "connectionFailed": "連接 GitLab 失敗"
+    },
+    "repositories": {
+      "title": "儲存庫",
+      "loading": "載入儲存庫中...",
+      "empty": "找不到儲存庫",
+      "visibility": "可見性",
+      "stars": "星標",
+      "forks": "分支",
+      "updated": "更新時間"
+    }
+  },
+  "vercel": {
+    "title": "Vercel 整合",
+    "description": "連接您的 Vercel 帳戶",
+    "connect": "連接 Vercel",
+    "disconnect": "中斷連接",
+    "connected": "已連接",
+    "connectionStatus": "連接狀態"
+  },
+  "netlify": {
+    "title": "Netlify 整合",
+    "description": "連接您的 Netlify 帳戶",
+    "connect": "連接 Netlify",
+    "disconnect": "中斷連接",
+    "connected": "已連接",
+    "connectionStatus": "連接狀態"
+  },
+  "supabase": {
+    "title": "Supabase 整合",
+    "description": "連接您的 Supabase 專案",
+    "projectUrl": "專案 URL",
+    "anonKey": "匿名金鑰",
+    "connect": "連接",
+    "disconnect": "中斷連接",
+    "connected": "已連接",
+    "connectionStatus": "連接狀態"
+  },
+  "mcp": {
+    "title": "MCP 伺服器",
+    "description": "配置模型上下文協定伺服器",
+    "noServers": "未配置 MCP 伺服器",
+    "addServer": "新增伺服器",
+    "serverName": "伺服器名稱",
+    "command": "命令",
+    "args": "參數",
+    "env": "環境變數",
+    "status": {
+      "connected": "已連接",
+      "disconnected": "已中斷連接",
+      "error": "錯誤",
+      "unknown": "未知"
+    }
+  },
+  "eventLogs": {
+    "title": "事件日誌",
+    "description": "查看系統事件和日誌",
+    "noEvents": "沒有事件可顯示",
+    "clearLogs": "清除日誌",
+    "exportLogs": "匯出日誌",
+    "timestamp": "時間戳記",
+    "level": "級別",
+    "message": "訊息",
+    "levels": {
+      "info": "資訊",
+      "warning": "警告",
+      "error": "錯誤",
+      "debug": "偵錯"
+    }
+  },
+  "serviceIntegration": {
+    "connecting": "連接中...",
+    "connected": "已連接",
+    "disconnected": "已中斷連接",
+    "testConnection": "測試連接",
+    "loading": "載入中...",
+    "error": "錯誤",
+    "errorMessage": "發生錯誤",
+    "retry": "重試",
+    "cancel": "取消",
+    "save": "儲存",
+    "delete": "刪除"
   }
 }

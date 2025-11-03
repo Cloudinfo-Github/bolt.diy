@@ -8,6 +8,7 @@ import { diffLines, type Change } from 'diff';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { toast } from 'react-toastify';
 import { path } from '~/utils/path';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 const logger = createScopedLogger('FileTree');
 
@@ -284,6 +285,7 @@ function FileContextMenu({
   fullPath,
   children,
 }: FolderContextMenuProps & { fullPath: string }) {
+  const { t } = useI18n('workbench');
   const [isCreatingFile, setIsCreatingFile] = useState(false);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -335,12 +337,12 @@ function FileContextMenu({
             const success = await workbenchStore.createFile(filePath, binaryContent);
 
             if (success) {
-              toast.success(`檔案 ${file.name} 上傳成功`);
+              toast.success(t('messages.fileUploadSuccess', { filename: file.name }));
             } else {
-              toast.error(`上傳檔案 ${file.name} 失敗`);
+              toast.error(t('messages.fileUploadFailed', { filename: file.name }));
             }
           } catch (error) {
-            toast.error(`上傳 ${file.name} 時發生錯誤`);
+            toast.error(t('messages.fileUploadError', { filename: file.name }));
             logger.error(error);
           }
         }
@@ -356,9 +358,9 @@ function FileContextMenu({
     const success = await workbenchStore.createFile(newFilePath, '');
 
     if (success) {
-      toast.success('檔案建立成功');
+      toast.success(t('messages.fileCreated'));
     } else {
-      toast.error('建立檔案失敗');
+      toast.error(t('messages.fileCreateFailed'));
     }
 
     setIsCreatingFile(false);
@@ -369,9 +371,9 @@ function FileContextMenu({
     const success = await workbenchStore.createFolder(newFolderPath);
 
     if (success) {
-      toast.success('資料夾建立成功');
+      toast.success(t('messages.folderCreated'));
     } else {
-      toast.error('建立資料夾失敗');
+      toast.error(t('messages.folderCreateFailed'));
     }
 
     setIsCreatingFolder(false);
@@ -379,7 +381,9 @@ function FileContextMenu({
 
   const handleDelete = async () => {
     try {
-      if (!confirm(`確定要刪除${isFolder ? '資料夾' : '檔案'}：${fileName} 嗎？`)) {
+      if (
+        !confirm(t('messages.confirmDelete', { type: isFolder ? t('type.folder') : t('type.file'), name: fileName }))
+      ) {
         return;
       }
 
@@ -392,12 +396,12 @@ function FileContextMenu({
       }
 
       if (success) {
-        toast.success(`${isFolder ? '資料夾' : '檔案'}刪除成功`);
+        toast.success(t('messages.fileDeleteSuccess', { type: isFolder ? t('type.folder') : t('type.file') }));
       } else {
-        toast.error(`刪除${isFolder ? '資料夾' : '檔案'}失敗`);
+        toast.error(t('messages.fileDeleteFailed', { type: isFolder ? t('type.folder') : t('type.file') }));
       }
     } catch (error) {
-      toast.error(`刪除${isFolder ? '資料夾' : '檔案'}時發生錯誤`);
+      toast.error(t('messages.fileDeleteError', { type: isFolder ? t('type.folder') : t('type.file') }));
       logger.error(error);
     }
   };
@@ -412,12 +416,12 @@ function FileContextMenu({
       const success = workbenchStore.lockFile(fullPath);
 
       if (success) {
-        toast.success(`檔案鎖定成功`);
+        toast.success(t('messages.fileLockSuccess'));
       } else {
-        toast.error(`鎖定檔案失敗`);
+        toast.error(t('messages.fileLockFailed'));
       }
     } catch (error) {
-      toast.error(`鎖定檔案時發生錯誤`);
+      toast.error(t('messages.fileLockError'));
       logger.error(error);
     }
   };
@@ -432,12 +436,12 @@ function FileContextMenu({
       const success = workbenchStore.unlockFile(fullPath);
 
       if (success) {
-        toast.success(`檔案解鎖成功`);
+        toast.success(t('messages.fileUnlockSuccess'));
       } else {
-        toast.error(`解鎖檔案失敗`);
+        toast.error(t('messages.fileUnlockFailed'));
       }
     } catch (error) {
-      toast.error(`解鎖檔案時發生錯誤`);
+      toast.error(t('messages.fileUnlockError'));
       logger.error(error);
     }
   };
@@ -452,12 +456,12 @@ function FileContextMenu({
       const success = workbenchStore.lockFolder(fullPath);
 
       if (success) {
-        toast.success(`資料夾鎖定成功`);
+        toast.success(t('messages.folderLockSuccess'));
       } else {
-        toast.error(`鎖定資料夾失敗`);
+        toast.error(t('messages.folderLockFailed'));
       }
     } catch (error) {
-      toast.error(`鎖定資料夾時發生錯誤`);
+      toast.error(t('messages.folderLockError'));
       logger.error(error);
     }
   };
@@ -472,12 +476,12 @@ function FileContextMenu({
       const success = workbenchStore.unlockFolder(fullPath);
 
       if (success) {
-        toast.success(`資料夾解鎖成功`);
+        toast.success(t('messages.folderUnlockSuccess'));
       } else {
-        toast.error(`解鎖資料夾失敗`);
+        toast.error(t('messages.folderUnlockFailed'));
       }
     } catch (error) {
-      toast.error(`解鎖資料夾時發生錯誤`);
+      toast.error(t('messages.folderUnlockError'));
       logger.error(error);
     }
   };
@@ -570,7 +574,7 @@ function FileContextMenu({
       {isCreatingFile && (
         <InlineInput
           depth={depth}
-          placeholder="輸入檔案名稱..."
+          placeholder={t('fileTree.enterFileName')}
           onSubmit={handleCreateFile}
           onCancel={() => setIsCreatingFile(false)}
         />
@@ -578,7 +582,7 @@ function FileContextMenu({
       {isCreatingFolder && (
         <InlineInput
           depth={depth}
-          placeholder="輸入資料夾名稱..."
+          placeholder={t('fileTree.enterFolderName')}
           onSubmit={handleCreateFolder}
           onCancel={() => setIsCreatingFolder(false)}
         />

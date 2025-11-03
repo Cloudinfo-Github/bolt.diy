@@ -18,6 +18,10 @@
     "title": "開始新對話",
     "description": "選擇一個模型並開始對話"
   },
+  "intro": {
+    "title": "創意從這裡開始",
+    "description": "在幾秒鐘內將創意變為現實，或獲得現有專案的協助。"
+  },
   "history": {
     "title": "聊天記錄",
     "empty": "沒有聊天記錄",
@@ -31,7 +35,37 @@
   "model": {
     "select": "選擇模型",
     "current": "當前模型",
-    "switch": "切換模型"
+    "switch": "切換模型",
+    "settings": "模型設定",
+    "loading": "載入模型中..."
+  },
+  "provider": {
+    "select": "選擇提供者",
+    "search": "搜尋提供者... (⌘K 清除)",
+    "searchLabel": "搜尋供應商",
+    "noMatch": "沒有符合 \"{{query}}\" 的提供者",
+    "noProviders": "未找到提供者",
+    "searchHelp": "嘗試搜尋提供者名稱，如 \"OpenAI\"、\"Anthropic\" 或 \"Google\""
+  },
+  "modelSelector": {
+    "search": "搜尋模型... (⌘K 清除)",
+    "searchLabel": "搜尋模型",
+    "clearSearch": "清除搜尋",
+    "freeOnly": "僅顯示免費模型",
+    "freeModel": "免費模型",
+    "selected": "已選擇",
+    "noMatch": "沒有符合 \"{{query}}\" 的模型{{freeFilter}}",
+    "noModels": "沒有可用的模型",
+    "noFreeModels": "沒有可用的免費模型",
+    "searchHelp": "嘗試搜尋模型名稱、上下文大小（例如 \"128k\"、\"1M\"）或功能",
+    "disableFilter": "嘗試停用「僅顯示免費模型」篩選以查看所有可用模型",
+    "modelsFound": "找到 {{count}} 個模型",
+    "modelsFound_plural": "找到 {{count}} 個模型",
+    "freeModelsCount": "{{count}} 個免費模型",
+    "freeModelsCount_plural": "{{count}} 個免費模型",
+    "bestMatches": "（顯示最佳匹配）",
+    "tokens": "tokens",
+    "match": "{{percent}}% 匹配"
   },
   "attachment": {
     "add": "添加附件",
@@ -43,5 +77,67 @@
     "markdown": "匯出為 Markdown",
     "json": "匯出為 JSON",
     "text": "匯出為文字"
+  },
+  "input": {
+    "placeholderBuild": "Bolt 今天能幫您什麼忙？",
+    "placeholderDiscuss": "您想討論什麼？",
+    "newLineHint": "使用 <kbd>Shift</kbd> + <kbd>Return</kbd> 換行"
+  },
+  "features": {
+    "webSearch": "網路搜尋",
+    "webSearchEnabled": "網路搜尋已啟用",
+    "webSearchDisabled": "網路搜尋已停用",
+    "webSearchToggled": "網路搜尋已{{status}}",
+    "webSearchEnabled_status": "啟用",
+    "webSearchDisabled_status": "停用",
+    "enhancePrompt": "增強提示詞",
+    "enhancePromptSuccess": "提示詞已增強！",
+    "discussMode": "討論模式",
+    "discuss": "討論"
+  },
+  "inspector": {
+    "selectedForInspection": "已選擇進行檢查",
+    "clear": "清除"
+  },
+  "scroll": {
+    "goToLastMessage": "前往最後一則訊息"
+  },
+  "sidebar": {
+    "guest": "訪客",
+    "user": "使用者",
+    "startNewChat": "開始新對話",
+    "enterSelectionMode": "進入選擇模式",
+    "exitSelectionMode": "退出選擇模式",
+    "searchChats": "搜尋對話...",
+    "searchChatsLabel": "搜尋對話",
+    "yourChats": "您的對話",
+    "unselectAll": "取消全選",
+    "deleteSelected": "刪除所選項目",
+    "noChats": "沒有先前的對話",
+    "noMatchingItems": "找不到符合的項目",
+    "deleteChat": "刪除對話？",
+    "deleteConfirmSingle": "您即將刪除",
+    "deleteConfirmQuestion": "您確定要刪除此對話嗎？",
+    "deleteMultipleChats": "刪除所選對話？",
+    "deleteConfirmMultiple": "您即將刪除 {{count}} 個對話：",
+    "deleteConfirmMultipleQuestion": "您確定要刪除這些對話嗎？",
+    "chatDeleted": "對話已成功刪除",
+    "deleteFailed": "無法刪除對話",
+    "selectAtLeastOne": "請至少選擇一個對話以刪除",
+    "selectedChatsNotFound": "找不到所選的對話",
+    "actions": {
+      "export": "匯出",
+      "duplicate": "複製",
+      "rename": "重新命名",
+      "delete": "刪除"
+    }
+  },
+  "mcpTools": {
+    "title": "可用的 MCP 工具",
+    "dialogTitle": "MCP 工具",
+    "checkAvailability": "檢查可用性",
+    "noServers": "未設定 MCP 伺服器",
+    "noServersHint": "在「設定」→「MCP 伺服器」中設定伺服器",
+    "close": "關閉"
   }
 }

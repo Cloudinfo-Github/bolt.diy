@@ -3,13 +3,20 @@ import { toast } from 'react-toastify';
 import { ImportFolderButton } from '~/components/chat/ImportFolderButton';
 import { Button } from '~/components/ui/Button';
 import { classNames } from '~/utils/classNames';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 type ChatData = {
   messages?: Message[]; // Standard Bolt format
   description?: string; // Optional description
 };
 
-export function ImportButtons(importChat: ((description: string, messages: Message[]) => Promise<void>) | undefined) {
+interface ImportButtonsProps {
+  importChat?: (description: string, messages: Message[]) => Promise<void>;
+}
+
+export function ImportButtons({ importChat }: ImportButtonsProps) {
+  const { t } = useI18n('file');
+
   return (
     <div className="flex flex-col items-center justify-center w-auto">
       <input
@@ -31,29 +38,29 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
 
                   // Standard format
                   if (Array.isArray(data.messages)) {
-                    await importChat(data.description || '匯入的對話', data.messages);
-                    toast.success('成功匯入對話');
+                    await importChat(data.description || t('import.chat.imported'), data.messages);
+                    toast.success(t('import.chat.success'));
 
                     return;
                   }
 
-                  toast.error('無效的對話檔案格式');
+                  toast.error(t('import.chat.invalidFormat'));
                 } catch (error: unknown) {
                   if (error instanceof Error) {
-                    toast.error('無法解析對話檔案：' + error.message);
+                    toast.error(t('import.chat.parseErrorWithMessage', { message: error.message }));
                   } else {
-                    toast.error('無法解析對話檔案');
+                    toast.error(t('import.chat.parseError'));
                   }
                 }
               };
-              reader.onerror = () => toast.error('無法讀取對話檔案');
+              reader.onerror = () => toast.error(t('import.chat.readError'));
               reader.readAsText(file);
             } catch (error) {
-              toast.error(error instanceof Error ? error.message : '無法匯入對話');
+              toast.error(error instanceof Error ? error.message : t('import.chat.importError'));
             }
             e.target.value = ''; // Reset file input
           } else {
-            toast.error('發生錯誤');
+            toast.error(t('import.chat.error'));
           }
         }}
       />
@@ -76,7 +83,7 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
             )}
           >
             <span className="i-ph:upload-simple w-4 h-4" />
-            匯入對話
+            {t('import.chat.button')}
           </Button>
           <ImportFolderButton
             importChat={importChat}

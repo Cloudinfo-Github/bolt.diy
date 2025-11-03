@@ -20,6 +20,78 @@
   "reset": "Reset",
   "apply": "Apply",
   "close": "Close",
+  "back": "Back",
+  "retry": "Retry",
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "controlPanel": {
+    "title": "Control Panel",
+    "tabManagement": "Tab Management",
+    "newFeatures": "new feature{{count}} to explore",
+    "newFeatures_one": "new feature to explore",
+    "newFeatures_other": "new features to explore",
+    "unreadNotifications": "unread notification{{count}}",
+    "unreadNotifications_one": "unread notification",
+    "unreadNotifications_other": "unread notifications",
+    "connectionDisconnected": "Connection lost",
+    "highLatency": "High latency detected",
+    "connectionIssue": "Connection issue detected"
+  },
+  "tabs": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "features": "Features",
+    "data": "Data Management",
+    "cloudProviders": "Cloud Providers",
+    "localProviders": "Local Providers",
+    "github": "GitHub",
+    "gitlab": "GitLab",
+    "netlify": "Netlify",
+    "vercel": "Vercel",
+    "supabase": "Supabase",
+    "eventLogs": "Event Logs",
+    "mcp": "MCP Servers"
+  },
+  "tabDescriptions": {
+    "profile": "Manage your profile and account settings",
+    "settings": "Configure application preferences",
+    "notifications": "View and manage your notifications",
+    "features": "Explore new and upcoming features",
+    "data": "Manage your data and storage",
+    "cloudProviders": "Configure cloud AI providers and models",
+    "localProviders": "Configure local AI providers and models",
+    "github": "Connect and manage GitHub integration",
+    "gitlab": "Connect and manage GitLab integration",
+    "netlify": "Configure Netlify deployment settings",
+    "vercel": "Manage Vercel projects and deployments",
+    "supabase": "Set up Supabase database connection",
+    "eventLogs": "View system events and logs",
+    "mcp": "Configure MCP (Model Context Protocol) servers"
+  },
+  "profile": {
+    "title": "Profile",
+    "avatar": "Profile Picture",
+    "avatarDescription": "Upload a profile picture or avatar",
+    "username": "Username",
+    "usernamePlaceholder": "Enter your username",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell us about yourself",
+    "guest": "Guest",
+    "usernameUpdated": "Username updated",
+    "bioUpdated": "Bio updated",
+    "avatarUpdated": "Profile picture updated",
+    "avatarUpdateFailed": "Failed to update profile picture"
+  },
+  "avatar": {
+    "editProfile": "Edit Profile",
+    "settings": "Settings",
+    "reportBug": "Report a Bug",
+    "downloadDebugLog": "Download Debug Log",
+    "helpAndDocs": "Help & Documentation",
+    "alt": "Profile"
+  },
   "apiKeys": {
     "title": "API Keys",
     "add": "Add API Key",
@@ -64,12 +136,116 @@
       "network": "Network"
     }
   },
+  "features": {
+    "title": "Features",
+    "betaLabel": "BETA",
+    "experimentalLabel": "EXPERIMENTAL",
+    "coreFeaturesTitle": "Core Features",
+    "coreFeaturesDescription": "Essential features enabled by default for optimal performance",
+    "betaFeaturesTitle": "Beta Features",
+    "betaFeaturesDescription": "New features ready for testing but may still have some rough edges",
+    "mainBranchUpdates": {
+      "title": "Main Branch Updates",
+      "description": "Get the latest updates from the main branch",
+      "tooltip": "Enabled by default to receive updates from the main development branch",
+      "enabled": "Main branch updates enabled",
+      "disabled": "Main branch updates disabled"
+    },
+    "autoSelectTemplate": {
+      "title": "Auto Select Template",
+      "description": "Automatically select starter template",
+      "tooltip": "Enabled by default to automatically select the most suitable starter template",
+      "enabled": "Auto select template enabled",
+      "disabled": "Auto select template disabled"
+    },
+    "contextOptimization": {
+      "title": "Context Optimization",
+      "description": "Optimize context for better responses",
+      "tooltip": "Enabled by default to improve AI response quality",
+      "enabled": "Context optimization enabled",
+      "disabled": "Context optimization disabled"
+    },
+    "eventLogs": {
+      "title": "Event Logs",
+      "description": "Enable detailed event logging and history",
+      "tooltip": "Enabled by default to record detailed logs of system events and user actions",
+      "enabled": "Event logs enabled",
+      "disabled": "Event logs disabled"
+    },
+    "promptLibrary": {
+      "title": "Prompt Library",
+      "description": "Select prompts from library as system prompt",
+      "templateUpdated": "Prompt template updated"
+    }
+  },
   "data": {
     "title": "Data",
     "export": "Export Data",
     "import": "Import Data",
     "clear": "Clear Data",
-    "clearConfirm": "Are you sure you want to clear all data?"
+    "clearConfirm": "Are you sure you want to clear all data?",
+    "conversations": "Conversations",
+    "loadingDatabase": "Loading conversation database...",
+    "databaseUnavailable": "Database unavailable",
+    "noConversations": "No conversations to export",
+    "exportAllChats": "Export All Chats",
+    "exportAllChatsDescription": "Export all conversations as a JSON file.",
+    "exportSelected": "Export Selected",
+    "exporting": "Exporting...",
+    "exportFailed": "Failed to export chats",
+    "importAllChats": "Import All Chats",
+    "importAllChatsDescription": "Import conversations from a JSON file.",
+    "selectFile": "Select File",
+    "importing": "Importing...",
+    "importFailed": "Failed to import chats",
+    "importSuccess": "{{count}} conversation(s) imported successfully",
+    "invalidFile": "Invalid file format",
+    "deleteAllChats": "Delete All Chats",
+    "deleteAllChatsDescription": "Permanently delete all your conversation history.",
+    "deleteAll": "Delete All",
+    "deleting": "Deleting...",
+    "deleteFailed": "Failed to delete chats",
+    "deleteSuccess": "All chats deleted successfully",
+    "settingsManagement": "Settings Management",
+    "resetSettings": "Reset Settings",
+    "resetSettingsDescription": "Reset all settings to their default values.",
+    "resetSettingsConfirm": "Reset All Settings?",
+    "resetSettingsConfirmDescription": "This will reset all settings to their default values. This action cannot be undone.",
+    "resetSettingsButton": "Reset Settings",
+    "resetting": "Resetting...",
+    "resetSuccess": "Settings reset successfully",
+    "resetFailed": "Failed to reset settings",
+    "exportSettings": "Export Settings",
+    "exportSettingsDescription": "Export your settings as a JSON file.",
+    "exportingSettings": "Exporting settings...",
+    "exportSettingsFailed": "Failed to export settings",
+    "exportSettingsSuccess": "Settings exported successfully",
+    "importSettings": "Import Settings",
+    "importSettingsDescription": "Import settings from a JSON file.",
+    "importingSettings": "Importing settings...",
+    "importSettingsFailed": "Failed to import settings",
+    "importSettingsSuccess": "Settings imported successfully",
+    "deleteAllChatsConfirm": "Delete All Conversations?",
+    "deleteAllChatsConfirmDescription": "This will permanently delete all your conversation history. This action cannot be undone.",
+    "selectExportCategories": "Select Settings to Export",
+    "selectExportChats": "Select Conversations to Export",
+    "categories": {
+      "core": "Core Settings",
+      "coreDescription": "User data and primary settings",
+      "providers": "Providers",
+      "providersDescription": "API keys and provider configurations",
+      "features": "Features",
+      "featuresDescription": "Feature flags and settings",
+      "ui": "UI",
+      "uiDescription": "User interface configurations and preferences",
+      "connections": "Connections",
+      "connectionsDescription": "External service connections",
+      "debug": "Debug",
+      "debugDescription": "Debug settings and logs",
+      "updates": "Updates",
+      "updatesDescription": "Update settings and notifications"
+    },
+    "loadConversationsFailed": "Failed to load conversations"
   },
   "about": {
     "title": "About",
@@ -77,5 +253,184 @@
     "updates": "Check for Updates",
     "documentation": "Documentation",
     "support": "Support"
+  },
+  "providers": {
+    "local": {
+      "title": "Local Providers",
+      "setupGuide": {
+        "title": "Setup Guide",
+        "description": "Get started with local AI providers",
+        "step1": "Step 1: Install Ollama",
+        "step1Description": "Download and install Ollama from the official website",
+        "step2": "Step 2: Pull a Model",
+        "step2Description": "Run 'ollama pull llama2' to download a model",
+        "step3": "Step 3: Start Server",
+        "step3Description": "Ollama server starts automatically after installation"
+      },
+      "status": {
+        "title": "Status Dashboard",
+        "healthy": "Healthy",
+        "unhealthy": "Unhealthy",
+        "unknown": "Unknown",
+        "checking": "Checking...",
+        "available": "Available",
+        "unavailable": "Unavailable",
+        "provider": "Provider",
+        "status": "Status",
+        "models": "Models",
+        "lastChecked": "Last Checked"
+      },
+      "provider": {
+        "healthy": "Healthy",
+        "unhealthy": "Unhealthy",
+        "unknown": "Unknown"
+      },
+      "model": {
+        "size": "Size",
+        "modified": "Modified",
+        "family": "Family"
+      },
+      "noModels": "No models available",
+      "loadingModels": "Loading models...",
+      "errorLoading": "Error loading providers",
+      "retryLoading": "Retry"
+    },
+    "cloud": {
+      "title": "Cloud Providers",
+      "description": "Configure your cloud AI provider settings"
+    },
+    "azure": {
+      "title": "Azure OpenAI Configuration",
+      "endpoint": "Endpoint",
+      "apiKey": "API Key",
+      "deploymentName": "Deployment Name",
+      "apiVersion": "API Version"
+    }
+  },
+  "github": {
+    "title": "GitHub Integration",
+    "notConnected": "Not connected yet",
+    "testingConnection": "Testing connection...",
+    "connectedAs": "Successfully connected as {{username}}",
+    "connectionTestFailed": "Connection test failed",
+    "connectionFailed": "Connection failed: {{error}}",
+    "unknownError": "Unknown error",
+    "checkingConnection": "Checking GitHub connection...",
+    "connectionError": "Connection Error",
+    "reloadPage": "Reload Page",
+    "description": "Connect your GitHub account to enable advanced repository management features, statistics, and seamless integration.",
+    "integration": "GitHub Integration",
+    "integrationDescription": "Manage your GitHub integration with advanced repository features and comprehensive statistics",
+    "allRepositories": "All Repositories ({{count}})",
+    "showMore": "Show {{count}} more repositories",
+    "loadingStatsFailed": "Failed to load statistics",
+    "loadingStats": "Loading GitHub statistics...",
+    "loadingSteps": {
+      "user": "Fetching user information",
+      "repos": "Loading repositories",
+      "stats": "Calculating statistics",
+      "cache": "Updating cache"
+    }
+  },
+  "gitlab": {
+    "title": "GitLab Integration",
+    "description": "Connect your GitLab account",
+    "connect": "Connect GitLab",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "connectionStatus": "Connection Status",
+    "auth": {
+      "title": "GitLab Authentication",
+      "description": "Connect your GitLab account to enable repository management",
+      "personalAccessToken": "Personal Access Token",
+      "tokenPlaceholder": "Enter your GitLab personal access token",
+      "tokenHelp": "Create a token with 'api' and 'read_repository' scopes",
+      "createToken": "Create Token",
+      "connect": "Connect",
+      "cancel": "Cancel",
+      "connecting": "Connecting...",
+      "connectionSuccess": "Successfully connected to GitLab",
+      "connectionFailed": "Failed to connect to GitLab"
+    },
+    "repositories": {
+      "title": "Repositories",
+      "loading": "Loading repositories...",
+      "empty": "No repositories found",
+      "visibility": "Visibility",
+      "stars": "Stars",
+      "forks": "Forks",
+      "updated": "Updated"
+    }
+  },
+  "vercel": {
+    "title": "Vercel Integration",
+    "description": "Connect your Vercel account",
+    "connect": "Connect Vercel",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "connectionStatus": "Connection Status"
+  },
+  "netlify": {
+    "title": "Netlify Integration",
+    "description": "Connect your Netlify account",
+    "connect": "Connect Netlify",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "connectionStatus": "Connection Status"
+  },
+  "supabase": {
+    "title": "Supabase Integration",
+    "description": "Connect your Supabase project",
+    "projectUrl": "Project URL",
+    "anonKey": "Anon Key",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "connectionStatus": "Connection Status"
+  },
+  "mcp": {
+    "title": "MCP Servers",
+    "description": "Configure Model Context Protocol servers",
+    "noServers": "No MCP servers configured",
+    "addServer": "Add Server",
+    "serverName": "Server Name",
+    "command": "Command",
+    "args": "Arguments",
+    "env": "Environment Variables",
+    "status": {
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "error": "Error",
+      "unknown": "Unknown"
+    }
+  },
+  "eventLogs": {
+    "title": "Event Logs",
+    "description": "View system events and logs",
+    "noEvents": "No events to display",
+    "clearLogs": "Clear Logs",
+    "exportLogs": "Export Logs",
+    "timestamp": "Timestamp",
+    "level": "Level",
+    "message": "Message",
+    "levels": {
+      "info": "Info",
+      "warning": "Warning",
+      "error": "Error",
+      "debug": "Debug"
+    }
+  },
+  "serviceIntegration": {
+    "connecting": "Connecting...",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "testConnection": "Test Connection",
+    "loading": "Loading...",
+    "error": "Error",
+    "errorMessage": "An error occurred",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete"
   }
 }

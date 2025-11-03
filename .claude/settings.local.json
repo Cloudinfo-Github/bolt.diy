@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for f in app/components/chat/APIKeyManager.tsx app/components/chat/ExamplePrompts.tsx app/lib/modules/llm/providers/azure-openai.ts)",
+      "Bash(do echo '=== $(basename $f) ===')",
+      "Bash(done)",
+      "Bash(git add:*)",
+      "Bash(git log:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Fix i18n import paths and migrate import components\n\nFixed all i18n module resolution errors and migrated import-related components to use translation system.\n\nChanges:\n- Fixed 9 files with incorrect i18n import paths\n- Migrated ImportButtons.tsx to use i18n hooks\n- Migrated ImportFolderButton.tsx to use i18n hooks\n- Updated BaseChat.tsx to use new ImportButtons API\n- Added comprehensive import-related translations to file.json\n- Fixed tabHelpers.ts to import from i18next package directly\n\nTranslations:\n- Added import.chat.* keys for chat import functionality\n- Added import.folder.* keys for folder import functionality\n- Supports both Traditional Chinese and English\n\nTechnical Details:\n- Changed ImportButtons from function to React component to support hooks\n- All import-related toast messages now use i18n\n- Properly handles interpolation for error messages and progress indicators\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Fix i18n import paths and migrate import components\n\nFixed all i18n module resolution errors and migrated import-related components to use translation system.\n\nChanges:\n- Fixed 9 files with incorrect i18n import paths\n- Migrated ImportButtons.tsx to use i18n hooks\n- Migrated ImportFolderButton.tsx to use i18n hooks\n- Updated BaseChat.tsx to use new ImportButtons API\n- Added comprehensive import-related translations to file.json\n- Fixed tabHelpers.ts to import from i18next package directly\n- Fixed useI18n hook parameter syntax in GitHubRepositorySelector and GitLabRepositorySelector\n\nTranslations:\n- Added import.chat.* keys for chat import functionality\n- Added import.folder.* keys for folder import functionality\n- Supports both Traditional Chinese and English\n\nTechnical Details:\n- Changed ImportButtons from function to React component to support hooks\n- All import-related toast messages now use i18n\n- Properly handles interpolation for error messages and progress indicators\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

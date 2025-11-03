@@ -55,39 +55,8 @@ export const TAB_ICONS: Record<TabType, React.ComponentType<{ className?: string
   mcp: Wrench,
 };
 
-export const TAB_LABELS: Record<TabType, string> = {
-  profile: '個人資料',
-  settings: '設定',
-  notifications: '通知',
-  features: '功能',
-  data: '資料管理',
-  'cloud-providers': '雲端提供者',
-  'local-providers': '本地提供者',
-  github: 'GitHub',
-  gitlab: 'GitLab',
-  netlify: 'Netlify',
-  vercel: 'Vercel',
-  supabase: 'Supabase',
-  'event-logs': '事件日誌',
-  mcp: 'MCP 伺服器',
-};
-
-export const TAB_DESCRIPTIONS: Record<TabType, string> = {
-  profile: '管理您的個人資料和帳戶設定',
-  settings: '配置應用程式偏好設定',
-  notifications: '查看和管理您的通知',
-  features: '探索新功能和即將推出的功能',
-  data: '管理您的資料和儲存空間',
-  'cloud-providers': '配置雲端 AI 提供者和模型',
-  'local-providers': '配置本地 AI 提供者和模型',
-  github: '連接並管理 GitHub 整合',
-  gitlab: '連接並管理 GitLab 整合',
-  netlify: '配置 Netlify 部署設定',
-  vercel: '管理 Vercel 專案和部署',
-  supabase: '設定 Supabase 資料庫連接',
-  'event-logs': '查看系統事件和日誌',
-  mcp: '配置 MCP（模型上下文協定）伺服器',
-};
+// Import i18n-enabled tab labels and descriptions
+export { TAB_LABELS, TAB_DESCRIPTIONS } from './tabHelpers';
 
 export const DEFAULT_TAB_CONFIG = [
   // User Window Tabs (Always visible by default)

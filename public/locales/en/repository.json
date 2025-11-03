@@ -16,5 +16,30 @@
   "filterArchived": "Archived repositories",
   "showingCount": "Showing {{start}} to {{end}} of {{total}} repositories",
   "pageIndicator": "{{current}} of {{total}}",
-  "noMatchingRepositories": "No repositories found matching your search criteria."
+  "noMatchingRepositories": "No repositories found matching your search criteria.",
+  "selector": {
+    "connectFirst": "Please connect {{provider}} first to browse repositories",
+    "selectToClone": "Select repository to clone",
+    "repositoriesCount": "{{filtered}} repositories of {{total}} total",
+    "refresh": "Refresh",
+    "warningCachedData": "Warning: {{error}}. Showing cached data.",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "ownedRepositories": "Owned repositories",
+    "memberRepositories": "Member repositories",
+    "retry": "Retry"
+  },
+  "gitClone": {
+    "cloneRepository": "Clone Repository",
+    "selectProvider": "Select Repository Provider",
+    "cloneFromGitHub": "Clone from GitHub repository",
+    "cloneFromGitLab": "Clone from GitLab repository",
+    "importGitHubRepository": "Import GitHub Repository",
+    "importGitLabRepository": "Import GitLab Repository",
+    "cloneToWorkspace": "Clone repository to your workspace",
+    "clonedFiles": "Git Cloned Files",
+    "cloningRepository": "Cloning repository, please wait...",
+    "failedToImport": "Failed to import repository",
+    "gitProject": "Git Project"
+  }
 }

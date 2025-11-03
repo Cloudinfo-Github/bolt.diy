@@ -54,14 +54,73 @@
     "stopped": "已停止"
   },
   "messages": {
-    "fileCreated": "已建立檔案",
+    "fileCreated": "檔案建立成功",
     "fileSaved": "已儲存檔案",
     "fileDeleted": "已刪除檔案",
-    "folderCreated": "已建立資料夾",
+    "folderCreated": "資料夾建立成功",
     "folderDeleted": "已刪除資料夾",
     "buildSuccess": "建置成功",
     "buildFailed": "建置失敗",
     "serverStarted": "伺服器已啟動",
-    "serverStopped": "伺服器已停止"
+    "serverStopped": "伺服器已停止",
+    "fileUploadSuccess": "檔案 {{filename}} 上傳成功",
+    "fileUploadFailed": "上傳檔案 {{filename}} 失敗",
+    "fileUploadError": "上傳 {{filename}} 時發生錯誤",
+    "fileCreateFailed": "建立檔案失敗",
+    "folderCreateFailed": "建立資料夾失敗",
+    "fileDeleteFailed": "刪除{{type}}失敗",
+    "fileDeleteError": "刪除{{type}}時發生錯誤",
+    "fileDeleteSuccess": "{{type}}刪除成功",
+    "fileLockSuccess": "檔案鎖定成功",
+    "fileLockFailed": "鎖定檔案失敗",
+    "fileLockError": "鎖定檔案時發生錯誤",
+    "fileUnlockSuccess": "檔案解鎖成功",
+    "fileUnlockFailed": "解鎖檔案失敗",
+    "fileUnlockError": "解鎖檔案時發生錯誤",
+    "folderLockSuccess": "資料夾鎖定成功",
+    "folderLockFailed": "鎖定資料夾失敗",
+    "folderLockError": "鎖定資料夾時發生錯誤",
+    "folderUnlockSuccess": "資料夾解鎖成功",
+    "folderUnlockFailed": "解鎖資料夾失敗",
+    "folderUnlockError": "解鎖資料夾時發生錯誤",
+    "confirmDelete": "確定要刪除{{type}}：{{name}} 嗎？"
+  },
+  "fileTree": {
+    "enterFileName": "輸入檔案名稱...",
+    "enterFolderName": "輸入資料夾名稱..."
+  },
+  "lockManager": {
+    "noSelection": "沒有選擇要解鎖的項目。",
+    "unlockSuccess": "已解鎖 {{count}} 個選定項目。",
+    "searchPlaceholder": "搜尋...",
+    "filterAll": "全部",
+    "filterFiles": "檔案",
+    "filterFolders": "資料夾",
+    "selectAll": "選擇所有項目",
+    "selectAllLabel": "全部",
+    "unlockAll": "全部解鎖",
+    "unlockAllTitle": "解鎖所有選定項目",
+    "noLockedItems": "未找到已鎖定的項目",
+    "unlockTitle": "解鎖",
+    "itemUnlocked": "{{path}} 已解鎖",
+    "itemsCount": "{{total}} 個項目 • 已選擇 {{selected}} 個"
+  },
+  "expoQrModal": {
+    "title": "在您的行動裝置上預覽",
+    "description": "使用您行動裝置上的 Expo Go 應用程式掃描此 QR 碼以開啟您的專案。",
+    "noUrl": "未偵測到 Expo URL。"
+  },
+  "preview": {
+    "dragToResize": "拖曳以調整寬度",
+    "urlPath": "URL 路徑",
+    "toggleResponsive": "切換到響應式模式",
+    "toggleDevice": "切換到裝置模式",
+    "showQrCode": "顯示 QR 碼",
+    "windowOptions": "新視窗選項",
+    "windowOptionsTitle": "視窗選項"
+  },
+  "type": {
+    "file": "檔案",
+    "folder": "資料夾"
   }
 }

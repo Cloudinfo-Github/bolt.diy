@@ -16,5 +16,30 @@
   "filterArchived": "已封存的儲存庫",
   "showingCount": "顯示第 {{start}} 到 {{end}} 個，共 {{total}} 個儲存庫",
   "pageIndicator": "第 {{current}} 頁，共 {{total}} 頁",
-  "noMatchingRepositories": "未找到符合搜尋條件的儲存庫。"
+  "noMatchingRepositories": "未找到符合搜尋條件的儲存庫。",
+  "selector": {
+    "connectFirst": "請先連接 {{provider}} 以瀏覽儲存庫",
+    "selectToClone": "選擇要複製的儲存庫",
+    "repositoriesCount": "{{filtered}} 個儲存庫，共 {{total}} 個",
+    "refresh": "重新整理",
+    "warningCachedData": "警告：{{error}}。顯示快取資料。",
+    "previousPage": "上一頁",
+    "nextPage": "下一頁",
+    "ownedRepositories": "擁有的儲存庫",
+    "memberRepositories": "成員儲存庫",
+    "retry": "重試"
+  },
+  "gitClone": {
+    "cloneRepository": "複製儲存庫",
+    "selectProvider": "選擇儲存庫提供者",
+    "cloneFromGitHub": "從 GitHub 儲存庫複製",
+    "cloneFromGitLab": "從 GitLab 儲存庫複製",
+    "importGitHubRepository": "匯入 GitHub 儲存庫",
+    "importGitLabRepository": "匯入 GitLab 儲存庫",
+    "cloneToWorkspace": "複製儲存庫到您的工作區",
+    "clonedFiles": "Git 複製的檔案",
+    "cloningRepository": "正在複製儲存庫，請稍候...",
+    "failedToImport": "無法匯入儲存庫",
+    "gitProject": "Git 專案"
+  }
 }

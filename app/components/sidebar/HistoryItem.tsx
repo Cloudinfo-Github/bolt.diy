@@ -5,6 +5,7 @@ import WithTooltip from '~/components/ui/Tooltip';
 import { useEditChatDescription } from '~/lib/hooks';
 import { forwardRef, type ForwardedRef, useCallback } from 'react';
 import { Checkbox } from '~/components/ui/Checkbox';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface HistoryItemProps {
   item: ChatHistoryItem;
@@ -25,6 +26,7 @@ export function HistoryItem({
   isSelected = false,
   onToggleSelection,
 }: HistoryItemProps) {
+  const { t } = useI18n();
   const { id: urlId } = useParams();
   const isActiveChat = urlId === item.urlId;
 
@@ -118,7 +120,7 @@ export function HistoryItem({
           >
             <div className="flex items-center gap-2.5 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
               <ChatActionButton
-                toolTipContent="匯出"
+                toolTipContent={t('chat:sidebar.actions.export')}
                 icon="i-ph:download-simple h-4 w-4"
                 onClick={(event) => {
                   event.preventDefault();
@@ -127,7 +129,7 @@ export function HistoryItem({
               />
               {onDuplicate && (
                 <ChatActionButton
-                  toolTipContent="複製"
+                  toolTipContent={t('chat:sidebar.actions.duplicate')}
                   icon="i-ph:copy h-4 w-4"
                   onClick={(event) => {
                     event.preventDefault();
@@ -136,7 +138,7 @@ export function HistoryItem({
                 />
               )}
               <ChatActionButton
-                toolTipContent="重新命名"
+                toolTipContent={t('chat:sidebar.actions.rename')}
                 icon="i-ph:pencil-fill h-4 w-4"
                 onClick={(event) => {
                   event.preventDefault();
@@ -144,7 +146,7 @@ export function HistoryItem({
                 }}
               />
               <ChatActionButton
-                toolTipContent="刪除"
+                toolTipContent={t('chat:sidebar.actions.delete')}
                 icon="i-ph:trash h-4 w-4"
                 className="hover:text-red-500 dark:hover:text-red-400"
                 onClick={handleDeleteClick}

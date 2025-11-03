@@ -7,6 +7,7 @@ import type { GitLabProjectInfo } from '~/types/GitLab';
 import { useGitLabConnection } from '~/lib/hooks';
 import { classNames } from '~/utils/classNames';
 import { Search, RefreshCw, GitBranch, Calendar, Filter } from 'lucide-react';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface GitLabRepositorySelectorProps {
   onClone?: (repoUrl: string, branch?: string) => void;
@@ -17,6 +18,7 @@ type SortOption = 'updated' | 'stars' | 'name' | 'created';
 type FilterOption = 'all' | 'owned' | 'member';
 
 export function GitLabRepositorySelector({ onClone, className }: GitLabRepositorySelectorProps) {
+  const { t } = useI18n('repository');
   const { connection, isConnected } = useGitLabConnection();
   const [repositories, setRepositories] = useState<GitLabProjectInfo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -166,9 +168,9 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
   if (!isConnected || !connection) {
     return (
       <div className="text-center p-8">
-        <p className="text-bolt-elements-textSecondary mb-4">請先連接 GitLab 以瀏覽儲存庫</p>
+        <p className="text-bolt-elements-textSecondary mb-4">{t('selector.connectFirst', { provider: 'GitLab' })}</p>
         <Button variant="outline" onClick={() => window.location.reload()}>
-          重新整理連線
+          {t('refreshConnection')}
         </Button>
       </div>
     );
@@ -179,12 +181,12 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
       <div className="text-center p-8">
         <div className="text-red-500 mb-4">
           <GitBranch className="w-12 h-12 mx-auto mb-2" />
-          <p className="font-medium">無法載入儲存庫</p>
+          <p className="font-medium">{t('failedToLoad')}</p>
           <p className="text-sm text-bolt-elements-textSecondary mt-1">{error}</p>
         </div>
         <Button variant="outline" onClick={handleRefresh} disabled={isRefreshing}>
           <RefreshCw className={classNames('w-4 h-4 mr-2', { 'animate-spin': isRefreshing })} />
-          重試
+          {t('selector.retry')}
         </Button>
       </div>
     );
@@ -194,7 +196,7 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
     return (
       <div className="flex flex-col items-center justify-center p-8 space-y-4">
         <div className="animate-spin w-8 h-8 border-2 border-bolt-elements-borderColorActive border-t-transparent rounded-full" />
-        <p className="text-sm text-bolt-elements-textSecondary">正在載入儲存庫...</p>
+        <p className="text-sm text-bolt-elements-textSecondary">{t('loadingRepositories')}</p>
       </div>
     );
   }
@@ -203,10 +205,10 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
     return (
       <div className="text-center p-8">
         <GitBranch className="w-12 h-12 text-bolt-elements-textTertiary mx-auto mb-4" />
-        <p className="text-bolt-elements-textSecondary mb-4">未找到儲存庫</p>
+        <p className="text-bolt-elements-textSecondary mb-4">{t('noRepositoriesFound')}</p>
         <Button variant="outline" onClick={handleRefresh} disabled={isRefreshing}>
           <RefreshCw className={classNames('w-4 h-4 mr-2', { 'animate-spin': isRefreshing })} />
-          重新整理
+          {t('selector.refresh')}
         </Button>
       </div>
     );
@@ -222,9 +224,9 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
       {/* Header with stats */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">選擇要複製的儲存庫</h3>
+          <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">{t('selector.selectToClone')}</h3>
           <p className="text-sm text-bolt-elements-textSecondary">
-            {filteredRepositories.length} 個儲存庫，共 {repositories.length} 個
+            {t('selector.repositoriesCount', { filtered: filteredRepositories.length, total: repositories.length })}
           </p>
         </div>
         <Button
@@ -235,13 +237,13 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
           className="flex items-center gap-2"
         >
           <RefreshCw className={classNames('w-4 h-4', { 'animate-spin': isRefreshing })} />
-          重新整理
+          {t('selector.refresh')}
         </Button>
       </div>
 
       {error && repositories.length > 0 && (
         <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-700">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">警告：{error}。顯示快取資料。</p>
+          <p className="text-sm text-yellow-800 dark:text-yellow-200">{t('selector.warningCachedData', { error })}</p>
         </div>
       )}
 
@@ -252,7 +254,7 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-bolt-elements-textTertiary" />
           <input
             type="text"
-            placeholder="搜尋儲存庫..."
+            placeholder={t('searchRepositories')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-lg bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive"
@@ -267,10 +269,10 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
             onChange={(e) => setSortBy(e.target.value as SortOption)}
             className="px-3 py-2 rounded-lg bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor text-bolt-elements-textPrimary text-sm focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive"
           >
-            <option value="updated">最近更新</option>
-            <option value="stars">最多星標</option>
-            <option value="name">名稱 (A-Z)</option>
-            <option value="created">最近建立</option>
+            <option value="updated">{t('sortByUpdated')}</option>
+            <option value="stars">{t('sortByStars')}</option>
+            <option value="name">{t('sortByName')}</option>
+            <option value="created">{t('sortByCreated')}</option>
           </select>
         </div>
 
@@ -282,9 +284,9 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
             onChange={(e) => setFilterBy(e.target.value as FilterOption)}
             className="px-3 py-2 rounded-lg bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor text-bolt-elements-textPrimary text-sm focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive"
           >
-            <option value="all">所有儲存庫</option>
-            <option value="owned">擁有的儲存庫</option>
-            <option value="member">成員儲存庫</option>
+            <option value="all">{t('filterAll')}</option>
+            <option value="owned">{t('selector.ownedRepositories')}</option>
+            <option value="member">{t('selector.memberRepositories')}</option>
           </select>
         </div>
       </div>
@@ -304,9 +306,11 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
           {totalPages > 1 && (
             <div className="flex items-center justify-between pt-4 border-t border-bolt-elements-borderColor">
               <div className="text-sm text-bolt-elements-textSecondary">
-                顯示第 {Math.min(startIndex + 1, filteredRepositories.length)} 到{' '}
-                {Math.min(startIndex + REPOS_PER_PAGE, filteredRepositories.length)} 個，共{' '}
-                {filteredRepositories.length} 個儲存庫
+                {t('showingCount', {
+                  start: Math.min(startIndex + 1, filteredRepositories.length),
+                  end: Math.min(startIndex + REPOS_PER_PAGE, filteredRepositories.length),
+                  total: filteredRepositories.length,
+                })}
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -315,10 +319,10 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
                   variant="outline"
                   size="sm"
                 >
-                  上一頁
+                  {t('selector.previousPage')}
                 </Button>
                 <span className="text-sm text-bolt-elements-textSecondary px-3">
-                  第 {currentPage} 頁，共 {totalPages} 頁
+                  {t('pageIndicator', { current: currentPage, total: totalPages })}
                 </span>
                 <Button
                   onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
@@ -326,7 +330,7 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
                   variant="outline"
                   size="sm"
                 >
-                  下一頁
+                  {t('selector.nextPage')}
                 </Button>
               </div>
             </div>
@@ -334,7 +338,7 @@ export function GitLabRepositorySelector({ onClone, className }: GitLabRepositor
         </>
       ) : (
         <div className="text-center py-8">
-          <p className="text-bolt-elements-textSecondary">未找到符合搜尋條件的儲存庫。</p>
+          <p className="text-bolt-elements-textSecondary">{t('noMatchingRepositories')}</p>
         </div>
       )}
 

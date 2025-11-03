@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { classNames } from '~/utils/classNames';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface CloseButtonProps {
   onClick?: () => void;
@@ -15,6 +16,7 @@ interface CloseButtonProps {
  * The button has a transparent background and only shows a background on hover.
  */
 export function CloseButton({ onClick, className, size = 'md' }: CloseButtonProps) {
+  const { t } = useI18n('common');
   const sizeClasses = {
     sm: 'p-1',
     md: 'p-2',
@@ -41,7 +43,7 @@ export function CloseButton({ onClick, className, size = 'md' }: CloseButtonProp
       )}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      aria-label="關閉"
+      aria-label={t('close')}
     >
       <div className={classNames('i-ph:x', iconSizeClasses[size])} />
     </motion.button>

@@ -23,5 +23,30 @@
   "folderUnlockFailed": "解鎖資料夾失敗",
   "folderUnlockError": "解鎖資料夾時發生錯誤",
   "typeFile": "檔案",
-  "typeFolder": "資料夾"
+  "typeFolder": "資料夾",
+  "import": {
+    "chat": {
+      "button": "匯入對話",
+      "imported": "匯入的對話",
+      "success": "成功匯入對話",
+      "invalidFormat": "無效的對話檔案格式",
+      "parseError": "無法解析對話檔案",
+      "parseErrorWithMessage": "無法解析對話檔案：{{message}}",
+      "readError": "無法讀取對話檔案",
+      "importError": "無法匯入對話",
+      "error": "發生錯誤"
+    },
+    "folder": {
+      "button": "匯入資料夾",
+      "buttonTitle": "匯入資料夾",
+      "importing": "匯入中...",
+      "importingProgress": "正在匯入 {{folderName}}...",
+      "success": "成功匯入資料夾",
+      "error": "無法匯入資料夾",
+      "noFilesFound": "所選資料夾中找不到檔案",
+      "noTextFilesFound": "所選資料夾中找不到文字檔案",
+      "tooManyFiles": "此資料夾包含 {{fileCount}} 個檔案。本產品尚未針對大型專案進行最佳化。請選擇包含少於 {{maxFiles}} 個檔案的資料夾。",
+      "skippingBinary": "略過 {{count}} 個二進制檔案"
+    }
+  }
 }

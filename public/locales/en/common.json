@@ -54,5 +54,34 @@
   "notifications": "Notifications",
   "profile": "Profile",
   "logout": "Logout",
-  "login": "Login"
+  "login": "Login",
+  "supabase": {
+    "connectToSupabase": "Connect to Supabase",
+    "accessToken": "Access Token",
+    "enterToken": "Enter your Supabase access token",
+    "getYourToken": "Get your token",
+    "connecting": "Connecting...",
+    "connect": "Connect",
+    "connection": "Supabase Connection",
+    "yourProjects": "Your Projects",
+    "refreshProjects": "Refresh project list",
+    "newProject": "New Project",
+    "selectProject": "Select a project or create a new one for this chat",
+    "selected": "Selected",
+    "select": "Select",
+    "noProjectsFound": "No projects found",
+    "fetchingProjects": "Fetching projects...",
+    "disconnect": "Disconnect",
+    "role": "Role"
+  },
+  "debug": {
+    "reportBug": "Report Bug",
+    "debugLog": "Debug Log",
+    "downloadDebugLog": "Download debug log"
+  },
+  "ui": {
+    "clearSearch": "Clear search",
+    "closeDialog": "Close dialog",
+    "breadcrumbNavigation": "Breadcrumb navigation"
+  }
 }

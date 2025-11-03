@@ -23,5 +23,30 @@
   "folderUnlockFailed": "Failed to unlock folder",
   "folderUnlockError": "Error unlocking folder",
   "typeFile": "file",
-  "typeFolder": "folder"
+  "typeFolder": "folder",
+  "import": {
+    "chat": {
+      "button": "Import Chat",
+      "imported": "Imported Chat",
+      "success": "Chat imported successfully",
+      "invalidFormat": "Invalid chat file format",
+      "parseError": "Failed to parse chat file",
+      "parseErrorWithMessage": "Failed to parse chat file: {{message}}",
+      "readError": "Failed to read chat file",
+      "importError": "Failed to import chat",
+      "error": "An error occurred"
+    },
+    "folder": {
+      "button": "Import Folder",
+      "buttonTitle": "Import Folder",
+      "importing": "Importing...",
+      "importingProgress": "Importing {{folderName}}...",
+      "success": "Folder imported successfully",
+      "error": "Failed to import folder",
+      "noFilesFound": "No files found in the selected folder",
+      "noTextFilesFound": "No text files found in the selected folder",
+      "tooManyFiles": "This folder contains {{fileCount}} files. The product is not yet optimized for large projects. Please select a folder with fewer than {{maxFiles}} files.",
+      "skippingBinary": "Skipping {{count}} binary files"
+    }
+  }
 }
