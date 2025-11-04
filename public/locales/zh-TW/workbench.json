@@ -140,6 +140,9 @@
     "restoreFilesFromSnapshot": "從快照還原檔案",
     "initialFilesCreated": "初始檔案已建立",
     "creatingInitialFiles": "正在建立初始檔案",
+    "chatRestored": "Bolt 已從快照還原您的對話。",
+    "revertToLoadFullHistory": "您可以還原此訊息以載入完整的對話記錄。",
+    "restoreProjectFromSnapshot": "從快照還原專案",
     "actions": {
       "create": "建立",
       "runCommand": "執行命令",

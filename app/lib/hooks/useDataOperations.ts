@@ -487,7 +487,7 @@ export function useDataOperations({
       // Dismiss any existing toast first
       toast.dismiss('progress-toast');
 
-      toast.loading(`Importing settings from ${file.name}...`, {
+      toast.loading(`正在從 ${file.name} 匯入設定...`, {
         position: 'bottom-right',
         autoClose: 3000,
         toastId: 'progress-toast',
@@ -516,7 +516,7 @@ export function useDataOperations({
         await ImportExportService.importSettings(importedData);
 
         // Step 5: Complete
-        showProgress('Completing import', 100);
+        showProgress('完成匯入', 100);
 
         // Dismiss progress toast before showing success toast
         toast.dismiss('progress-toast');
@@ -568,7 +568,7 @@ export function useDataOperations({
       // Dismiss any existing toast first
       toast.dismiss('progress-toast');
 
-      toast.loading(`Importing chats from ${file.name}...`, {
+      toast.loading(`正在從 ${file.name} 匯入對話...`, {
         position: 'bottom-right',
         autoClose: 3000,
         toastId: 'progress-toast',
@@ -643,7 +643,7 @@ export function useDataOperations({
 
           if (processed % 5 === 0 || processed === validatedChats.length) {
             showProgress(
-              `Imported ${processed} of ${validatedChats.length} chats`,
+              `已匯入 ${processed} / ${validatedChats.length} 個對話`,
               80 + (processed / validatedChats.length) * 20,
             );
           }
@@ -655,7 +655,7 @@ export function useDataOperations({
         });
 
         // Step 6: Complete
-        showProgress('Completing import', 100);
+        showProgress('完成匯入', 100);
 
         // Dismiss progress toast before showing success toast
         toast.dismiss('progress-toast');
@@ -699,7 +699,7 @@ export function useDataOperations({
       // Dismiss any existing toast first
       toast.dismiss('progress-toast');
 
-      toast.loading(`Importing API keys from ${file.name}...`, {
+      toast.loading(`正在從 ${file.name} 匯入 API 金鑰...`, {
         position: 'bottom-right',
         autoClose: 3000,
         toastId: 'progress-toast',
@@ -732,7 +732,7 @@ export function useDataOperations({
         document.cookie = `apiKeys=${apiKeysJson}; path=/; max-age=31536000`;
 
         // Step 5: Complete
-        showProgress('Completing import', 100);
+        showProgress('完成匯入', 100);
 
         // Dismiss progress toast before showing success toast
         toast.dismiss('progress-toast');

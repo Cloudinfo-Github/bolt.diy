@@ -280,6 +280,70 @@ export default class AzureOpenAIProvider extends BaseProvider {
           console.log('[AzureOpenAI] ====== Making Request ======');
           console.log('[AzureOpenAI] URL:', url);
           console.log('[AzureOpenAI] Model:', model);
+          console.log('[AzureOpenAI] requiresResponsesAPI:', requiresResponsesAPI);
+          console.log('[AzureOpenAI] init exists:', !!init);
+          console.log('[AzureOpenAI] init.body exists:', !!init?.body);
+          console.log('[AzureOpenAI] init.body type:', typeof init?.body);
+
+          // 如果 body 不存在，記錄完整的 init 物件
+          if (!init?.body) {
+            console.log('[AzureOpenAI] WARNING: No body in request! Full init:', JSON.stringify(init, null, 2));
+          }
+
+          // 如果是 Responses API，需要轉換參數名稱並注入 max_output_tokens
+          if (requiresResponsesAPI && init?.body) {
+            try {
+              const body = JSON.parse(init.body as string);
+              console.log('[AzureOpenAI] Original body keys:', Object.keys(body));
+
+              // Responses API 使用 max_output_tokens，不是 max_completion_tokens
+              if (body.max_completion_tokens !== undefined) {
+                console.log('[AzureOpenAI] Found max_completion_tokens:', body.max_completion_tokens);
+                body.max_output_tokens = body.max_completion_tokens;
+                delete body.max_completion_tokens;
+                console.log('[AzureOpenAI] Transformed to max_output_tokens:', body.max_output_tokens);
+              } else {
+                // Vercel AI SDK 可能沒有傳遞 max_completion_tokens，手動注入 max_output_tokens
+                console.log('[AzureOpenAI] No max_completion_tokens found, injecting max_output_tokens: 128000');
+                body.max_output_tokens = 128000; // 使用 gpt-5-codex 的最大值
+              }
+
+              // 注意：根據官方文件，Responses API 支援 tools 和 tool_choice 參數，保留它們
+
+              // 轉換 input.content 格式：Vercel AI SDK 發送的是物件數組，但 Azure Responses API 需要字串
+              if (body.input && Array.isArray(body.input)) {
+                console.log('[AzureOpenAI] Transforming input content format...');
+
+                for (let i = 0; i < body.input.length; i++) {
+                  const message = body.input[i];
+
+                  if (message.content && Array.isArray(message.content)) {
+                    // content 是數組，需要轉換成字串
+                    const textParts = message.content
+                      .filter((part: any) => part.type === 'input_text' || part.type === 'text')
+                      .map((part: any) => part.text || part.input_text || '')
+                      .join('\n');
+
+                    console.log(
+                      `[AzureOpenAI] Transformed message[${i}].content from array to string (${message.content.length} parts -> ${textParts.length} chars)`,
+                    );
+                    message.content = textParts;
+                  }
+                }
+              }
+
+              console.log('[AzureOpenAI] Final body keys:', Object.keys(body));
+              console.log('[AzureOpenAI] Final max_output_tokens:', body.max_output_tokens);
+              console.log('[AzureOpenAI] Full request body:', JSON.stringify(body, null, 2));
+
+              init = {
+                ...init,
+                body: JSON.stringify(body),
+              };
+            } catch (e) {
+              console.error('[AzureOpenAI] Failed to transform request body:', e);
+            }
+          }
 
           return fetch(url, init);
         },

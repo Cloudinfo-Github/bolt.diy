@@ -5,6 +5,7 @@ import { generateId, type JSONValue, type Message } from 'ai';
 import { toast } from 'react-toastify';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { logStore } from '~/lib/stores/logs'; // Import logStore
+import i18next from '~/i18n/i18n.client'; // Import i18next for translations
 import {
   getMessages,
   getNextId,
@@ -100,6 +101,7 @@ export function useChatHistory() {
                 : storedMessages.messages.length;
               const snapshotIndex = storedMessages.messages.findIndex((m) => m.id === validSnapshot.chatIndex);
 
+              // 總是分割訊息以使用 summary 機制節省 token（Context Optimization 默認啟用）
               if (snapshotIndex >= 0 && snapshotIndex < endingIdx) {
                 startingIdx = snapshotIndex;
               }
@@ -139,7 +141,7 @@ export function useChatHistory() {
                   {
                     id: generateId(),
                     role: 'user',
-                    content: `Restore project from snapshot`, // Removed newline
+                    content: i18next.t('workbench:artifact.restoreProjectFromSnapshot'),
                     annotations: ['no-store', 'hidden'],
                   },
                   {
@@ -147,7 +149,7 @@ export function useChatHistory() {
                     role: 'assistant',
 
                     // Combine followup message and the artifact with files and command actions
-                    content: `Bolt Restored your chat from a snapshot. You can revert this message to load the full chat history.
+                    content: `${i18next.t('workbench:artifact.chatRestored')} ${i18next.t('workbench:artifact.revertToLoadFullHistory')}
                   <boltArtifact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
                   ${Object.entries(snapshot?.files || {})
                     .map(([key, value]) => {

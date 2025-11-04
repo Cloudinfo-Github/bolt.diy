@@ -188,8 +188,8 @@ export async function getTemplates(templateName: string, title?: string) {
    * However, we keep the title parameter for artifact labeling which may be shown to users
    */
   const assistantMessage = `
-Bolt is initializing your project with the required files using the ${template.name} template.
-<boltArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
+Bolt 正在使用 ${template.name} 範本初始化您的專案所需檔案。
+<boltArtifact id="imported-files" title="${title || '建立初始檔案'}" type="bundled">
 ${filesToImport.files
   .map(
     (file) =>
