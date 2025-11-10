@@ -165,6 +165,19 @@ export default class AzureOpenAIProvider extends BaseProvider {
                 delete body.max_completion_tokens;
               }
 
+              /*
+               * CRITICAL FIX: Vercel AI SDK 的 openai.responses() 沒有正確傳遞 maxCompletionTokens
+               * 我們需要從 URL 參數或使用預設值手動添加 max_output_tokens
+               */
+              if (!body.max_output_tokens) {
+                // 使用 128000 作為 gpt-5-codex 的預設值（來自模型配置）
+                const defaultMaxOutputTokens = 128000;
+                console.log(
+                  `[AzureOpenAI] ⚠️ AI SDK 未傳遞 max_output_tokens，手動添加預設值: ${defaultMaxOutputTokens}`,
+                );
+                body.max_output_tokens = defaultMaxOutputTokens;
+              }
+
               // 更新 init.body
               init = {
                 ...init,
@@ -175,6 +188,7 @@ export default class AzureOpenAIProvider extends BaseProvider {
               console.log('[AzureOpenAI] Has tools:', !!body.tools);
               console.log('[AzureOpenAI] Has tool_choice:', !!body.tool_choice);
               console.log('[AzureOpenAI] Has max_output_tokens:', !!body.max_output_tokens);
+              console.log('[AzureOpenAI] max_output_tokens value:', body.max_output_tokens);
             } catch {
               console.log('[AzureOpenAI] Could not parse body for transformation');
             }
