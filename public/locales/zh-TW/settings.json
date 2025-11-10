@@ -46,7 +46,8 @@
   },
   "language": {
     "title": "語言",
-    "select": "選擇語言"
+    "select": "選擇語言",
+    "switchLanguage": "切換語言"
   },
   "save": "儲存",
   "cancel": "取消",

@@ -10,7 +10,7 @@ interface LanguageSwitcherProps {
 }
 
 export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
-  const { language, changeLanguage } = useI18n();
+  const { t, language, changeLanguage } = useI18n('settings');
   const [isOpen, setIsOpen] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
 
@@ -57,7 +57,7 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
             isChanging && 'opacity-50 cursor-not-allowed',
             className,
           )}
-          title="切換語言 / Switch Language"
+          title={t('language.switchLanguage')}
           disabled={isChanging}
         >
           <span className={classNames('i-ph:translate text-lg', isChanging && 'animate-spin')} />

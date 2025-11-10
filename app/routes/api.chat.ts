@@ -41,7 +41,7 @@ function parseCookies(cookieHeader: string): Record<string, string> {
 
 async function chatAction({ context, request }: ActionFunctionArgs) {
   const streamRecovery = new StreamRecoveryManager({
-    timeout: 45000,
+    timeout: 180000, // 3 minutes - Azure Responses API needs time for reasoning on large projects
     maxRetries: 2,
     onTimeout: () => {
       logger.warn('Stream timeout - attempting recovery');
@@ -352,6 +352,28 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               }
 
               return;
+            }
+
+            // Handle reasoning output from Responses API
+            if (part.type === 'reasoning') {
+              const reasoningText = part.textDelta || '';
+              logger.info('[REASONING] Reasoning content received, length:', reasoningText.length);
+              logger.info('[REASONING] Content preview:', reasoningText.substring(0, 100));
+
+              // Wrap reasoning content in __boltThought__ div for frontend display
+              if (reasoningText) {
+                try {
+                  dataStream.writeData({
+                    type: 'text',
+                    value: `<div class="__boltThought__">${reasoningText}</div>`,
+                  });
+                  logger.info('[REASONING] ✅ Written to dataStream');
+                } catch (error) {
+                  logger.error('[REASONING] ❌ Failed to write to dataStream:', error);
+                }
+              } else {
+                logger.warn('[REASONING] ⚠️ Empty reasoning text');
+              }
             }
           }
           streamRecovery.stop();

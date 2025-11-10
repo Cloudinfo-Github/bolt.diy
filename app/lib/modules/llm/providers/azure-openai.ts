@@ -15,45 +15,22 @@ export default class AzureOpenAIProvider extends BaseProvider {
   };
 
   staticModels: ModelInfo[] = [
-    // GPT-5 Series (Latest - 2025)
+    /*
+     * ✅ 經過測試確認可用的模型（2025-11-04）
+     * 測試使用直接 API 調用驗證，僅列出在 Azure AI Foundry 中已部署且可用的模型
+     */
+
+    // GPT-5 Series
     {
       name: 'gpt-5',
-      label: 'GPT-5',
+      label: 'GPT-5 ✅',
       provider: 'AzureOpenAI',
       maxTokenAllowed: 400000,
       maxCompletionTokens: 128000,
-    },
-    {
-      name: 'gpt-5-mini',
-      label: 'GPT-5 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
-    },
-    {
-      name: 'gpt-5-nano',
-      label: 'GPT-5 Nano',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
-    },
-    {
-      name: 'gpt-5-chat',
-      label: 'GPT-5 Chat',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 16384,
     },
     {
       name: 'gpt-5-codex',
-      label: 'GPT-5 Codex',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
-    },
-    {
-      name: 'gpt-5-pro',
-      label: 'GPT-5 Pro',
+      label: 'GPT-5 Codex ✅',
       provider: 'AzureOpenAI',
       maxTokenAllowed: 400000,
       maxCompletionTokens: 128000,
@@ -62,116 +39,10 @@ export default class AzureOpenAIProvider extends BaseProvider {
     // GPT-4.1 Series
     {
       name: 'gpt-4.1',
-      label: 'GPT-4.1',
+      label: 'GPT-4.1 ✅',
       provider: 'AzureOpenAI',
       maxTokenAllowed: 1047576,
       maxCompletionTokens: 32768,
-    },
-    {
-      name: 'gpt-4.1-mini',
-      label: 'GPT-4.1 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 1047576,
-      maxCompletionTokens: 32768,
-    },
-    {
-      name: 'gpt-4.1-nano',
-      label: 'GPT-4.1 Nano',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 1047576,
-      maxCompletionTokens: 32768,
-    },
-
-    // GPT-4o Series (Recommended for production)
-    {
-      name: 'gpt-4o',
-      label: 'GPT-4o (2024-11-20)',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 16384,
-    },
-    {
-      name: 'gpt-4o-2024-08-06',
-      label: 'GPT-4o (2024-08-06)',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 16384,
-    },
-    {
-      name: 'gpt-4o-2024-05-13',
-      label: 'GPT-4o (2024-05-13)',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4096,
-    },
-    {
-      name: 'gpt-4o-mini',
-      label: 'GPT-4o Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 16384,
-    },
-
-    // O-Series Reasoning Models
-    {
-      name: 'o3',
-      label: 'O3',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 100000,
-    },
-    {
-      name: 'o4-mini',
-      label: 'O4 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 100000,
-    },
-    {
-      name: 'o3-mini',
-      label: 'O3 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 100000,
-    },
-    {
-      name: 'o1',
-      label: 'O1',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 100000,
-    },
-    {
-      name: 'o1-mini',
-      label: 'O1 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 65536,
-    },
-
-    // GPT-4 Turbo
-    {
-      name: 'gpt-4',
-      label: 'GPT-4 Turbo',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4096,
-    },
-
-    // GPT-3.5 Series
-    {
-      name: 'gpt-35-turbo',
-      label: 'GPT-3.5 Turbo',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 16385,
-      maxCompletionTokens: 4096,
-    },
-    {
-      name: 'gpt-35-turbo-instruct',
-      label: 'GPT-3.5 Turbo Instruct',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 4097,
-      maxCompletionTokens: 4096,
     },
   ];
 
@@ -281,71 +152,69 @@ export default class AzureOpenAIProvider extends BaseProvider {
           console.log('[AzureOpenAI] URL:', url);
           console.log('[AzureOpenAI] Model:', model);
           console.log('[AzureOpenAI] requiresResponsesAPI:', requiresResponsesAPI);
-          console.log('[AzureOpenAI] init exists:', !!init);
-          console.log('[AzureOpenAI] init.body exists:', !!init?.body);
-          console.log('[AzureOpenAI] init.body type:', typeof init?.body);
 
-          // 如果 body 不存在，記錄完整的 init 物件
-          if (!init?.body) {
-            console.log('[AzureOpenAI] WARNING: No body in request! Full init:', JSON.stringify(init, null, 2));
-          }
-
-          // 如果是 Responses API，需要轉換參數名稱並注入 max_output_tokens
+          // Azure Responses API 參數轉換
           if (requiresResponsesAPI && init?.body) {
             try {
               const body = JSON.parse(init.body as string);
-              console.log('[AzureOpenAI] Original body keys:', Object.keys(body));
 
-              // Responses API 使用 max_output_tokens，不是 max_completion_tokens
-              if (body.max_completion_tokens !== undefined) {
-                console.log('[AzureOpenAI] Found max_completion_tokens:', body.max_completion_tokens);
+              // Azure Responses API 使用 max_output_tokens 而非 max_completion_tokens
+              if (body.max_completion_tokens) {
+                console.log('[AzureOpenAI] Converting max_completion_tokens to max_output_tokens for Responses API');
                 body.max_output_tokens = body.max_completion_tokens;
                 delete body.max_completion_tokens;
-                console.log('[AzureOpenAI] Transformed to max_output_tokens:', body.max_output_tokens);
-              } else {
-                // Vercel AI SDK 可能沒有傳遞 max_completion_tokens，手動注入 max_output_tokens
-                console.log('[AzureOpenAI] No max_completion_tokens found, injecting max_output_tokens: 128000');
-                body.max_output_tokens = 128000; // 使用 gpt-5-codex 的最大值
               }
 
-              // 注意：根據官方文件，Responses API 支援 tools 和 tool_choice 參數，保留它們
-
-              // 轉換 input.content 格式：Vercel AI SDK 發送的是物件數組，但 Azure Responses API 需要字串
-              if (body.input && Array.isArray(body.input)) {
-                console.log('[AzureOpenAI] Transforming input content format...');
-
-                for (let i = 0; i < body.input.length; i++) {
-                  const message = body.input[i];
-
-                  if (message.content && Array.isArray(message.content)) {
-                    // content 是數組，需要轉換成字串
-                    const textParts = message.content
-                      .filter((part: any) => part.type === 'input_text' || part.type === 'text')
-                      .map((part: any) => part.text || part.input_text || '')
-                      .join('\n');
-
-                    console.log(
-                      `[AzureOpenAI] Transformed message[${i}].content from array to string (${message.content.length} parts -> ${textParts.length} chars)`,
-                    );
-                    message.content = textParts;
-                  }
-                }
-              }
-
-              console.log('[AzureOpenAI] Final body keys:', Object.keys(body));
-              console.log('[AzureOpenAI] Final max_output_tokens:', body.max_output_tokens);
-              console.log('[AzureOpenAI] Full request body:', JSON.stringify(body, null, 2));
-
+              // 更新 init.body
               init = {
                 ...init,
                 body: JSON.stringify(body),
               };
-            } catch (e) {
-              console.error('[AzureOpenAI] Failed to transform request body:', e);
+
+              console.log('[AzureOpenAI] Request body keys:', Object.keys(body));
+              console.log('[AzureOpenAI] Has tools:', !!body.tools);
+              console.log('[AzureOpenAI] Has tool_choice:', !!body.tool_choice);
+              console.log('[AzureOpenAI] Has max_output_tokens:', !!body.max_output_tokens);
+            } catch {
+              console.log('[AzureOpenAI] Could not parse body for transformation');
+            }
+          } else if (init?.body) {
+            try {
+              const body = JSON.parse(init.body as string);
+              console.log('[AzureOpenAI] Request body keys:', Object.keys(body));
+              console.log('[AzureOpenAI] Has tools:', !!body.tools);
+              console.log('[AzureOpenAI] Has tool_choice:', !!body.tool_choice);
+            } catch {
+              console.log('[AzureOpenAI] Could not parse body for logging');
             }
           }
 
-          return fetch(url, init);
+          console.log('[AzureOpenAI] Calling fetch...');
+
+          /*
+           * 為 Azure Responses API 設定更長的超時時間
+           * Responses API 在生成大型專案時需要較長的思考時間
+           */
+          const fetchPromise = fetch(url, {
+            ...init,
+
+            // @ts-ignore - undici specific options for Node.js fetch
+            bodyTimeout: 300000, // 5 minutes - wait for response body chunks
+            headersTimeout: 60000, // 1 minute - wait for initial headers
+          });
+
+          return fetchPromise
+            .then((response) => {
+              console.log('[AzureOpenAI] ✅ Received response!');
+              console.log('[AzureOpenAI] Status:', response.status, response.statusText);
+
+              return response;
+            })
+            .catch((error) => {
+              console.error('[AzureOpenAI] ❌ Fetch error:', error);
+              console.error('[AzureOpenAI] Error message:', error.message);
+              throw error;
+            });
         },
       });
 

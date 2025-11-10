@@ -147,5 +147,18 @@
     "codeFilesSelected": "已選擇程式碼檔案",
     "generatingResponse": "生成回應中",
     "responseGenerated": "回應已生成"
+  },
+  "examples": {
+    "prompts": [
+      "建立一個關於 bolt.diy 的行動應用程式",
+      "使用 React 和 Tailwind 建立待辦事項應用",
+      "使用 Astro 建立簡單的部落格",
+      "使用 Material UI 建立 Cookie 同意表單",
+      "製作太空侵略者遊戲",
+      "僅使用 HTML、CSS 和 JS 製作井字遊戲"
+    ]
+  },
+  "starterTemplates": {
+    "description": "或使用您喜愛的技術堆疊開始全新應用"
   }
 }

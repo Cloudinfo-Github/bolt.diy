@@ -46,7 +46,8 @@
   },
   "language": {
     "title": "Language",
-    "select": "Select Language"
+    "select": "Select Language",
+    "switchLanguage": "Switch Language"
   },
   "save": "Save",
   "cancel": "Cancel",

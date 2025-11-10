@@ -22,6 +22,19 @@
     "title": "Where ideas begin",
     "description": "Bring ideas to life in seconds or get help with existing projects."
   },
+  "examples": {
+    "prompts": [
+      "Build a mobile app about bolt.diy",
+      "Build a todo app with React and Tailwind",
+      "Build a simple blog with Astro",
+      "Build a Cookie Consent form with Material UI",
+      "Make a space invaders game",
+      "Make a Tic-Tac-Toe game using only HTML, CSS, and JS"
+    ]
+  },
+  "starterTemplates": {
+    "description": "Or start a new app with your favorite stack"
+  },
   "history": {
     "title": "Chat History",
     "empty": "No chat history",

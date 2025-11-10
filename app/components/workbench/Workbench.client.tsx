@@ -29,6 +29,7 @@ import { ExportChatButton } from '~/components/chat/chatExportAndImport/ExportCh
 import { useChatHistory } from '~/lib/persistence';
 import { streamingState } from '~/lib/stores/streaming';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface WorkspaceProps {
   chatStarted?: boolean;
@@ -41,21 +42,6 @@ interface WorkspaceProps {
 }
 
 const viewTransition = { ease: cubicEasingFn };
-
-const sliderOptions: SliderOptions<WorkbenchViewType> = {
-  left: {
-    value: 'code',
-    text: '程式碼',
-  },
-  middle: {
-    value: 'diff',
-    text: '差異',
-  },
-  right: {
-    value: 'preview',
-    text: '預覽',
-  },
-};
 
 const workbenchVariants = {
   closed: {
@@ -290,6 +276,7 @@ export const Workbench = memo(
   }: WorkspaceProps) => {
     renderLogger.trace('Workbench');
 
+    const { t } = useI18n('workbench');
     const [fileHistory, setFileHistory] = useState<Record<string, FileHistory>>({});
 
     // const modifiedFiles = Array.from(useStore(workbenchStore.unsavedFiles).keys());
@@ -301,6 +288,24 @@ export const Workbench = memo(
     const unsavedFiles = useStore(workbenchStore.unsavedFiles);
     const files = useStore(workbenchStore.files);
     const selectedView = useStore(workbenchStore.currentView);
+
+    const sliderOptions: SliderOptions<WorkbenchViewType> = useMemo(
+      () => ({
+        left: {
+          value: 'code',
+          text: t('code'),
+        },
+        middle: {
+          value: 'diff',
+          text: t('diff'),
+        },
+        right: {
+          value: 'preview',
+          text: t('preview'),
+        },
+      }),
+      [t],
+    );
     const { showChat } = useStore(chatStore);
     const canHideChat = showWorkbench || !showChat;
 

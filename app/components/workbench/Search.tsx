@@ -4,6 +4,7 @@ import { workbenchStore } from '~/lib/stores/workbench';
 import { webcontainer } from '~/lib/webcontainer';
 import { WORK_DIR } from '~/utils/constants';
 import { debounce } from '~/utils/debounce';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface DisplayMatch {
   path: string;
@@ -89,6 +90,7 @@ function groupResultsByFile(results: DisplayMatch[]): Record<string, DisplayMatc
 }
 
 export function Search() {
+  const { t } = useI18n('workbench');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<DisplayMatch[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -186,7 +188,7 @@ export function Search() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="搜尋"
+            placeholder={t('searchPlaceholder')}
             className="w-full px-2 py-1 rounded-md bg-bolt-elements-background-depth-3 text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none transition-all"
           />
         </div>

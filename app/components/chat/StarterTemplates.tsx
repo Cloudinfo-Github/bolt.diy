@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Template } from '~/types/template';
 import { STARTER_TEMPLATES } from '~/utils/constants';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface FrameworkLinkProps {
   template: Template;
@@ -21,9 +22,11 @@ const FrameworkLink: React.FC<FrameworkLinkProps> = ({ template }) => (
 );
 
 const StarterTemplates: React.FC = () => {
+  const { t } = useI18n('chat');
+
   return (
     <div className="flex flex-col items-center gap-4">
-      <span className="text-sm text-gray-500">或使用您喜愛的技術堆疊開始全新應用</span>
+      <span className="text-sm text-gray-500">{t('starterTemplates.description')}</span>
       <div className="flex justify-center">
         <div className="flex flex-wrap justify-center items-center gap-4 max-w-sm">
           {STARTER_TEMPLATES.map((template) => (

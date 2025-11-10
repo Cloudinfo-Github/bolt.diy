@@ -240,24 +240,31 @@ export async function streamText(props: {
   // Use maxCompletionTokens for reasoning models (o1, GPT-5), maxTokens for traditional models
   const tokenParams = isReasoning ? { maxCompletionTokens: safeMaxTokens } : { maxTokens: safeMaxTokens };
 
-  // Filter out unsupported parameters for reasoning models
-  const filteredOptions =
-    isReasoning && options
-      ? Object.fromEntries(
-          Object.entries(options).filter(
-            ([key]) =>
-              ![
-                'temperature',
-                'topP',
-                'presencePenalty',
-                'frequencyPenalty',
-                'logprobs',
-                'topLogprobs',
-                'logitBias',
-              ].includes(key),
-          ),
-        )
-      : options || {};
+  /*
+   * Filter out unsupported parameters
+   * 1. Bolt internal parameters that should never be passed to AI SDK
+   */
+  const boltInternalParams = ['supabaseConnection'];
+
+  // 2. Parameters not supported by reasoning models (o1, GPT-5)
+  const reasoningUnsupportedParams = [
+    'temperature',
+    'topP',
+    'presencePenalty',
+    'frequencyPenalty',
+    'logprobs',
+    'topLogprobs',
+    'logitBias',
+    'maxSteps', // Responses API uses 'stopWhen' instead of 'maxSteps'
+  ];
+
+  const filteredOptions = options
+    ? Object.fromEntries(
+        Object.entries(options).filter(
+          ([key]) => !boltInternalParams.includes(key) && !(isReasoning && reasoningUnsupportedParams.includes(key)),
+        ),
+      )
+    : {};
 
   // DEBUG: Log filtered options
   logger.info(
@@ -311,6 +318,22 @@ export async function streamText(props: {
 
     // 加入工具（如果有的話）
     ...(Object.keys(tools).length > 0 ? { tools } : {}),
+
+    // 為 reasoning 模型配置 providerOptions 以啟用思考過程顯示
+    ...(isReasoning
+      ? {
+          providerOptions: {
+            azure: {
+              reasoningEffort: 'high',
+              reasoningSummary: 'detailed', // 'auto' or 'detailed'
+            },
+            openai: {
+              reasoningEffort: 'high',
+              reasoningSummary: 'detailed',
+            },
+          },
+        }
+      : {}),
   };
 
   // DEBUG: Log final streaming parameters
