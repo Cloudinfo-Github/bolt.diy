@@ -17,6 +17,7 @@ import type {
 } from '@ai-sdk/ui-utils';
 import { ToolInvocations } from './ToolInvocations';
 import type { ToolCallAnnotation } from '~/types/context';
+import ThoughtBox from './ThoughtBox';
 
 interface AssistantMessageProps {
   content: string;
@@ -102,6 +103,10 @@ export const AssistantMessage = memo(
       (annotation) => annotation.type === 'toolCall',
     ) as ToolCallAnnotation[];
 
+    // 提取推理內容
+    const reasoningParts = parts?.filter((part) => part.type === 'reasoning') as ReasoningUIPart[] | undefined;
+    const hasReasoning = reasoningParts && reasoningParts.length > 0;
+
     return (
       <div className="overflow-hidden w-full">
         <>
@@ -176,6 +181,20 @@ export const AssistantMessage = memo(
             </div>
           </div>
         </>
+        {/* 渲染推理內容 */}
+        {hasReasoning && (
+          <div className="mb-4">
+            <ThoughtBox title="思考過程">
+              <div className="text-sm text-bolt-elements-textSecondary space-y-2">
+                {reasoningParts.map((part, index) => (
+                  <div key={index} className="whitespace-pre-wrap">
+                    {part.reasoning}
+                  </div>
+                ))}
+              </div>
+            </ThoughtBox>
+          </div>
+        )}
         <Markdown append={append} chatMode={chatMode} setChatMode={setChatMode} model={model} provider={provider} html>
           {content}
         </Markdown>

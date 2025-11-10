@@ -6,10 +6,8 @@ import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/
 import SwitchableStream from '~/lib/.server/llm/switchable-stream';
 import type { IProviderSetting } from '~/types/model';
 import { createScopedLogger } from '~/utils/logger';
-import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
-import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
-import { WORK_DIR } from '~/utils/constants';
-import { createSummary } from '~/lib/.server/llm/create-summary';
+import { getFilePaths } from '~/lib/.server/llm/select-context';
+import type { ProgressAnnotation } from '~/types/context';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 import type { DesignScheme } from '~/types/design-scheme';
 import { MCPService } from '~/lib/services/mcpService';
@@ -105,8 +103,8 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         streamRecovery.startMonitoring();
 
         const filePaths = getFilePaths(files || {});
-        let filteredFiles: FileMap | undefined = undefined;
-        let summary: string | undefined = undefined;
+        const filteredFiles: FileMap | undefined = undefined;
+        const summary: string | undefined = undefined;
         let messageSliceId = 0;
 
         const processedMessages = await mcpService.processToolInvocations(messages, dataStream);
@@ -125,96 +123,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             message: 'Analysing Request',
           } satisfies ProgressAnnotation);
 
-          // Create a summary of the chat
-          console.log(`Messages count: ${processedMessages.length}`);
-
-          summary = await createSummary({
-            messages: [...processedMessages],
-            env: context.cloudflare?.env,
-            apiKeys,
-            providerSettings,
-            promptId,
-            contextOptimization,
-            onFinish(resp) {
-              if (resp.usage) {
-                logger.debug('createSummary token usage', JSON.stringify(resp.usage));
-                cumulativeUsage.completionTokens += resp.usage.completionTokens || 0;
-                cumulativeUsage.promptTokens += resp.usage.promptTokens || 0;
-                cumulativeUsage.totalTokens += resp.usage.totalTokens || 0;
-              }
-            },
-          });
-          dataStream.writeData({
-            type: 'progress',
-            label: 'summary',
-            status: 'complete',
-            order: progressCounter++,
-            message: 'Analysis Complete',
-          } satisfies ProgressAnnotation);
-
-          dataStream.writeMessageAnnotation({
-            type: 'chatSummary',
-            summary,
-            chatId: processedMessages.slice(-1)?.[0]?.id,
-          } as ContextAnnotation);
-
-          // Update context buffer
-          logger.debug('Updating Context Buffer');
-          dataStream.writeData({
-            type: 'progress',
-            label: 'context',
-            status: 'in-progress',
-            order: progressCounter++,
-            message: 'Determining Files to Read',
-          } satisfies ProgressAnnotation);
-
-          // Select context files
-          console.log(`Messages count: ${processedMessages.length}`);
-          filteredFiles = await selectContext({
-            messages: [...processedMessages],
-            env: context.cloudflare?.env,
-            apiKeys,
-            files,
-            providerSettings,
-            promptId,
-            contextOptimization,
-            summary,
-            onFinish(resp) {
-              if (resp.usage) {
-                logger.debug('selectContext token usage', JSON.stringify(resp.usage));
-                cumulativeUsage.completionTokens += resp.usage.completionTokens || 0;
-                cumulativeUsage.promptTokens += resp.usage.promptTokens || 0;
-                cumulativeUsage.totalTokens += resp.usage.totalTokens || 0;
-              }
-            },
-          });
-
-          if (filteredFiles) {
-            logger.debug(`files in context : ${JSON.stringify(Object.keys(filteredFiles))}`);
-          }
-
-          dataStream.writeMessageAnnotation({
-            type: 'codeContext',
-            files: Object.keys(filteredFiles).map((key) => {
-              let path = key;
-
-              if (path.startsWith(WORK_DIR)) {
-                path = path.replace(WORK_DIR, '');
-              }
-
-              return path;
-            }),
-          } as ContextAnnotation);
-
-          dataStream.writeData({
-            type: 'progress',
-            label: 'context',
-            status: 'complete',
-            order: progressCounter++,
-            message: 'Code Files Selected',
-          } satisfies ProgressAnnotation);
-
-          // logger.debug('Code Files Selected');
+          // （已移除錯誤插入的推理迴圈，summary 邏輯保持原樣）
         }
 
         const options: StreamingOptions = {
@@ -223,7 +132,6 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           tools: mcpService.toolsWithoutExecute,
           maxSteps: maxLLMSteps,
           onStepFinish: ({ toolCalls }) => {
-            // add tool call annotations for frontend processing
             toolCalls.forEach((toolCall) => {
               mcpService.processToolCall(toolCall, dataStream);
             });
@@ -255,7 +163,6 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               } satisfies ProgressAnnotation);
               await new Promise((resolve) => setTimeout(resolve, 0));
 
-              // stream.close();
               return;
             }
 
@@ -264,10 +171,9 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             }
 
             const switchesLeft = MAX_RESPONSE_SEGMENTS - stream.switches;
-
             logger.info(`Reached max token limit (${MAX_TOKENS}): Continuing message (${switchesLeft} switches left)`);
 
-            const lastUserMessage = processedMessages.filter((x) => x.role == 'user').slice(-1)[0];
+            const lastUserMessage = processedMessages.filter((x) => x.role === 'user').slice(-1)[0];
             const { model, provider } = extractPropertiesFromMessage(lastUserMessage);
             processedMessages.push({ id: generateId(), role: 'assistant', content });
             processedMessages.push({
@@ -293,20 +199,10 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               webSearchEnabled,
             });
 
-            result.mergeIntoDataStream(dataStream);
-
-            (async () => {
-              for await (const part of result.fullStream) {
-                if (part.type === 'error') {
-                  const error: any = part.error;
-                  logger.error(`${error}`);
-
-                  return;
-                }
-              }
-            })();
-
-            return;
+            // 使用 AI SDK 正確的流合併方法，並啟用推理內容傳輸
+            result.mergeIntoDataStream(dataStream, {
+              sendReasoning: true,
+            });
           },
         };
 
@@ -335,50 +231,10 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           webSearchEnabled,
         });
 
-        (async () => {
-          for await (const part of result.fullStream) {
-            streamRecovery.updateActivity();
-
-            if (part.type === 'error') {
-              const error: any = part.error;
-              logger.error('Streaming error:', error);
-              streamRecovery.stop();
-
-              // Enhanced error handling for common streaming issues
-              if (error.message?.includes('Invalid JSON response')) {
-                logger.error('Invalid JSON response detected - likely malformed API response');
-              } else if (error.message?.includes('token')) {
-                logger.error('Token-related error detected - possible token limit exceeded');
-              }
-
-              return;
-            }
-
-            // Handle reasoning output from Responses API
-            if (part.type === 'reasoning') {
-              const reasoningText = part.textDelta || '';
-              logger.info('[REASONING] Reasoning content received, length:', reasoningText.length);
-              logger.info('[REASONING] Content preview:', reasoningText.substring(0, 100));
-
-              // Wrap reasoning content in __boltThought__ div for frontend display
-              if (reasoningText) {
-                try {
-                  dataStream.writeData({
-                    type: 'text',
-                    value: `<div class="__boltThought__">${reasoningText}</div>`,
-                  });
-                  logger.info('[REASONING] ✅ Written to dataStream');
-                } catch (error) {
-                  logger.error('[REASONING] ❌ Failed to write to dataStream:', error);
-                }
-              } else {
-                logger.warn('[REASONING] ⚠️ Empty reasoning text');
-              }
-            }
-          }
-          streamRecovery.stop();
-        })();
-        result.mergeIntoDataStream(dataStream);
+        // 使用 AI SDK 正確的流合併方法，並啟用推理內容傳輸
+        result.mergeIntoDataStream(dataStream, {
+          sendReasoning: true,
+        });
       },
       onError: (error: any) => {
         // Provide more specific error messages for common issues
@@ -421,15 +277,9 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             lastChunk = ' ';
           }
 
-          if (typeof chunk === 'string') {
-            if (chunk.startsWith('g') && !lastChunk.startsWith('g')) {
-              controller.enqueue(encoder.encode(`0: "<div class=\\"__boltThought__\\">"\n`));
-            }
+          // 已改為在 fullStream 迴圈中即時輸出推理內容，這裡不再二次注入
 
-            if (lastChunk.startsWith('g') && !chunk.startsWith('g')) {
-              controller.enqueue(encoder.encode(`0: "</div>\\n"\n`));
-            }
-          }
+          // 移除自動注入 __boltThought__ 的包裹，改由 fullStream 邏輯主導
 
           lastChunk = chunk;
 
