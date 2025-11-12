@@ -301,7 +301,7 @@ export const Workbench = memo(
         },
         right: {
           value: 'preview',
-          text: t('preview'),
+          text: t('previewLabel'),
         },
       }),
       [t],
