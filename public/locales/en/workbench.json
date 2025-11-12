@@ -54,7 +54,8 @@
     "toggleDevice": "Switch to device mode",
     "showQrCode": "Show QR Code",
     "windowOptions": "New window options",
-    "windowOptionsTitle": "Window Options"
+    "windowOptionsTitle": "Window Options",
+    "noPreview": "No preview available"
   },
   "status": {
     "ready": "Ready",

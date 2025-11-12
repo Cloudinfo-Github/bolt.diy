@@ -54,7 +54,8 @@
     "toggleDevice": "切換到裝置模式",
     "showQrCode": "顯示 QR 碼",
     "windowOptions": "新視窗選項",
-    "windowOptionsTitle": "視窗選項"
+    "windowOptionsTitle": "視窗選項",
+    "noPreview": "無可用預覽"
   },
   "status": {
     "ready": "就緒",
