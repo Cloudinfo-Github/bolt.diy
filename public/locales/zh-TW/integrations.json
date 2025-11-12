@@ -1,0 +1,344 @@
+{
+  "shared": {
+    "loading": "載入中...",
+    "connecting": "連線中...",
+    "connected": "已連線至 {{service}}",
+    "disconnected": "已中斷與 {{service}} 的連線",
+    "testConnection": "測試連線",
+    "testing": "測試中...",
+    "disconnect": "中斷連線",
+    "connect": "連線",
+    "refresh": "重新整理",
+    "refreshing": "重新整理中...",
+    "viewDashboard": "查看儀表板",
+    "getToken": "取得您的權杖",
+    "tip": "提示：",
+    "envVarTip": "您也可以設定 {{varName}} 環境變數以自動連線。",
+    "confirmAction": "您確定要{{action}}嗎？",
+    "noProjects": "在您的 {{service}} 帳號中找不到專案",
+    "noSites": "在您的 {{service}} 帳號中找不到網站",
+    "error": {
+      "connectionFailed": "連線失敗",
+      "unauthorized": "無效的權杖或未授權",
+      "unknownError": "未知錯誤",
+      "noToken": "未提供權杖",
+      "tokenRequired": "需要權杖",
+      "failedToFetch": "無法取得{{resource}}"
+    }
+  },
+  "vercel": {
+    "title": "Vercel 整合",
+    "description": "連接和管理您的 Vercel 專案，包含進階部署控制和分析功能",
+    "tokenLabel": "個人存取權杖",
+    "tokenPlaceholder": "輸入您的 Vercel 個人存取權杖",
+    "toast": {
+      "connected": "成功連線至 Vercel",
+      "disconnected": "已中斷與 Vercel 的連線",
+      "redeployStarted": "專案重新部署已啟動",
+      "redeployFailed": "無法重新部署專案：{{error}}",
+      "projectDeleted": "專案刪除成功",
+      "deleteProjectFailed": "無法刪除專案：{{error}}",
+      "statsFetched": "已取得 Vercel 專案"
+    },
+    "stats": {
+      "totalProjects": "總專案數",
+      "deployedProjects": "已部署專案",
+      "frameworksUsed": "使用的框架",
+      "activeDeployments": "活躍部署",
+      "successRate": "成功率",
+      "active": "活躍",
+      "failed": "失敗",
+      "recent deploys": "最近部署",
+      "total domains": "總網域數",
+      "avgDomainsPerProject": "平均網域/專案",
+      "healthyProjects": "健康",
+      "customDomain": "自訂網域",
+      "buildingProjects": "建置中",
+      "issues": "問題"
+    },
+    "overview": {
+      "title": "Vercel 總覽",
+      "deploymentHealth": "部署健康度",
+      "frameworkDistribution": "框架分布",
+      "activitySummary": "活動摘要",
+      "projectHealth": "專案健康度總覽"
+    },
+    "projects": {
+      "title": "您的專案",
+      "count": "您的專案 ({{count}})",
+      "deployments": "部署",
+      "domains": "網域",
+      "team": "團隊",
+      "bandwidth": "頻寬",
+      "view": "查看"
+    },
+    "actions": {
+      "redeploy": "重新部署",
+      "viewDashboard": "查看儀表板",
+      "viewDeployments": "查看部署",
+      "viewFunctions": "查看函式",
+      "viewAnalytics": "查看分析",
+      "viewDomains": "查看網域",
+      "viewSettings": "查看設定",
+      "viewLogs": "查看記錄",
+      "deleteProject": "刪除專案"
+    }
+  },
+  "netlify": {
+    "title": "Netlify 整合",
+    "description": "連接和管理您的 Netlify 網站，包含進階部署控制和網站管理功能",
+    "tokenLabel": "API 權杖",
+    "tokenPlaceholder": "輸入您的 Netlify API 權杖",
+    "toast": {
+      "connected": "成功連線至 Netlify",
+      "disconnected": "已中斷與 Netlify 的連線",
+      "statsFetched": "Netlify 統計資料已更新",
+      "buildTriggered": "已觸發建置並清除快取",
+      "buildTriggerFailed": "建置觸發失敗。此功能可能不適用於免費帳號。",
+      "cacheCleared": "網站快取清除成功",
+      "cacheClearFailed": "無法清除網站快取：{{error}}",
+      "cachePurgeNotAvailable": "免費帳號無法使用快取清除功能。請嘗試觸發建置。",
+      "siteNotFound": "找不到網站。這可能是免費帳號的限制。",
+      "envVarsLoaded": "已載入環境變數：{{count}} 個變數",
+      "envVarsLimited": "免費帳號的環境變數管理功能受限",
+      "envVarsNone": "網站未設定環境變數",
+      "envVarsFailed": "無法載入環境變數：{{error}}",
+      "buildSuccess": "建置觸發成功！ID：{{id}}",
+      "buildFailed": "無法觸發建置：{{error}}",
+      "functionsCount": "網站有 {{count}} 個無伺服器函式",
+      "functionsLimited": "免費帳號可能無法使用函式或功能受限",
+      "functionsNone": "網站沒有無伺服器函式",
+      "functionsFailed": "無法載入函式：{{error}}",
+      "analyticsLoaded": "網站分析載入成功",
+      "analyticsNotAvailable": "免費帳號無法使用分析功能。改為顯示基本網站資訊。",
+      "analyticsUnavailable": "免費帳號無法使用分析功能。網站資訊：{{name}} ({{state}})",
+      "analyticsFailed": "無法載入分析：{{error}}",
+      "siteInfo": "網站：{{name}} - 狀態：{{state}}",
+      "siteDeleted": "網站刪除成功",
+      "deleteSiteFailed": "無法刪除網站：{{error}}",
+      "deployPublished": "部署發布成功",
+      "deployLocked": "部署鎖定成功",
+      "deployUnlocked": "部署解鎖成功",
+      "deployActionFailed": "無法{{action}}部署：{{error}}"
+    },
+    "stats": {
+      "totalSites": "總網站數",
+      "totalDeployments": "總部署數",
+      "totalBuilds": "總建置數",
+      "liveSites": "線上網站",
+      "successRate": "成功率",
+      "successful": "成功",
+      "failed": "失敗",
+      "last24Hours": "過去 24 小時",
+      "last7Days": "過去 7 天",
+      "activeSites": "活躍網站",
+      "healthy": "健康",
+      "sslEnabled": "已啟用 SSL",
+      "customDomain": "自訂網域",
+      "building": "建置中",
+      "needsAttention": "需要注意"
+    },
+    "overview": {
+      "title": "Netlify 總覽",
+      "deploymentAnalytics": "部署分析",
+      "recentActivity": "最近活動",
+      "siteHealth": "網站健康度總覽"
+    },
+    "sites": {
+      "title": "您的網站",
+      "count": "您的網站 ({{count}})",
+      "showAll": "顯示全部 {{count}}",
+      "showLess": "顯示較少",
+      "customDomainBadge": "自訂網域"
+    },
+    "deploys": {
+      "title": "所有部署",
+      "recentTitle": "最近部署",
+      "count": "({{count}})",
+      "publish": "發布",
+      "lock": "鎖定",
+      "unlock": "解鎖",
+      "branch": "分支：{{branch}}"
+    },
+    "builds": {
+      "title": "最近建置",
+      "count": "({{count}})",
+      "completed": "已完成",
+      "building": "建置中",
+      "failed": "失敗"
+    },
+    "actions": {
+      "clearCache": "清除快取",
+      "manageEnvironment": "管理環境",
+      "triggerBuild": "觸發建置",
+      "viewFunctions": "查看函式",
+      "siteAnalytics": "網站分析",
+      "deleteSite": "刪除網站"
+    }
+  },
+  "supabase": {
+    "title": "Supabase 整合",
+    "description": "連接和管理您的 Supabase 專案，包含資料庫存取、身份驗證和儲存控制功能",
+    "tokenLabel": "存取權杖",
+    "tokenPlaceholder": "輸入您的 Supabase 存取權杖",
+    "toast": {
+      "connected": "成功連線至 Supabase",
+      "disconnected": "已中斷與 Supabase 的連線",
+      "connectionSuccess": "使用環境權杖成功連線。找到 {{count}} 個專案",
+      "connectionFailed": "連線失敗：{{error}}",
+      "apiKeysFetched": "API 金鑰取得成功",
+      "apiKeysFailed": "無法取得 API 金鑰：{{error}}",
+      "urlCopied": "URL 已複製到剪貼簿",
+      "keyCopied": "金鑰已複製到剪貼簿"
+    },
+    "stats": {
+      "totalProjects": "總專案數",
+      "activeProjects": "活躍專案",
+      "regionsUsed": "使用的區域",
+      "inactiveProjects": "非活躍專案",
+      "healthRate": "健康度",
+      "avgTablesPerProject": "平均表格/專案",
+      "authEnabled": "已啟用身份驗證",
+      "totalUsers": "總用戶數",
+      "avgUsersPerProject": "平均用戶/專案",
+      "database": "資料庫",
+      "storage": "儲存空間",
+      "functions": "函式",
+      "tables": "表格",
+      "buckets": "儲存桶"
+    },
+    "overview": {
+      "title": "Supabase 總覽",
+      "performanceAnalytics": "效能分析",
+      "databaseHealth": "資料庫健康度",
+      "authSecurity": "身份驗證與安全性",
+      "regionalDistribution": "區域分布",
+      "resourceOverview": "資源總覽"
+    },
+    "projects": {
+      "title": "您的專案",
+      "count": "您的專案 ({{count}})",
+      "views": "檢視",
+      "dbSize": "資料庫大小"
+    },
+    "projectDetails": {
+      "databaseSchema": "資料庫綱要",
+      "storage": "儲存空間",
+      "files": "檔案",
+      "used": "已使用",
+      "available": "可用",
+      "credentials": "專案憑證",
+      "supabaseUrl": "Supabase URL：",
+      "anonKey": "匿名金鑰："
+    },
+    "actions": {
+      "getApiKeys": "取得 API 金鑰",
+      "fetching": "取得中...",
+      "viewDashboard": "查看儀表板",
+      "viewDatabase": "查看資料庫",
+      "viewAuth": "查看身份驗證",
+      "viewStorage": "查看儲存空間",
+      "viewFunctions": "查看函式",
+      "viewLogs": "查看記錄",
+      "viewSettings": "查看設定",
+      "viewApiDocs": "查看 API 文件",
+      "viewRealtime": "查看即時功能",
+      "viewEdgeFunctions": "查看邊緣函式"
+    },
+    "projectStatus": {
+      "activeHealthy": "活躍健康",
+      "suspended": "已暫停",
+      "inactive": "非活躍"
+    },
+    "metrics": {
+      "memberSince": "加入時間 {{date}}",
+      "projects": "專案",
+      "regions": "區域",
+      "active": "活躍"
+    }
+  },
+  "gitlab": {
+    "title": "GitLab 整合",
+    "description": "連接和管理您的 GitLab 儲存庫，包含進階儲存庫控制和分析功能",
+    "loading": "載入 GitLab 連線中...",
+    "toast": {
+      "connected": "成功連線至 GitLab",
+      "disconnected": "已中斷與 GitLab 的連線",
+      "connectionSuccess": "連線測試成功",
+      "connectionFailed": "連線測試失敗",
+      "notConnected": "尚未建立連線",
+      "testing": "正在測試連線...",
+      "connectedAs": "已成功連線為 {{username}}",
+      "statsFetched": "GitLab 統計資料已更新",
+      "repositorySelected": "已選擇儲存庫：{{name}}"
+    },
+    "connection": {
+      "title": "GitLab 連線",
+      "tokenLabel": "個人存取權杖",
+      "tokenPlaceholder": "輸入您的 GitLab 個人存取權杖",
+      "instanceUrlLabel": "GitLab 實例 URL",
+      "instanceUrlPlaceholder": "https://gitlab.com（預設）",
+      "instanceUrlHint": "留空使用 gitlab.com，或輸入您的自架 GitLab URL",
+      "authRequired": "需要身份驗證",
+      "authDescription": "要連線至 GitLab，您需要使用具有以下範圍的個人存取權杖進行身份驗證：",
+      "requiredScopes": "必要範圍：",
+      "scope": {
+        "api": "完整 API 存取權限",
+        "readUser": "讀取用戶資訊",
+        "readRepository": "讀取儲存庫資訊",
+        "writeRepository": "寫入儲存庫存取權限（用於提交）"
+      }
+    },
+    "stats": {
+      "title": "統計資料",
+      "totalRepos": "總儲存庫數",
+      "publicRepos": "公開儲存庫",
+      "privateRepos": "私有儲存庫",
+      "stars": "星標",
+      "forks": "分支",
+      "issues": "議題",
+      "mergeRequests": "合併請求",
+      "commits": "提交",
+      "contributors": "貢獻者",
+      "lastUpdated": "最後更新"
+    },
+    "repositories": {
+      "title": "您的儲存庫",
+      "count": "您的儲存庫 ({{count}})",
+      "selectPrompt": "選擇一個儲存庫以查看詳細資訊",
+      "selected": "已選擇的儲存庫",
+      "visibility": "可見性",
+      "public": "公開",
+      "private": "私有",
+      "internal": "內部",
+      "defaultBranch": "預設分支",
+      "language": "語言",
+      "lastActivity": "最後活動",
+      "createdAt": "創建時間",
+      "size": "大小",
+      "noDescription": "未提供說明"
+    },
+    "actions": {
+      "viewRepository": "查看儲存庫",
+      "viewIssues": "查看議題",
+      "viewMergeRequests": "查看合併請求",
+      "viewPipelines": "查看流水線",
+      "viewCommits": "查看提交",
+      "viewBranches": "查看分支",
+      "viewSettings": "查看設定",
+      "clone": "複製",
+      "cloneHttp": "HTTPS",
+      "cloneSsh": "SSH"
+    },
+    "authDialog": {
+      "title": "GitLab 身份驗證",
+      "description": "生成個人存取權杖以連線至 GitLab",
+      "step1": "前往您的 GitLab 設定",
+      "step2": "導航至存取權杖",
+      "step3": "創建具有以下範圍的新權杖：",
+      "step4": "複製權杖並貼在這裡",
+      "goToGitLab": "前往 GitLab 設定",
+      "close": "關閉"
+    }
+  }
+}

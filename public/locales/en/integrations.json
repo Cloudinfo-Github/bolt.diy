@@ -1,0 +1,344 @@
+{
+  "shared": {
+    "loading": "Loading...",
+    "connecting": "Connecting...",
+    "connected": "Connected to {{service}}",
+    "disconnected": "Disconnected from {{service}}",
+    "testConnection": "Test Connection",
+    "testing": "Testing...",
+    "disconnect": "Disconnect",
+    "connect": "Connect",
+    "refresh": "Refresh",
+    "refreshing": "Refreshing...",
+    "viewDashboard": "View Dashboard",
+    "getToken": "Get your token",
+    "tip": "Tip:",
+    "envVarTip": "You can also set the {{varName}} environment variable to connect automatically.",
+    "confirmAction": "Are you sure you want to {{action}}?",
+    "noProjects": "No projects found in your {{service}} account",
+    "noSites": "No sites found in your {{service}} account",
+    "error": {
+      "connectionFailed": "Connection failed",
+      "unauthorized": "Invalid token or unauthorized",
+      "unknownError": "Unknown error",
+      "noToken": "No token provided",
+      "tokenRequired": "Token is required",
+      "failedToFetch": "Failed to fetch {{resource}}"
+    }
+  },
+  "vercel": {
+    "title": "Vercel Integration",
+    "description": "Connect and manage your Vercel projects with advanced deployment control and analytics",
+    "tokenLabel": "Personal Access Token",
+    "tokenPlaceholder": "Enter your Vercel personal access token",
+    "toast": {
+      "connected": "Successfully connected to Vercel",
+      "disconnected": "Disconnected from Vercel",
+      "redeployStarted": "Project redeploy initiated",
+      "redeployFailed": "Failed to redeploy project: {{error}}",
+      "projectDeleted": "Project deleted successfully",
+      "deleteProjectFailed": "Failed to delete project: {{error}}",
+      "statsFetched": "Vercel projects fetched"
+    },
+    "stats": {
+      "totalProjects": "Total Projects",
+      "deployedProjects": "Deployed Projects",
+      "frameworksUsed": "Frameworks Used",
+      "activeDeployments": "Active Deployments",
+      "successRate": "Success Rate",
+      "active": "Active",
+      "failed": "Failed",
+      "recent deploys": "Recent deploys",
+      "total domains": "Total domains",
+      "avgDomainsPerProject": "Avg domains/project",
+      "healthyProjects": "Healthy",
+      "customDomain": "Custom Domain",
+      "buildingProjects": "Building",
+      "issues": "Issues"
+    },
+    "overview": {
+      "title": "Vercel Overview",
+      "deploymentHealth": "Deployment Health",
+      "frameworkDistribution": "Framework Distribution",
+      "activitySummary": "Activity Summary",
+      "projectHealth": "Project Health Overview"
+    },
+    "projects": {
+      "title": "Your Projects",
+      "count": "Your Projects ({{count}})",
+      "deployments": "Deployments",
+      "domains": "Domains",
+      "team": "Team",
+      "bandwidth": "Bandwidth",
+      "view": "View"
+    },
+    "actions": {
+      "redeploy": "Redeploy",
+      "viewDashboard": "View Dashboard",
+      "viewDeployments": "View Deployments",
+      "viewFunctions": "View Functions",
+      "viewAnalytics": "View Analytics",
+      "viewDomains": "View Domains",
+      "viewSettings": "View Settings",
+      "viewLogs": "View Logs",
+      "deleteProject": "Delete Project"
+    }
+  },
+  "netlify": {
+    "title": "Netlify Integration",
+    "description": "Connect and manage your Netlify sites with advanced deployment control and site management",
+    "tokenLabel": "API Token",
+    "tokenPlaceholder": "Enter your Netlify API token",
+    "toast": {
+      "connected": "Connected to Netlify successfully",
+      "disconnected": "Disconnected from Netlify",
+      "statsFetched": "Netlify stats updated",
+      "buildTriggered": "Build triggered with cache clear",
+      "buildTriggerFailed": "Build trigger failed. This feature may not be available on free accounts.",
+      "cacheCleared": "Site cache cleared successfully",
+      "cacheClearFailed": "Failed to clear site cache: {{error}}",
+      "cachePurgeNotAvailable": "Cache purge not available on free accounts. Try triggering a build instead.",
+      "siteNotFound": "Site not found. This may be a free account limitation.",
+      "envVarsLoaded": "Environment variables loaded: {{count}} variables",
+      "envVarsLimited": "Environment variables management is limited on free accounts",
+      "envVarsNone": "Site has no environment variables configured",
+      "envVarsFailed": "Failed to load environment variables: {{error}}",
+      "buildSuccess": "Build triggered successfully! ID: {{id}}",
+      "buildFailed": "Failed to trigger build: {{error}}",
+      "functionsCount": "Site has {{count}} serverless functions",
+      "functionsLimited": "Functions may be limited or unavailable on free accounts",
+      "functionsNone": "Site has no serverless functions",
+      "functionsFailed": "Failed to load functions: {{error}}",
+      "analyticsLoaded": "Site analytics loaded successfully",
+      "analyticsNotAvailable": "Analytics not available on free accounts. Showing basic site info instead.",
+      "analyticsUnavailable": "Analytics unavailable on free accounts. Site info: {{name}} ({{state}})",
+      "analyticsFailed": "Failed to load analytics: {{error}}",
+      "siteInfo": "Site: {{name}} - Status: {{state}}",
+      "siteDeleted": "Site deleted successfully",
+      "deleteSiteFailed": "Failed to delete site: {{error}}",
+      "deployPublished": "Deploy published successfully",
+      "deployLocked": "Deploy locked successfully",
+      "deployUnlocked": "Deploy unlocked successfully",
+      "deployActionFailed": "Failed to {{action}} deploy: {{error}}"
+    },
+    "stats": {
+      "totalSites": "Total Sites",
+      "totalDeployments": "Total Deployments",
+      "totalBuilds": "Total Builds",
+      "liveSites": "Live Sites",
+      "successRate": "Success Rate",
+      "successful": "Successful",
+      "failed": "Failed",
+      "last24Hours": "Last 24 hours",
+      "last7Days": "Last 7 days",
+      "activeSites": "Active sites",
+      "healthy": "Healthy",
+      "sslEnabled": "SSL Enabled",
+      "customDomain": "Custom Domain",
+      "building": "Building",
+      "needsAttention": "Needs Attention"
+    },
+    "overview": {
+      "title": "Netlify Overview",
+      "deploymentAnalytics": "Deployment Analytics",
+      "recentActivity": "Recent Activity",
+      "siteHealth": "Site Health Overview"
+    },
+    "sites": {
+      "title": "Your Sites",
+      "count": "Your Sites ({{count}})",
+      "showAll": "Show All {{count}}",
+      "showLess": "Show Less",
+      "customDomainBadge": "Custom Domain"
+    },
+    "deploys": {
+      "title": "All Deployments",
+      "recentTitle": "Recent Deployments",
+      "count": "({{count}})",
+      "publish": "Publish",
+      "lock": "Lock",
+      "unlock": "Unlock",
+      "branch": "Branch: {{branch}}"
+    },
+    "builds": {
+      "title": "Recent Builds",
+      "count": "({{count}})",
+      "completed": "Completed",
+      "building": "Building",
+      "failed": "Failed"
+    },
+    "actions": {
+      "clearCache": "Clear Cache",
+      "manageEnvironment": "Manage Environment",
+      "triggerBuild": "Trigger Build",
+      "viewFunctions": "View Functions",
+      "siteAnalytics": "Site Analytics",
+      "deleteSite": "Delete Site"
+    }
+  },
+  "supabase": {
+    "title": "Supabase Integration",
+    "description": "Connect and manage your Supabase projects with database access, authentication, and storage control",
+    "tokenLabel": "Access Token",
+    "tokenPlaceholder": "Enter your Supabase access token",
+    "toast": {
+      "connected": "Successfully connected to Supabase",
+      "disconnected": "Disconnected from Supabase",
+      "connectionSuccess": "Connected successfully using environment token. Found {{count}} projects",
+      "connectionFailed": "Connection failed: {{error}}",
+      "apiKeysFetched": "API keys fetched successfully",
+      "apiKeysFailed": "Failed to fetch API keys: {{error}}",
+      "urlCopied": "URL copied to clipboard",
+      "keyCopied": "Key copied to clipboard"
+    },
+    "stats": {
+      "totalProjects": "Total Projects",
+      "activeProjects": "Active Projects",
+      "regionsUsed": "Regions Used",
+      "inactiveProjects": "Inactive Projects",
+      "healthRate": "Health Rate",
+      "avgTablesPerProject": "Avg Tables/Project",
+      "authEnabled": "Auth Enabled",
+      "totalUsers": "Total Users",
+      "avgUsersPerProject": "Avg Users/Project",
+      "database": "Database",
+      "storage": "Storage",
+      "functions": "Functions",
+      "tables": "Tables",
+      "buckets": "Buckets"
+    },
+    "overview": {
+      "title": "Supabase Overview",
+      "performanceAnalytics": "Performance Analytics",
+      "databaseHealth": "Database Health",
+      "authSecurity": "Auth & Security",
+      "regionalDistribution": "Regional Distribution",
+      "resourceOverview": "Resource Overview"
+    },
+    "projects": {
+      "title": "Your Projects",
+      "count": "Your Projects ({{count}})",
+      "views": "Views",
+      "dbSize": "DB Size"
+    },
+    "projectDetails": {
+      "databaseSchema": "Database Schema",
+      "storage": "Storage",
+      "files": "Files",
+      "used": "Used",
+      "available": "Available",
+      "credentials": "Project Credentials",
+      "supabaseUrl": "Supabase URL:",
+      "anonKey": "Anon Key:"
+    },
+    "actions": {
+      "getApiKeys": "Get API Keys",
+      "fetching": "Fetching...",
+      "viewDashboard": "View Dashboard",
+      "viewDatabase": "View Database",
+      "viewAuth": "View Auth",
+      "viewStorage": "View Storage",
+      "viewFunctions": "View Functions",
+      "viewLogs": "View Logs",
+      "viewSettings": "View Settings",
+      "viewApiDocs": "View API Docs",
+      "viewRealtime": "View Realtime",
+      "viewEdgeFunctions": "View Edge Functions"
+    },
+    "projectStatus": {
+      "activeHealthy": "Active Healthy",
+      "suspended": "Suspended",
+      "inactive": "Inactive"
+    },
+    "metrics": {
+      "memberSince": "Member since {{date}}",
+      "projects": "Projects",
+      "regions": "Regions",
+      "active": "Active"
+    }
+  },
+  "gitlab": {
+    "title": "GitLab Integration",
+    "description": "Connect and manage your GitLab repositories with advanced repository control and analytics",
+    "loading": "Loading GitLab connection...",
+    "toast": {
+      "connected": "Successfully connected to GitLab",
+      "disconnected": "Disconnected from GitLab",
+      "connectionSuccess": "Connection test successful",
+      "connectionFailed": "Connection test failed",
+      "notConnected": "Not yet connected",
+      "testing": "Testing connection...",
+      "connectedAs": "Successfully connected as {{username}}",
+      "statsFetched": "GitLab stats updated",
+      "repositorySelected": "Repository selected: {{name}}"
+    },
+    "connection": {
+      "title": "GitLab Connection",
+      "tokenLabel": "Personal Access Token",
+      "tokenPlaceholder": "Enter your GitLab personal access token",
+      "instanceUrlLabel": "GitLab Instance URL",
+      "instanceUrlPlaceholder": "https://gitlab.com (default)",
+      "instanceUrlHint": "Leave empty to use gitlab.com, or enter your self-hosted GitLab URL",
+      "authRequired": "Authentication Required",
+      "authDescription": "To connect to GitLab, you need to authenticate using a Personal Access Token with the following scopes:",
+      "requiredScopes": "Required Scopes:",
+      "scope": {
+        "api": "Full API access",
+        "readUser": "Read user information",
+        "readRepository": "Read repository information",
+        "writeRepository": "Write repository access (for commits)"
+      }
+    },
+    "stats": {
+      "title": "Statistics",
+      "totalRepos": "Total Repositories",
+      "publicRepos": "Public Repositories",
+      "privateRepos": "Private Repositories",
+      "stars": "Stars",
+      "forks": "Forks",
+      "issues": "Issues",
+      "mergeRequests": "Merge Requests",
+      "commits": "Commits",
+      "contributors": "Contributors",
+      "lastUpdated": "Last Updated"
+    },
+    "repositories": {
+      "title": "Your Repositories",
+      "count": "Your Repositories ({{count}})",
+      "selectPrompt": "Select a repository to view details",
+      "selected": "Selected Repository",
+      "visibility": "Visibility",
+      "public": "Public",
+      "private": "Private",
+      "internal": "Internal",
+      "defaultBranch": "Default Branch",
+      "language": "Language",
+      "lastActivity": "Last Activity",
+      "createdAt": "Created",
+      "size": "Size",
+      "noDescription": "No description provided"
+    },
+    "actions": {
+      "viewRepository": "View Repository",
+      "viewIssues": "View Issues",
+      "viewMergeRequests": "View Merge Requests",
+      "viewPipelines": "View Pipelines",
+      "viewCommits": "View Commits",
+      "viewBranches": "View Branches",
+      "viewSettings": "View Settings",
+      "clone": "Clone",
+      "cloneHttp": "HTTPS",
+      "cloneSsh": "SSH"
+    },
+    "authDialog": {
+      "title": "GitLab Authentication",
+      "description": "Generate a Personal Access Token to connect to GitLab",
+      "step1": "Go to your GitLab Settings",
+      "step2": "Navigate to Access Tokens",
+      "step3": "Create a new token with the following scopes:",
+      "step4": "Copy the token and paste it here",
+      "goToGitLab": "Go to GitLab Settings",
+      "close": "Close"
+    }
+  }
+}

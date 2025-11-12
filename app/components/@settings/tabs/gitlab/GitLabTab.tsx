@@ -4,6 +4,7 @@ import { useGitLabConnection } from '~/lib/hooks';
 import GitLabConnection from './components/GitLabConnection';
 import { StatsDisplay } from './components/StatsDisplay';
 import { RepositoryList } from './components/RepositoryList';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 // GitLab logo SVG component
 const GitLabLogo = () => (
@@ -22,6 +23,7 @@ interface ConnectionTestResult {
 }
 
 export default function GitLabTab() {
+  const { t } = useI18n('integrations');
   const { connection, isConnected, isLoading, error, testConnection, refreshStats } = useGitLabConnection();
   const [connectionTest, setConnectionTest] = useState<ConnectionTestResult | null>(null);
   const [isRefreshingStats, setIsRefreshingStats] = useState(false);
@@ -30,7 +32,7 @@ export default function GitLabTab() {
     if (!connection?.user) {
       setConnectionTest({
         status: 'error',
-        message: '尚未建立連線',
+        message: t('gitlab.toast.notConnected'),
         timestamp: Date.now(),
       });
       return;
@@ -38,7 +40,7 @@ export default function GitLabTab() {
 
     setConnectionTest({
       status: 'testing',
-      message: '正在測試連線...',
+      message: t('gitlab.toast.testing'),
     });
 
     try {
@@ -47,20 +49,20 @@ export default function GitLabTab() {
       if (isValid) {
         setConnectionTest({
           status: 'success',
-          message: `已成功連線為 ${connection.user.username}`,
+          message: t('gitlab.toast.connectedAs', { username: connection.user.username }),
           timestamp: Date.now(),
         });
       } else {
         setConnectionTest({
           status: 'error',
-          message: '連線測試失敗',
+          message: t('gitlab.toast.connectionFailed'),
           timestamp: Date.now(),
         });
       }
     } catch (error) {
       setConnectionTest({
         status: 'error',
-        message: `連線失敗：${error instanceof Error ? error.message : '未知錯誤'}`,
+        message: `${t('shared.error.connectionFailed')}: ${error instanceof Error ? error.message : t('shared.error.unknownError')}`,
         timestamp: Date.now(),
       });
     }
@@ -72,12 +74,12 @@ export default function GitLabTab() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <GitLabLogo />
-          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitLab 整合</h2>
+          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">{t('gitlab.title')}</h2>
         </div>
         <div className="flex items-center justify-center p-4">
           <div className="flex items-center gap-2">
             <div className="i-ph:spinner-gap-bold animate-spin w-4 h-4" />
-            <span className="text-bolt-elements-textSecondary">載入中...</span>
+            <span className="text-bolt-elements-textSecondary">{t('shared.loading')}</span>
           </div>
         </div>
       </div>
@@ -90,7 +92,7 @@ export default function GitLabTab() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <GitLabLogo />
-          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitLab Integration</h2>
+          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">{t('gitlab.title')}</h2>
         </div>
         <div className="text-sm text-red-600 dark:text-red-400 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
           {error}
@@ -105,11 +107,9 @@ export default function GitLabTab() {
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <GitLabLogo />
-          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">GitLab 整合</h2>
+          <h2 className="text-lg font-medium text-bolt-elements-textPrimary">{t('gitlab.title')}</h2>
         </div>
-        <p className="text-sm text-bolt-elements-textSecondary">
-          連接您的 GitLab 帳戶以啟用進階儲存庫管理功能、統計資料和無縫整合。
-        </p>
+        <p className="text-sm text-bolt-elements-textSecondary">{t('gitlab.description')}</p>
         <GitLabConnection connectionTest={connectionTest} onTestConnection={handleTestConnection} />
       </div>
     );
@@ -127,7 +127,7 @@ export default function GitLabTab() {
         <div className="flex items-center gap-2">
           <GitLabLogo />
           <h2 className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-            GitLab 整合
+            {t('gitlab.title')}
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -143,7 +143,7 @@ export default function GitLabTab() {
       </motion.div>
 
       <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-        使用進階儲存庫功能和全面統計資料管理您的 GitLab 整合
+        {t('gitlab.description')}
       </p>
 
       {/* Connection Test Results */}
@@ -201,6 +201,7 @@ export default function GitLabTab() {
           transition={{ delay: 0.3 }}
           className="border-t border-bolt-elements-borderColor pt-6"
         >
+          <h3 className="text-sm font-medium text-bolt-elements-textPrimary mb-2">{t('gitlab.connection.title')}</h3>
           <div className="flex items-center gap-4 p-4 bg-bolt-elements-background-depth-1 rounded-lg">
             <div className="w-12 h-12 rounded-full border-2 border-bolt-elements-item-contentAccent flex items-center justify-center bg-bolt-elements-background-depth-2 overflow-hidden">
               {connection.user.avatar_url &&
@@ -255,7 +256,7 @@ export default function GitLabTab() {
           transition={{ delay: 0.4 }}
           className="border-t border-bolt-elements-borderColor pt-6"
         >
-          <h3 className="text-base font-medium text-bolt-elements-textPrimary mb-4">統計資料</h3>
+          <h3 className="text-base font-medium text-bolt-elements-textPrimary mb-4">{t('gitlab.stats.title')}</h3>
           <StatsDisplay
             stats={connection.stats}
             onRefresh={async () => {

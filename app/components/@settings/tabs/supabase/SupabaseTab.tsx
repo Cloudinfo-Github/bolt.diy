@@ -16,6 +16,7 @@ import {
   initializeSupabaseConnection,
   type SupabaseProject,
 } from '~/lib/stores/supabase';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface ConnectionTestResult {
   status: 'success' | 'error' | 'testing';
@@ -51,6 +52,7 @@ const SupabaseLogo = () => (
 );
 
 export default function SupabaseTab() {
+  const { t } = useI18n('integrations');
   const connection = useStore(supabaseConnection);
   const connecting = useStore(isConnecting);
   const fetchingStats = useStore(isFetchingStats);
@@ -66,7 +68,7 @@ export default function SupabaseTab() {
   const testConnection = async () => {
     setConnectionTest({
       status: 'testing',
-      message: 'Testing connection...',
+      message: t('shared.testing'),
     });
 
     try {
@@ -81,21 +83,25 @@ export default function SupabaseTab() {
         const data = (await response.json()) as any;
         setConnectionTest({
           status: 'success',
-          message: `Connected successfully using environment token. Found ${data.projects?.length || 0} projects`,
+          message: t('supabase.toast.connectionSuccess', { count: data.projects?.length || 0 }),
           timestamp: Date.now(),
         });
       } else {
         const errorData = (await response.json().catch(() => ({}))) as { error?: string };
         setConnectionTest({
           status: 'error',
-          message: `Connection failed: ${errorData.error || `${response.status} ${response.statusText}`}`,
+          message: t('supabase.toast.connectionFailed', {
+            error: errorData.error || `${response.status} ${response.statusText}`,
+          }),
           timestamp: Date.now(),
         });
       }
     } catch (error) {
       setConnectionTest({
         status: 'error',
-        message: `Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: t('supabase.toast.connectionFailed', {
+          error: error instanceof Error ? error.message : t('shared.error.unknownError'),
+        }),
         timestamp: Date.now(),
       });
     }
@@ -104,83 +110,83 @@ export default function SupabaseTab() {
   // Project actions
   const projectActions: ProjectAction[] = [
     {
-      name: 'Get API Keys',
+      name: t('supabase.actions.getApiKeys'),
       icon: 'i-ph:key',
       action: async (projectId: string) => {
         try {
           await fetchProjectApiKeys(projectId, connection.token);
-          toast.success('API keys fetched successfully');
+          toast.success(t('supabase.toast.apiKeysFetched'));
         } catch (err: unknown) {
-          const error = err instanceof Error ? err.message : 'Unknown error';
-          toast.error(`Failed to fetch API keys: ${error}`);
+          const error = err instanceof Error ? err.message : t('shared.error.unknownError');
+          toast.error(t('supabase.toast.apiKeysFailed', { error }));
         }
       },
     },
     {
-      name: 'View Dashboard',
+      name: t('supabase.actions.viewDashboard'),
       icon: 'i-ph:layout',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}`, '_blank');
       },
     },
     {
-      name: 'View Database',
+      name: t('supabase.actions.viewDatabase'),
       icon: 'i-ph:database',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}/editor`, '_blank');
       },
     },
     {
-      name: 'View Auth',
+      name: t('supabase.actions.viewAuth'),
       icon: 'i-ph:user-circle',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}/auth/users`, '_blank');
       },
     },
     {
-      name: 'View Storage',
+      name: t('supabase.actions.viewStorage'),
       icon: 'i-ph:folder',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}/storage/buckets`, '_blank');
       },
     },
     {
-      name: 'View Functions',
+      name: t('supabase.actions.viewFunctions'),
       icon: 'i-ph:code',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}/functions`, '_blank');
       },
     },
     {
-      name: 'View Logs',
+      name: t('supabase.actions.viewLogs'),
       icon: 'i-ph:scroll',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}/logs`, '_blank');
       },
     },
     {
-      name: 'View Settings',
+      name: t('supabase.actions.viewSettings'),
       icon: 'i-ph:gear',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}/settings`, '_blank');
       },
     },
     {
-      name: 'View API Docs',
+      name: t('supabase.actions.viewApiDocs'),
       icon: 'i-ph:book',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}/api`, '_blank');
       },
     },
     {
-      name: 'View Realtime',
+      name: t('supabase.actions.viewRealtime'),
       icon: 'i-ph:radio',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}/realtime`, '_blank');
       },
     },
     {
-      name: 'View Edge Functions',
+      name: t('supabase.actions.viewEdgeFunctions'),
       icon: 'i-ph:terminal',
       action: async (projectId: string) => {
         window.open(`https://supabase.com/dashboard/project/${projectId}/functions`, '_blank');
@@ -219,7 +225,7 @@ export default function SupabaseTab() {
 
   const handleConnect = async () => {
     if (!tokenInput) {
-      toast.error('Please enter a Supabase access token');
+      toast.error(t('shared.error.tokenRequired'));
       return;
     }
 
@@ -231,11 +237,11 @@ export default function SupabaseTab() {
         token: tokenInput,
         isConnected: true,
       });
-      toast.success('Successfully connected to Supabase');
+      toast.success(t('supabase.toast.connected'));
       setTokenInput('');
     } catch (error) {
       console.error('Auth error:', error);
-      toast.error('Failed to connect to Supabase');
+      toast.error(t('shared.error.connectionFailed'));
       updateSupabaseConnection({ user: null, token: '' });
     } finally {
       isConnecting.set(false);
@@ -254,12 +260,12 @@ export default function SupabaseTab() {
     });
     setConnectionTest(null);
     setSelectedProjectId('');
-    toast.success('Disconnected from Supabase');
+    toast.success(t('supabase.toast.disconnected'));
   };
 
   const handleProjectAction = async (projectId: string, action: ProjectAction) => {
     if (action.requiresConfirmation) {
-      if (!confirm(`Are you sure you want to ${action.name.toLowerCase()}?`)) {
+      if (!confirm(t('shared.confirmAction', { action: action.name.toLowerCase() }))) {
         return;
       }
     }
@@ -551,7 +557,7 @@ export default function SupabaseTab() {
 
                                       if (connection.credentials?.supabaseUrl) {
                                         navigator.clipboard.writeText(connection.credentials.supabaseUrl);
-                                        toast.success('URL copied to clipboard');
+                                        toast.success(t('supabase.toast.urlCopied'));
                                       }
                                     }}
                                     className="w-8 h-8"
@@ -577,7 +583,7 @@ export default function SupabaseTab() {
 
                                       if (connection.credentials?.anonKey) {
                                         navigator.clipboard.writeText(connection.credentials.anonKey);
-                                        toast.success('Key copied to clipboard');
+                                        toast.success(t('supabase.toast.keyCopied'));
                                       }
                                     }}
                                     className="w-8 h-8"
@@ -620,7 +626,7 @@ export default function SupabaseTab() {
             <SupabaseLogo />
           </div>
           <h2 className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-            Supabase 整合
+            {t('supabase.title')}
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -635,12 +641,12 @@ export default function SupabaseTab() {
               {connectionTest?.status === 'testing' ? (
                 <>
                   <div className="i-ph:spinner-gap w-4 h-4 animate-spin" />
-                  測試中...
+                  {t('shared.testing')}
                 </>
               ) : (
                 <>
                   <div className="i-ph:plug-charging w-4 h-4" />
-                  測試連線
+                  {t('shared.testConnection')}
                 </>
               )}
             </Button>
@@ -649,7 +655,7 @@ export default function SupabaseTab() {
       </motion.div>
 
       <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
-        連接和管理您的 Supabase 專案，包含資料庫存取、身份驗證和儲存控制功能
+        {t('supabase.description')}
       </p>
 
       {/* Connection Test Results */}
@@ -703,22 +709,21 @@ export default function SupabaseTab() {
               <div className="text-xs text-bolt-elements-textSecondary bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-1 p-3 rounded-lg mb-4">
                 <p className="flex items-center gap-1 mb-1">
                   <span className="i-ph:lightbulb w-3.5 h-3.5 text-bolt-elements-icon-success dark:text-bolt-elements-icon-success" />
-                  <span className="font-medium">Tip:</span> You can also set the{' '}
-                  <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 rounded">
-                    VITE_SUPABASE_ACCESS_TOKEN
-                  </code>{' '}
-                  environment variable to connect automatically.
+                  <span className="font-medium">{t('shared.tip')}</span>{' '}
+                  {t('shared.envVarTip', { varName: 'VITE_SUPABASE_ACCESS_TOKEN' })}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm text-bolt-elements-textSecondary mb-2">存取權杖</label>
+                <label className="block text-sm text-bolt-elements-textSecondary mb-2">
+                  {t('supabase.tokenLabel')}
+                </label>
                 <input
                   type="password"
                   value={tokenInput}
                   onChange={(e) => setTokenInput(e.target.value)}
                   disabled={connecting}
-                  placeholder="輸入您的 Supabase 存取權杖"
+                  placeholder={t('supabase.tokenPlaceholder')}
                   className={classNames(
                     'w-full px-3 py-2 rounded-lg text-sm',
                     'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
@@ -735,7 +740,7 @@ export default function SupabaseTab() {
                     rel="noopener noreferrer"
                     className="text-bolt-elements-borderColorActive hover:underline inline-flex items-center gap-1"
                   >
-                    取得您的權杖
+                    {t('shared.getToken')}
                     <div className="i-ph:arrow-square-out w-4 h-4" />
                   </a>
                 </div>
@@ -755,12 +760,12 @@ export default function SupabaseTab() {
                 {connecting ? (
                   <>
                     <div className="i-ph:spinner-gap animate-spin" />
-                    連線中...
+                    {t('shared.connecting')}
                   </>
                 ) : (
                   <>
                     <div className="i-ph:plug-charging w-4 h-4" />
-                    連線
+                    {t('shared.connect')}
                   </>
                 )}
               </button>
@@ -778,11 +783,11 @@ export default function SupabaseTab() {
                     )}
                   >
                     <div className="i-ph:plug w-4 h-4" />
-                    中斷連線
+                    {t('shared.disconnect')}
                   </button>
                   <span className="text-sm text-bolt-elements-textSecondary flex items-center gap-1">
                     <div className="i-ph:check-circle w-4 h-4 text-green-500" />
-                    已連線至 Supabase
+                    {t('shared.connected', { service: 'Supabase' })}
                   </span>
                 </div>
               </div>

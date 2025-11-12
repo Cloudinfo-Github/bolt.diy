@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { classNames } from '~/utils/classNames';
 import { Button } from '~/components/ui/Button';
 import { useGitLabConnection } from '~/lib/hooks';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface ConnectionTestResult {
   status: 'success' | 'error' | 'testing';
@@ -17,6 +18,7 @@ interface GitLabConnectionProps {
 }
 
 export default function GitLabConnection({ connectionTest, onTestConnection }: GitLabConnectionProps) {
+  const { t } = useI18n('integrations');
   const { isConnected, isConnecting, connection, error, connect, disconnect } = useGitLabConnection();
 
   const [token, setToken] = useState('');
@@ -50,7 +52,7 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
 
   const handleDisconnect = () => {
     disconnect();
-    toast.success('Disconnected from GitLab');
+    toast.success(t('gitlab.toast.disconnected'));
   };
 
   return (
@@ -71,7 +73,7 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
                 />
               </svg>
             </div>
-            <h3 className="text-base font-medium text-bolt-elements-textPrimary">GitLab Connection</h3>
+            <h3 className="text-base font-medium text-bolt-elements-textPrimary">{t('gitlab.connection.title')}</h3>
           </div>
         </div>
 
@@ -79,29 +81,25 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
           <div className="text-xs text-bolt-elements-textSecondary bg-bolt-elements-background-depth-1 p-3 rounded-lg mb-4">
             <p className="flex items-center gap-1 mb-1">
               <span className="i-ph:lightbulb w-3.5 h-3.5 text-bolt-elements-icon-success" />
-              <span className="font-medium">Tip:</span> You can also set the{' '}
-              <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 rounded">VITE_GITLAB_ACCESS_TOKEN</code>{' '}
-              environment variable to connect automatically.
+              <span className="font-medium">{t('shared.tip')}</span>{' '}
+              {t('shared.envVarTip', { varName: 'VITE_GITLAB_ACCESS_TOKEN' })}
             </p>
-            <p>
-              For self-hosted GitLab instances, also set{' '}
-              <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 rounded">
-                VITE_GITLAB_URL=https://your-gitlab-instance.com
-              </code>
-            </p>
+            <p>{t('gitlab.connection.instanceUrlHint')}</p>
           </div>
         )}
 
         <form onSubmit={handleConnect}>
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block text-sm text-bolt-elements-textSecondary mb-2">GitLab URL</label>
+              <label className="block text-sm text-bolt-elements-textSecondary mb-2">
+                {t('gitlab.connection.instanceUrlLabel')}
+              </label>
               <input
                 type="text"
                 value={gitlabUrl}
                 onChange={(e) => setGitlabUrl(e.target.value)}
                 disabled={isConnecting || isConnected}
-                placeholder="https://gitlab.com"
+                placeholder={t('gitlab.connection.instanceUrlPlaceholder')}
                 className={classNames(
                   'w-full px-3 py-2 rounded-lg text-sm',
                   'bg-bolt-elements-background-depth-1',
@@ -114,13 +112,15 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
             </div>
 
             <div>
-              <label className="block text-sm text-bolt-elements-textSecondary mb-2">Access Token</label>
+              <label className="block text-sm text-bolt-elements-textSecondary mb-2">
+                {t('gitlab.connection.tokenLabel')}
+              </label>
               <input
                 type="password"
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
                 disabled={isConnecting || isConnected}
-                placeholder="輸入您的 GitLab 存取權杖"
+                placeholder={t('gitlab.connection.tokenPlaceholder')}
                 className={classNames(
                   'w-full px-3 py-2 rounded-lg text-sm',
                   'bg-bolt-elements-background-depth-1',
@@ -137,11 +137,11 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
                   rel="noopener noreferrer"
                   className="text-bolt-elements-borderColorActive hover:underline inline-flex items-center gap-1"
                 >
-                  Get your token
+                  {t('shared.getToken')}
                   <div className="i-ph:arrow-square-out w-4 h-4" />
                 </a>
                 <span className="mx-2">•</span>
-                <span>Required scopes: api, read_repository</span>
+                <span>{t('gitlab.connection.requiredScopes')} api, read_repository</span>
               </div>
             </div>
           </div>
@@ -169,12 +169,12 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
                   {isConnecting ? (
                     <>
                       <div className="i-ph:spinner-gap animate-spin" />
-                      Connecting...
+                      {t('shared.connecting')}
                     </>
                   ) : (
                     <>
                       <div className="i-ph:plug-charging w-4 h-4" />
-                      Connect
+                      {t('shared.connect')}
                     </>
                   )}
                 </button>
@@ -201,11 +201,11 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
                       )}
                     >
                       <div className="i-ph:plug w-4 h-4" />
-                      Disconnect
+                      {t('shared.disconnect')}
                     </button>
                     <span className="text-sm text-bolt-elements-textSecondary flex items-center gap-1">
                       <div className="i-ph:check-circle w-4 h-4 text-green-500" />
-                      Connected to GitLab
+                      {t('shared.connected', { service: 'GitLab' })}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -221,7 +221,7 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
                       className="flex items-center gap-2 hover:bg-bolt-elements-item-backgroundActive/10 hover:text-bolt-elements-textPrimary dark:hover:text-bolt-elements-textPrimary transition-colors"
                     >
                       <div className="i-ph:layout w-4 h-4" />
-                      Dashboard
+                      {t('shared.viewDashboard')}
                     </Button>
                     <Button
                       onClick={onTestConnection}
@@ -232,12 +232,12 @@ export default function GitLabConnection({ connectionTest, onTestConnection }: G
                       {connectionTest?.status === 'testing' ? (
                         <>
                           <div className="i-ph:spinner-gap w-4 h-4 animate-spin" />
-                          Testing...
+                          {t('shared.testing')}
                         </>
                       ) : (
                         <>
                           <div className="i-ph:plug-charging w-4 h-4" />
-                          Test Connection
+                          {t('shared.testConnection')}
                         </>
                       )}
                     </Button>

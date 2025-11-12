@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { classNames } from '~/utils/classNames';
 import { useGitLabConnection } from '~/lib/hooks';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface GitLabAuthDialogProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface GitLabAuthDialogProps {
 }
 
 export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
+  const { t } = useI18n('integrations');
   const { isConnecting, error, connect } = useGitLabConnection();
   const [token, setToken] = useState('');
   const [gitlabUrl, setGitlabUrl] = useState('https://gitlab.com');
@@ -19,13 +21,13 @@ export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
     event.preventDefault();
 
     if (!token.trim()) {
-      toast.error('Please enter your GitLab access token');
+      toast.error(t('shared.error.tokenRequired'));
       return;
     }
 
     try {
       await connect(token, gitlabUrl);
-      toast.success('Successfully connected to GitLab!');
+      toast.success(t('gitlab.toast.connected'));
       setToken('');
       onClose();
     } catch (error) {
@@ -51,7 +53,7 @@ export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
               aria-describedby="gitlab-auth-description"
             >
               <Dialog.Title className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark mb-4">
-                Connect to GitLab
+                {t('gitlab.authDialog.title')}
               </Dialog.Title>
 
               <div className="flex items-center gap-3 mb-6">
@@ -65,13 +67,13 @@ export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
                 </div>
                 <div>
                   <h3 className="text-base font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark">
-                    GitLab Connection
+                    {t('gitlab.connection.title')}
                   </h3>
                   <p
                     id="gitlab-auth-description"
                     className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark"
                   >
-                    Connect your GitLab account to deploy your projects
+                    {t('gitlab.authDialog.description')}
                   </p>
                 </div>
               </div>
@@ -79,14 +81,14 @@ export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
               <form onSubmit={handleConnect} className="space-y-4">
                 <div>
                   <label className="block text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark mb-2">
-                    GitLab URL
+                    {t('gitlab.connection.instanceUrlLabel')}
                   </label>
                   <input
                     type="url"
                     value={gitlabUrl}
                     onChange={(e) => setGitlabUrl(e.target.value)}
                     disabled={isConnecting}
-                    placeholder="https://gitlab.com"
+                    placeholder={t('gitlab.connection.instanceUrlPlaceholder')}
                     className={classNames(
                       'w-full px-3 py-2 rounded-lg text-sm',
                       'bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3',
@@ -101,14 +103,14 @@ export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
 
                 <div>
                   <label className="block text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark mb-2">
-                    Access Token
+                    {t('gitlab.connection.tokenLabel')}
                   </label>
                   <input
                     type="password"
                     value={token}
                     onChange={(e) => setToken(e.target.value)}
                     disabled={isConnecting}
-                    placeholder="輸入您的 GitLab 存取權杖"
+                    placeholder={t('gitlab.connection.tokenPlaceholder')}
                     className={classNames(
                       'w-full px-3 py-2 rounded-lg text-sm',
                       'bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3',
@@ -127,11 +129,11 @@ export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
                       rel="noopener noreferrer"
                       className="text-orange-500 hover:text-orange-600 hover:underline inline-flex items-center gap-1"
                     >
-                      Get your token
+                      {t('shared.getToken')}
                       <div className="i-ph:arrow-square-out w-3 h-3" />
                     </a>
                     <span className="mx-2">•</span>
-                    <span>Required scopes: api, read_repository</span>
+                    <span>{t('gitlab.connection.requiredScopes')} api, read_repository</span>
                   </div>
                 </div>
 
@@ -150,7 +152,7 @@ export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
                     whileTap={{ scale: 0.98 }}
                     disabled={isConnecting}
                   >
-                    Cancel
+                    {t('gitlab.authDialog.close')}
                   </motion.button>
                   <motion.button
                     type="submit"
@@ -166,12 +168,12 @@ export function GitLabAuthDialog({ isOpen, onClose }: GitLabAuthDialogProps) {
                     {isConnecting ? (
                       <>
                         <div className="i-ph:spinner-gap animate-spin w-4 h-4" />
-                        Connecting...
+                        {t('shared.connecting')}
                       </>
                     ) : (
                       <>
                         <div className="i-ph:plug-charging w-4 h-4" />
-                        Connect to GitLab
+                        {t('shared.connect')}
                       </>
                     )}
                   </motion.button>

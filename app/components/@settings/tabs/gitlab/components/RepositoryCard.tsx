@@ -1,5 +1,6 @@
 import React from 'react';
 import type { GitLabProjectInfo } from '~/types/GitLab';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface RepositoryCardProps {
   repo: GitLabProjectInfo;
@@ -7,6 +8,8 @@ interface RepositoryCardProps {
 }
 
 export function RepositoryCard({ repo, onClone }: RepositoryCardProps) {
+  const { t } = useI18n('integrations');
+
   return (
     <a
       key={repo.name}
@@ -24,11 +27,11 @@ export function RepositoryCard({ repo, onClone }: RepositoryCardProps) {
             </h5>
           </div>
           <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
-            <span className="flex items-center gap-1" title="星標">
+            <span className="flex items-center gap-1" title={t('gitlab.stats.stars')}>
               <div className="i-ph:star w-3.5 h-3.5 text-bolt-elements-icon-warning" />
               {repo.star_count.toLocaleString()}
             </span>
-            <span className="flex items-center gap-1" title="分支">
+            <span className="flex items-center gap-1" title={t('gitlab.stats.forks')}>
               <div className="i-ph:git-fork w-3.5 h-3.5 text-bolt-elements-icon-info" />
               {repo.forks_count.toLocaleString()}
             </span>
@@ -40,11 +43,11 @@ export function RepositoryCard({ repo, onClone }: RepositoryCardProps) {
         )}
 
         <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
-          <span className="flex items-center gap-1" title="預設分支">
+          <span className="flex items-center gap-1" title={t('gitlab.repositories.defaultBranch')}>
             <div className="i-ph:git-branch w-3.5 h-3.5" />
             {repo.default_branch}
           </span>
-          <span className="flex items-center gap-1" title="最後更新">
+          <span className="flex items-center gap-1" title={t('gitlab.repositories.lastActivity')}>
             <div className="i-ph:clock w-3.5 h-3.5" />
             {new Date(repo.updated_at).toLocaleDateString(undefined, {
               year: 'numeric',
@@ -61,15 +64,15 @@ export function RepositoryCard({ repo, onClone }: RepositoryCardProps) {
                   onClone(repo);
                 }}
                 className="flex items-center gap-1 px-2 py-1 rounded text-xs bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary transition-colors"
-                title="複製儲存庫"
+                title={t('gitlab.actions.clone')}
               >
                 <div className="i-ph:git-branch w-3.5 h-3.5" />
-                Clone
+                {t('gitlab.actions.clone')}
               </button>
             )}
             <span className="flex items-center gap-1 group-hover:text-bolt-elements-item-contentAccent transition-colors">
               <div className="i-ph:arrow-square-out w-3.5 h-3.5" />
-              View
+              {t('vercel.projects.view')}
             </span>
           </div>
         </div>
