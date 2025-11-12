@@ -1,0 +1,16 @@
+{
+  "branchSelector": {
+    "title": "Select Branch",
+    "loading": "Loading branches...",
+    "retry": "Retry",
+    "searchPlaceholder": "Search branches...",
+    "noMatches": "No branches found matching your search.",
+    "noBranches": "No branches available.",
+    "cancel": "Cancel",
+    "cloneBranch": "Clone Branch"
+  },
+  "codeBlock": {
+    "copied": "Copied!",
+    "copy": "Copy code"
+  }
+}

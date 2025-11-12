@@ -573,5 +573,16 @@
     "cancel": "取消",
     "save": "儲存",
     "delete": "刪除"
+  },
+  "mcp": {
+    "status": {
+      "checking": "檢查中...",
+      "available": "可用",
+      "unavailable": "不可用"
+    },
+    "server": {
+      "noDescription": "無可用描述",
+      "parameters": "參數："
+    }
   }
 }

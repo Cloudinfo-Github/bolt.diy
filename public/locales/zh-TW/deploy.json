@@ -53,6 +53,25 @@
     "open": "開啟預覽",
     "url": "預覽 URL"
   },
+  "alert": {
+    "build": "建置",
+    "deploy": "部署",
+    "viewSite": "查看已部署的站點",
+    "askBolt": "詢問 Bolt",
+    "dismiss": "關閉"
+  },
+  "button": {
+    "deployingTo": "正在部署到 {{deployingTo}}...",
+    "deploy": "部署",
+    "noNetlify": "未連接 Netlify 帳戶",
+    "deployNetlify": "部署到 Netlify",
+    "noVercel": "未連接 Vercel 帳戶",
+    "deployVercel": "部署到 Vercel",
+    "deployGitHub": "部署到 GitHub",
+    "noGitLab": "未連接 GitLab 帳戶",
+    "deployGitLab": "部署到 GitLab",
+    "deployCloudflareSoon": "部署到 Cloudflare（即將推出）"
+  },
   "messages": {
     "selectPlatform": "請選擇部署平台",
     "selectRepository": "請選擇儲存庫",

@@ -143,6 +143,31 @@
     "saveTitle": "儲存標題",
     "renameChat": "重新命名對話"
   },
+  "screenshot": {
+    "initFailed": "初始化螢幕擷取失敗",
+    "captureSuccess": "已擷取螢幕截圖並加入到聊天中",
+    "addFailed": "無法將螢幕截圖加入到聊天中",
+    "captureFailed": "擷取螢幕截圖失敗"
+  },
+  "portDropdown": {
+    "title": "連接埠"
+  },
+  "diff": {
+    "exitFullscreen": "退出全螢幕",
+    "enterFullscreen": "進入全螢幕",
+    "binaryDetected": "偵測到二進位檔案",
+    "binaryNotAvailable": "差異檢視不適用於二進位檔案",
+    "errorProcessing": "處理檔案時發生錯誤",
+    "previewFailed": "無法生成差異預覽",
+    "filesIdentical": "檔案相同",
+    "versionsMatch": "兩個版本完全匹配",
+    "currentContent": "當前內容",
+    "modified": "已修改",
+    "noChanges": "無變更",
+    "loading": "載入差異中...",
+    "selectFile": "選擇檔案以查看差異",
+    "renderFailed": "無法呈現差異檢視"
+  },
   "artifact": {
     "projectRestored": "專案已還原",
     "projectCreated": "專案已建立",

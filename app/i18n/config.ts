@@ -18,6 +18,8 @@ export const supportedNamespaces = [
   'workbench',
   'providers',
   'integrations',
+  'ui',
+  'editor',
 ] as const;
 
 export type SupportedNamespace = (typeof supportedNamespaces)[number];

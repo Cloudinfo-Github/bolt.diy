@@ -1,0 +1,16 @@
+{
+  "branchSelector": {
+    "title": "選擇分支",
+    "loading": "載入分支中...",
+    "retry": "重試",
+    "searchPlaceholder": "搜尋分支...",
+    "noMatches": "沒有找到符合搜尋的分支。",
+    "noBranches": "沒有可用的分支。",
+    "cancel": "取消",
+    "cloneBranch": "複製分支"
+  },
+  "codeBlock": {
+    "copied": "已複製！",
+    "copy": "複製程式碼"
+  }
+}

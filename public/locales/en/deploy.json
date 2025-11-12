@@ -53,6 +53,25 @@
     "open": "Open Preview",
     "url": "Preview URL"
   },
+  "alert": {
+    "build": "Build",
+    "deploy": "Deploy",
+    "viewSite": "View deployed site",
+    "askBolt": "Ask Bolt",
+    "dismiss": "Dismiss"
+  },
+  "button": {
+    "deployingTo": "Deploying to {{deployingTo}}...",
+    "deploy": "Deploy",
+    "noNetlify": "No Netlify Account Connected",
+    "deployNetlify": "Deploy to Netlify",
+    "noVercel": "No Vercel Account Connected",
+    "deployVercel": "Deploy to Vercel",
+    "deployGitHub": "Deploy to GitHub",
+    "noGitLab": "No GitLab Account Connected",
+    "deployGitLab": "Deploy to GitLab",
+    "deployCloudflareSoon": "Deploy to Cloudflare (Coming Soon)"
+  },
   "messages": {
     "selectPlatform": "Please select a deploy platform",
     "selectRepository": "Please select a repository",

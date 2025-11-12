@@ -148,6 +148,53 @@
     "generatingResponse": "生成回應中",
     "responseGenerated": "回應已生成"
   },
+  "alert": {
+    "previewError": "預覽錯誤",
+    "terminalError": "終端機錯誤",
+    "previewErrorMessage": "我們在執行預覽時遇到錯誤。您想讓 Bolt 分析並協助解決此問題嗎？",
+    "terminalErrorMessage": "我們在執行終端機命令時遇到錯誤。您想讓 Bolt 分析並協助解決此問題嗎？",
+    "errorLabel": "錯誤：",
+    "askBolt": "詢問 Bolt",
+    "dismiss": "關閉"
+  },
+  "llmAlert": {
+    "authenticationFailed": "與 {{provider}} 的身份驗證失敗。請檢查您的 API 金鑰。",
+    "rateLimit": "{{provider}} 的速率限制已超過。請稍後再試。",
+    "quotaExceeded": "{{provider}} 的配額已超過。請檢查您的帳戶限制。",
+    "genericError": "處理您的請求時發生錯誤。",
+    "errorDetails": "錯誤詳情：",
+    "dismiss": "關閉"
+  },
+  "supabase": {
+    "queryTitle": "Supabase 查詢",
+    "connectionRequiredTitle": "需要 Supabase 連線",
+    "executeQuery": "執行資料庫查詢",
+    "connectionRequired": "需要 Supabase 連線",
+    "reviewMessage": "請檢查建議的變更並將其套用到您的資料庫。",
+    "connectMessage": "請連接到 Supabase 以繼續此操作。",
+    "mustConnectFirst": "您必須先連接到 Supabase 並選擇專案。",
+    "defaultDescription": "建立表格並設定驗證",
+    "connectButton": "連接到 Supabase",
+    "applying": "套用中...",
+    "applyChanges": "套用變更",
+    "dismiss": "關閉"
+  },
+  "speech": {
+    "stopListening": "停止聆聽",
+    "startRecognition": "開始語音辨識"
+  },
+  "tools": {
+    "title": "MCP 工具調用",
+    "toolsUsed": "{{count}} 個工具已使用",
+    "toolsUsed_plural": "{{count}} 個工具已使用",
+    "server": "伺服器：",
+    "tool": "工具：",
+    "description": "描述：",
+    "parameters": "參數：",
+    "result": "結果：",
+    "cancel": "取消",
+    "runTool": "執行工具"
+  },
   "examples": {
     "prompts": [
       "建立一個關於 bolt.diy 的行動應用程式",

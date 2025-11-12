@@ -573,5 +573,16 @@
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete"
+  },
+  "mcp": {
+    "status": {
+      "checking": "Checking...",
+      "available": "Available",
+      "unavailable": "Unavailable"
+    },
+    "server": {
+      "noDescription": "No description available",
+      "parameters": "Parameters:"
+    }
   }
 }

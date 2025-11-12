@@ -143,6 +143,31 @@
     "saveTitle": "Save title",
     "renameChat": "Rename chat"
   },
+  "screenshot": {
+    "initFailed": "Failed to initialize screen capture",
+    "captureSuccess": "Screenshot captured and added to chat",
+    "addFailed": "Could not add screenshot to chat",
+    "captureFailed": "Failed to capture screenshot"
+  },
+  "portDropdown": {
+    "title": "Ports"
+  },
+  "diff": {
+    "exitFullscreen": "Exit Fullscreen",
+    "enterFullscreen": "Enter Fullscreen",
+    "binaryDetected": "Binary file detected",
+    "binaryNotAvailable": "Diff view is not available for binary files",
+    "errorProcessing": "Error processing file",
+    "previewFailed": "Could not generate diff preview",
+    "filesIdentical": "Files are identical",
+    "versionsMatch": "Both versions match exactly",
+    "currentContent": "Current Content",
+    "modified": "Modified",
+    "noChanges": "No Changes",
+    "loading": "Loading diff...",
+    "selectFile": "Select a file to view differences",
+    "renderFailed": "Failed to render diff view"
+  },
   "artifact": {
     "projectRestored": "Project Restored",
     "projectCreated": "Project Created",

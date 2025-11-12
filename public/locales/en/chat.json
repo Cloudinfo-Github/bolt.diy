@@ -161,6 +161,53 @@
     "generatingResponse": "Generating Response",
     "responseGenerated": "Response Generated"
   },
+  "alert": {
+    "previewError": "Preview Error",
+    "terminalError": "Terminal Error",
+    "previewErrorMessage": "We encountered an error while running the preview. Would you like Bolt to analyze and help resolve this issue?",
+    "terminalErrorMessage": "We encountered an error while running terminal commands. Would you like Bolt to analyze and help resolve this issue?",
+    "errorLabel": "Error:",
+    "askBolt": "Ask Bolt",
+    "dismiss": "Dismiss"
+  },
+  "llmAlert": {
+    "authenticationFailed": "Authentication failed with {{provider}}. Please check your API key.",
+    "rateLimit": "Rate limit exceeded for {{provider}}. Please wait before retrying.",
+    "quotaExceeded": "Quota exceeded for {{provider}}. Please check your account limits.",
+    "genericError": "An error occurred while processing your request.",
+    "errorDetails": "Error Details:",
+    "dismiss": "Dismiss"
+  },
+  "supabase": {
+    "queryTitle": "Supabase Query",
+    "connectionRequiredTitle": "Supabase Connection Required",
+    "executeQuery": "Execute database query",
+    "connectionRequired": "Supabase connection required",
+    "reviewMessage": "Please review the proposed changes and apply them to your database.",
+    "connectMessage": "Please connect to Supabase to continue with this operation.",
+    "mustConnectFirst": "You must first connect to Supabase and select a project.",
+    "defaultDescription": "Create table and setup auth",
+    "connectButton": "Connect to Supabase",
+    "applying": "Applying...",
+    "applyChanges": "Apply Changes",
+    "dismiss": "Dismiss"
+  },
+  "speech": {
+    "stopListening": "Stop listening",
+    "startRecognition": "Start speech recognition"
+  },
+  "tools": {
+    "title": "MCP Tool Invocations",
+    "toolsUsed": "{{count}} tool used",
+    "toolsUsed_plural": "{{count}} tools used",
+    "server": "Server:",
+    "tool": "Tool:",
+    "description": "Description:",
+    "parameters": "Parameters:",
+    "result": "Result:",
+    "cancel": "Cancel",
+    "runTool": "Run tool"
+  },
   "reasoning": {
     "title": "Thinking Process",
     "clickToExpand": "Click to expand",
