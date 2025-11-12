@@ -160,5 +160,12 @@
   },
   "starterTemplates": {
     "description": "或使用您喜愛的技術堆疊開始全新應用"
+  },
+  "reasoning": {
+    "title": "思考過程",
+    "clickToExpand": "點擊展開",
+    "thinking": "深度思考中...",
+    "thinkingDescription": "模型正在使用推理能力分析您的問題，請稍候。",
+    "summaryNote": "以下是模型推理過程的摘要，並非完整思考內容"
   }
 }

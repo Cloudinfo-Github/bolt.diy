@@ -1,12 +1,7 @@
-import {
-  experimental_createMCPClient,
-  type ToolSet,
-  type Message,
-  type DataStreamWriter,
-  convertToCoreMessages,
-  formatDataStreamPart,
-} from 'ai';
-import { Experimental_StdioMCPTransport } from 'ai/mcp-stdio';
+import { type ToolSet, type Message, type DataStreamWriter, convertToCoreMessages } from 'ai';
+import { formatDataStreamPart } from '@ai-sdk/ui-utils';
+import { experimental_createMCPClient } from '@ai-sdk/mcp';
+import { Experimental_StdioMCPTransport } from '@ai-sdk/mcp/mcp-stdio';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { z } from 'zod';
 import type { ToolCallAnnotation } from '~/types/context';
@@ -182,7 +177,7 @@ export class MCPService {
       }),
     });
 
-    return Object.assign(client, { serverName });
+    return Object.assign(client, { serverName }) as unknown as MCPClient;
   }
 
   private async _createSSEClient(serverName: string, config: SSEServerConfig): Promise<MCPClient> {
@@ -192,7 +187,7 @@ export class MCPService {
       transport: config,
     });
 
-    return Object.assign(client, { serverName });
+    return Object.assign(client, { serverName }) as unknown as MCPClient;
   }
 
   private async _createStdioClient(serverName: string, config: STDIOServerConfig): Promise<MCPClient> {
@@ -227,7 +222,7 @@ export class MCPService {
       transport: new Experimental_StdioMCPTransport(adjustedConfig),
     });
 
-    return Object.assign(client, { serverName });
+    return Object.assign(client, { serverName }) as unknown as MCPClient;
   }
 
   private _registerTools(serverName: string, tools: ToolSet) {

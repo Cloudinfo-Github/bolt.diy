@@ -1,7 +1,11 @@
 import React from 'react';
 import { useI18n } from '~/i18n/hooks/useI18n';
 
-export function ExamplePrompts(sendMessage?: { (event: React.UIEvent, messageInput?: string): void | undefined }) {
+interface ExamplePromptsProps {
+  sendMessage?: (event: React.UIEvent, messageInput?: string) => void | undefined;
+}
+
+export function ExamplePrompts({ sendMessage }: ExamplePromptsProps) {
   const { t } = useI18n('chat');
   const examplePrompts = (t('examples.prompts', { returnObjects: true }) as string[]) || [];
 

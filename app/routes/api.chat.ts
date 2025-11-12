@@ -1,6 +1,6 @@
 import { type ActionFunctionArgs } from '@remix-run/cloudflare';
 import { createDataStream, generateId } from 'ai';
-import { MAX_RESPONSE_SEGMENTS, MAX_TOKENS, type FileMap } from '~/lib/.server/llm/constants';
+import { MAX_RESPONSE_SEGMENTS, MAX_TOKENS, isReasoningModel, type FileMap } from '~/lib/.server/llm/constants';
 import { CONTINUE_PROMPT } from '~/lib/common/prompts/prompts';
 import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/llm/stream-text';
 import SwitchableStream from '~/lib/.server/llm/switchable-stream';
@@ -12,6 +12,7 @@ import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 import type { DesignScheme } from '~/types/design-scheme';
 import { MCPService } from '~/lib/services/mcpService';
 import { StreamRecoveryManager } from '~/lib/.server/llm/stream-recovery';
+import { getReasoningSummary } from '~/lib/modules/llm/providers/azure-openai';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
@@ -136,8 +137,155 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               mcpService.processToolCall(toolCall, dataStream);
             });
           },
-          onFinish: async ({ text: content, finishReason, usage }) => {
+          onFinish: async ({
+            text: content,
+            finishReason,
+            usage,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            experimental_providerMetadata,
+            response,
+          }) => {
+            logger.info('[onFinish] ========== CALLBACK CALLED ==========');
             logger.debug('usage', JSON.stringify(usage));
+            logger.debug('finishReason', finishReason);
+            logger.debug('experimental_providerMetadata', JSON.stringify(experimental_providerMetadata));
+            logger.debug('response keys', response ? Object.keys(response) : 'no response');
+
+            // 提取 reasoning summary（官方推薦方式）
+            let reasoningSummary: string | undefined;
+            let reasoningContent: string | undefined;
+
+            try {
+              // 🔥 方法 1 (最優先): 從全局 Map 讀取推理摘要（通過 request ID）
+              if (response && response.headers) {
+                let requestId: string | null = null;
+
+                // 檢查 headers 是否是 Headers 實例或普通對象
+                if (typeof (response.headers as any).get === 'function') {
+                  // 標準 Headers 物件
+                  requestId = (response.headers as any).get('x-reasoning-request-id');
+                } else if (typeof response.headers === 'object') {
+                  // 普通對象
+                  requestId = (response.headers as any)['x-reasoning-request-id'] || null;
+                }
+
+                if (requestId) {
+                  logger.info('[Reasoning] 🔍 Found x-reasoning-request-id:', requestId);
+
+                  const azureData = getReasoningSummary(requestId);
+
+                  if (azureData) {
+                    logger.info('[Reasoning] ✅✅✅ 從全局 Map 中找到推理摘要！');
+
+                    if (azureData.summary && typeof azureData.summary === 'string') {
+                      reasoningSummary = azureData.summary;
+                      logger.info('[Reasoning] Summary 長度:', reasoningSummary.length);
+                      logger.debug('[Reasoning] Summary 開頭:', reasoningSummary.substring(0, 200));
+                    } else if (azureData.encrypted && typeof azureData.encrypted === 'string') {
+                      // 如果只有加密內容，創建一個說明訊息
+                      reasoningSummary = `🔐 推理內容已加密\n\n此回應包含加密的推理內容（${azureData.encrypted.length} 字符）。Azure OpenAI 提供的推理內容是加密格式，目前無法直接顯示原始思考過程。\n\n但是，模型的推理過程已經完成，並反映在最終的回應中。`;
+                      logger.info('[Reasoning] ⚠️ 只找到加密的推理內容，創建說明訊息');
+                    }
+                  } else {
+                    logger.warn('[Reasoning] ⚠️ 從全局 Map 中未找到推理數據，request ID:', requestId);
+                  }
+                } else {
+                  logger.debug('[Reasoning] 未找到 x-reasoning-request-id header');
+                }
+              }
+
+              // 方法 2: 從 response 物件提取其他屬性（備用方案）
+              if (!reasoningSummary && !reasoningContent && response) {
+                logger.debug('[Reasoning] Attempting to extract from response object properties');
+
+                const responseObj = response as any;
+
+                if (responseObj.reasoning) {
+                  reasoningContent = responseObj.reasoning;
+                  logger.info('[Reasoning] ✅ Found reasoning in response.reasoning');
+                } else if (responseObj.reasoningSummary) {
+                  reasoningSummary = responseObj.reasoningSummary;
+                  logger.info('[Reasoning] ✅ Found reasoningSummary in response.reasoningSummary');
+                } else if (responseObj.headers) {
+                  // 嘗試從 headers 中提取
+                  logger.debug('[Reasoning] Checking response headers for reasoning content');
+
+                  const headers = responseObj.headers;
+
+                  if (headers && typeof headers.get === 'function') {
+                    const reasoningHeader = headers.get('x-reasoning-summary') || headers.get('reasoning-summary');
+
+                    if (reasoningHeader) {
+                      reasoningSummary = reasoningHeader;
+                      logger.info('[Reasoning] ✅ Found reasoning in response headers');
+                    }
+                  }
+                }
+              }
+
+              // 方法 2: 從 experimental_providerMetadata 提取（Vercel AI SDK 官方方式）
+              if (!reasoningSummary && !reasoningContent) {
+                if (experimental_providerMetadata?.azure?.reasoningSummary) {
+                  reasoningSummary = String(experimental_providerMetadata.azure.reasoningSummary);
+                  logger.info('[Reasoning] ✅ Found reasoningSummary in experimental_providerMetadata.azure');
+                } else if (experimental_providerMetadata?.openai?.reasoningSummary) {
+                  reasoningSummary = String(experimental_providerMetadata.openai.reasoningSummary);
+                  logger.info('[Reasoning] ✅ Found reasoningSummary in experimental_providerMetadata.openai');
+                }
+              }
+
+              // 方法 3: 檢查是否有 reasoningTokens（表示模型使用了推理但內容未提取）
+              if (!reasoningSummary && !reasoningContent) {
+                const reasoningTokens = experimental_providerMetadata?.openai?.reasoningTokens;
+                const hasReasoningTokens = typeof reasoningTokens === 'number' && reasoningTokens > 0;
+
+                if (hasReasoningTokens) {
+                  logger.warn(`[Reasoning] ⚠️ 模型使用了 ${reasoningTokens} 個推理 tokens，但未能提取推理內容`);
+                  logger.warn('[Reasoning] 這可能是 AI SDK v5 對 Azure Responses API 的支援問題');
+
+                  // 創建一個提示信息
+                  reasoningSummary = `此回應使用了 ${reasoningTokens} 個推理 tokens 進行深度思考。\n\n注意：推理過程已在生成回應時完成，但詳細內容暫時無法完整提取。`;
+                }
+              }
+
+              // 如果找到 reasoning 內容，發送到前端
+              const finalReasoningContent = reasoningSummary || reasoningContent;
+
+              if (finalReasoningContent) {
+                logger.info('[Reasoning] ✅ Reasoning content found, length:', finalReasoningContent.length);
+                logger.debug('[Reasoning] Content preview:', finalReasoningContent.substring(0, 200));
+
+                // 發送 reasoning 內容作為自定義註解
+                dataStream.writeMessageAnnotation({
+                  type: 'reasoning',
+                  value: finalReasoningContent,
+                });
+
+                logger.info('[Reasoning] ✅ Reasoning annotation sent to frontend');
+              } else {
+                logger.warn('[Reasoning] ⚠️ No reasoning content found in response');
+                logger.warn(
+                  '[Reasoning] Available metadata:',
+                  JSON.stringify(
+                    {
+                      hasAzureMetadata: !!experimental_providerMetadata?.azure,
+                      hasOpenAIMetadata: !!experimental_providerMetadata?.openai,
+                      azureKeys: experimental_providerMetadata?.azure
+                        ? Object.keys(experimental_providerMetadata.azure)
+                        : [],
+                      openaiKeys: experimental_providerMetadata?.openai
+                        ? Object.keys(experimental_providerMetadata.openai)
+                        : [],
+                      reasoningTokens: experimental_providerMetadata?.openai?.reasoningTokens,
+                    },
+                    null,
+                    2,
+                  ),
+                );
+              }
+            } catch (error) {
+              logger.error('[Reasoning] Error extracting reasoning content:', error);
+            }
 
             if (usage) {
               cumulativeUsage.completionTokens += usage.completionTokens || 0;
@@ -206,12 +354,22 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           },
         };
 
+        // 檢測是否為 reasoning model（用於進度消息）
+        const lastUserMessage = processedMessages.filter((x) => x.role === 'user').slice(-1)[0];
+        const { model: selectedModel } = extractPropertiesFromMessage(lastUserMessage);
+        const isReasoning = isReasoningModel(selectedModel);
+
+        /*
+         * 不再提前發送「思考中」提示，等待真正的推理內容從 onFinish 返回
+         * 這樣可以避免顯示佔位符文字
+         */
+
         dataStream.writeData({
           type: 'progress',
           label: 'response',
           status: 'in-progress',
           order: progressCounter++,
-          message: 'Generating Response',
+          message: isReasoning ? 'AI 深度思考中...' : 'Generating Response',
         } satisfies ProgressAnnotation);
 
         const result = await streamText({

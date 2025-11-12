@@ -990,7 +990,7 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
 
                     <iframe
                       ref={iframeRef}
-                      title={t('preview')}
+                      title={t('previewLabel')}
                       style={{
                         border: 'none',
                         width: isLandscape ? `${selectedWindowSize.height}px` : `${selectedWindowSize.width}px`,
@@ -1007,7 +1007,7 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
               ) : (
                 <iframe
                   ref={iframeRef}
-                  title={t('preview')}
+                  title={t('previewLabel')}
                   className="border-none w-full h-full bg-bolt-elements-background-depth-1"
                   src={iframeUrl}
                   sandbox="allow-scripts allow-forms allow-popups allow-modals allow-storage-access-by-user-activation allow-same-origin"

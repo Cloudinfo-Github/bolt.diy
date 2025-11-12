@@ -1,6 +1,6 @@
 {
   "title": "Workbench",
-  "preview": "Preview",
+  "previewLabel": "Preview",
   "code": "Code",
   "diff": "Diff",
   "editor": "Editor",
@@ -47,7 +47,14 @@
       "desktop": "Desktop",
       "tablet": "Tablet",
       "mobile": "Mobile"
-    }
+    },
+    "dragToResize": "Drag to resize width",
+    "urlPath": "URL Path",
+    "toggleResponsive": "Switch to responsive mode",
+    "toggleDevice": "Switch to device mode",
+    "showQrCode": "Show QR Code",
+    "windowOptions": "New window options",
+    "windowOptionsTitle": "Window Options"
   },
   "status": {
     "ready": "Ready",
@@ -112,15 +119,6 @@
     "title": "Preview on Your Mobile Device",
     "description": "Scan this QR code with the Expo Go app on your mobile device to open your project.",
     "noUrl": "No Expo URL detected."
-  },
-  "preview": {
-    "dragToResize": "Drag to resize width",
-    "urlPath": "URL Path",
-    "toggleResponsive": "Switch to responsive mode",
-    "toggleDevice": "Switch to device mode",
-    "showQrCode": "Show QR Code",
-    "windowOptions": "New window options",
-    "windowOptionsTitle": "Window Options"
   },
   "type": {
     "file": "file",

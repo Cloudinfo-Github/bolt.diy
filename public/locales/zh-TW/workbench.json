@@ -1,6 +1,6 @@
 {
   "title": "工作台",
-  "preview": "預覽",
+  "previewLabel": "預覽",
   "code": "程式碼",
   "diff": "差異",
   "editor": "編輯器",
@@ -47,7 +47,14 @@
       "desktop": "桌面",
       "tablet": "平板",
       "mobile": "手機"
-    }
+    },
+    "dragToResize": "拖曳以調整寬度",
+    "urlPath": "URL 路徑",
+    "toggleResponsive": "切換到響應式模式",
+    "toggleDevice": "切換到裝置模式",
+    "showQrCode": "顯示 QR 碼",
+    "windowOptions": "新視窗選項",
+    "windowOptionsTitle": "視窗選項"
   },
   "status": {
     "ready": "就緒",
@@ -112,15 +119,6 @@
     "title": "在您的行動裝置上預覽",
     "description": "使用您行動裝置上的 Expo Go 應用程式掃描此 QR 碼以開啟您的專案。",
     "noUrl": "未偵測到 Expo URL。"
-  },
-  "preview": {
-    "dragToResize": "拖曳以調整寬度",
-    "urlPath": "URL 路徑",
-    "toggleResponsive": "切換到響應式模式",
-    "toggleDevice": "切換到裝置模式",
-    "showQrCode": "顯示 QR 碼",
-    "windowOptions": "新視窗選項",
-    "windowOptionsTitle": "視窗選項"
   },
   "type": {
     "file": "檔案",

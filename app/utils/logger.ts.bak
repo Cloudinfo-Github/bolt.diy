@@ -14,19 +14,7 @@ interface Logger {
   setLevel: (level: DebugLevel) => void;
 }
 
-// 延遲讀取 import.meta.env 以避免 SSR 初始化錯誤
-function getDefaultLogLevel(): DebugLevel {
-  try {
-    if (typeof import.meta !== 'undefined' && import.meta.env) {
-      return import.meta.env.VITE_LOG_LEVEL || (import.meta.env.DEV ? 'debug' : 'info');
-    }
-  } catch {
-    // Fallback for SSR environment
-  }
-  return 'info';
-}
-
-let currentLevel: DebugLevel = getDefaultLogLevel();
+let currentLevel: DebugLevel = import.meta.env.VITE_LOG_LEVEL || (import.meta.env.DEV ? 'debug' : 'info');
 
 export const logger: Logger = {
   trace: (...messages: any[]) => logWithDebugCapture('trace', undefined, messages),
@@ -49,13 +37,8 @@ export function createScopedLogger(scope: string): Logger {
 }
 
 function setLevel(level: DebugLevel) {
-  // 安全地檢查 PROD 環境
-  try {
-    if ((level === 'trace' || level === 'debug') && import.meta?.env?.PROD) {
-      return;
-    }
-  } catch {
-    // Ignore in SSR
+  if ((level === 'trace' || level === 'debug') && import.meta.env.PROD) {
+    return;
   }
 
   currentLevel = level;

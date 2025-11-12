@@ -160,5 +160,12 @@
     "codeFilesSelected": "Code Files Selected",
     "generatingResponse": "Generating Response",
     "responseGenerated": "Response Generated"
+  },
+  "reasoning": {
+    "title": "Thinking Process",
+    "clickToExpand": "Click to expand",
+    "thinking": "Deep thinking...",
+    "thinkingDescription": "The model is using its reasoning capabilities to analyze your question. Please wait.",
+    "summaryNote": "The following is a summary of the model's reasoning process, not the complete thought process"
   }
 }
