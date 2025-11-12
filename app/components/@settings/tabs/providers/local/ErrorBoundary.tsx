@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import type { ReactNode } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { classNames } from '~/utils/classNames';
+import { withI18n } from '~/i18n/hooks/useI18n';
+import type { TFunction } from 'i18next';
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
+  t?: TFunction;
 }
 
 interface State {
@@ -35,11 +38,13 @@ export default class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
 
+      const t = this.props.t || ((key: string) => key);
+
       return (
         <div className={classNames('p-6 rounded-lg border border-red-500/20', 'bg-red-500/5 text-center')}>
           <AlertCircle className="w-12 h-12 mx-auto text-red-500 mb-4" />
-          <h3 className="text-lg font-medium text-red-500 mb-2">Something went wrong</h3>
-          <p className="text-sm text-red-400 mb-4">There was an error loading the local providers section.</p>
+          <h3 className="text-lg font-medium text-red-500 mb-2">{t('local.components.errorBoundary.title')}</h3>
+          <p className="text-sm text-red-400 mb-4">{t('local.components.errorBoundary.message')}</p>
           <button
             onClick={() => this.setState({ hasError: false, error: undefined })}
             className={classNames(
@@ -49,11 +54,13 @@ export default class ErrorBoundary extends Component<Props, State> {
               'transition-colors duration-200',
             )}
           >
-            Try Again
+            {t('local.components.errorBoundary.tryAgain')}
           </button>
           {process.env.NODE_ENV === 'development' && this.state.error && (
             <details className="mt-4 text-left">
-              <summary className="cursor-pointer text-sm text-red-400 hover:text-red-300">Error Details</summary>
+              <summary className="cursor-pointer text-sm text-red-400 hover:text-red-300">
+                {t('local.components.errorBoundary.errorDetails')}
+              </summary>
               <pre className="mt-2 p-2 bg-red-500/10 rounded text-xs text-red-300 overflow-auto">
                 {this.state.error.stack}
               </pre>
@@ -66,3 +73,5 @@ export default class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+export default withI18n('providers')(ErrorBoundary);

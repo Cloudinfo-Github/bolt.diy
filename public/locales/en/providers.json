@@ -258,6 +258,38 @@
           }
         }
       }
+    },
+    "components": {
+      "healthBadge": {
+        "healthy": "Healthy",
+        "unhealthy": "Unhealthy",
+        "checking": "Checking",
+        "unknown": "Unknown"
+      },
+      "modelCard": {
+        "status": {
+          "updating": "Updating",
+          "updated": "Updated",
+          "error": "Error"
+        },
+        "buttons": {
+          "update": "Update",
+          "updating": "Updating",
+          "delete": "Delete"
+        }
+      },
+      "providerCard": {
+        "localTag": "Local",
+        "apiEndpoint": "API Endpoint",
+        "baseUrlPlaceholder": "Enter {{name}} base URL",
+        "clickToSetBaseUrl": "Click to set base URL"
+      },
+      "errorBoundary": {
+        "title": "Something went wrong",
+        "message": "There was an error loading the local providers section.",
+        "tryAgain": "Try Again",
+        "errorDetails": "Error Details"
+      }
     }
   },
   "cloud": {

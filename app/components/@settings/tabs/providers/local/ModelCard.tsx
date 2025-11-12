@@ -3,6 +3,7 @@ import { Card, CardContent } from '~/components/ui/Card';
 import { Progress } from '~/components/ui/Progress';
 import { RotateCw, Trash2, Code, Database, Package, Loader2 } from 'lucide-react';
 import { classNames } from '~/utils/classNames';
+import { useI18n } from '~/i18n/hooks/useI18n';
 import type { OllamaModel } from './types';
 
 // Model Card Component
@@ -13,6 +14,8 @@ interface ModelCardProps {
 }
 
 function ModelCard({ model, onUpdate, onDelete }: ModelCardProps) {
+  const { t } = useI18n('providers');
+
   return (
     <Card className="bg-bolt-elements-background-depth-3 hover:bg-bolt-elements-background-depth-4 transition-all duration-200 shadow-sm hover:shadow-md border border-bolt-elements-borderColor hover:border-purple-500/20">
       <CardContent className="p-5">
@@ -28,9 +31,9 @@ function ModelCard({ model, onUpdate, onDelete }: ModelCardProps) {
                     'bg-red-500/10 text-red-500': model.status === 'error',
                   })}
                 >
-                  {model.status === 'updating' && 'Updating'}
-                  {model.status === 'updated' && 'Updated'}
-                  {model.status === 'error' && 'Error'}
+                  {model.status === 'updating' && t('local.components.modelCard.status.updating')}
+                  {model.status === 'updated' && t('local.components.modelCard.status.updated')}
+                  {model.status === 'error' && t('local.components.modelCard.status.error')}
                 </span>
               )}
             </div>
@@ -66,12 +69,12 @@ function ModelCard({ model, onUpdate, onDelete }: ModelCardProps) {
               {model.status === 'updating' ? (
                 <>
                   <Loader2 className="w-3 h-3 animate-spin" />
-                  Updating
+                  {t('local.components.modelCard.buttons.updating')}
                 </>
               ) : (
                 <>
                   <RotateCw className="w-3 h-3" />
-                  Update
+                  {t('local.components.modelCard.buttons.update')}
                 </>
               )}
             </button>
@@ -85,7 +88,7 @@ function ModelCard({ model, onUpdate, onDelete }: ModelCardProps) {
               )}
             >
               <Trash2 className="w-3 h-3" />
-              Delete
+              {t('local.components.modelCard.buttons.delete')}
             </button>
           </div>
         </div>

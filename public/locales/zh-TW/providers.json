@@ -258,6 +258,38 @@
           }
         }
       }
+    },
+    "components": {
+      "healthBadge": {
+        "healthy": "健康",
+        "unhealthy": "不健康",
+        "checking": "檢查中",
+        "unknown": "未知"
+      },
+      "modelCard": {
+        "status": {
+          "updating": "更新中",
+          "updated": "已更新",
+          "error": "錯誤"
+        },
+        "buttons": {
+          "update": "更新",
+          "updating": "更新中",
+          "delete": "刪除"
+        }
+      },
+      "providerCard": {
+        "localTag": "本機",
+        "apiEndpoint": "API 端點",
+        "baseUrlPlaceholder": "輸入 {{name}} 基礎網址",
+        "clickToSetBaseUrl": "點擊設定基礎網址"
+      },
+      "errorBoundary": {
+        "title": "發生錯誤",
+        "message": "載入本機提供者區段時發生錯誤。",
+        "tryAgain": "重試",
+        "errorDetails": "錯誤詳情"
+      }
     }
   },
   "cloud": {
