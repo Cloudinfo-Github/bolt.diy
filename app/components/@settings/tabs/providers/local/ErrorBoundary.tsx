@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import type { ReactNode } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { classNames } from '~/utils/classNames';
-import { withI18n } from '~/i18n/hooks/useI18n';
-import type { TFunction } from 'i18next';
+import { withTranslation } from 'react-i18next';
+import type { WithTranslation } from 'react-i18next';
 
-interface Props {
+interface Props extends WithTranslation {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
-  t?: TFunction;
 }
 
 interface State {
@@ -17,7 +16,7 @@ interface State {
   error?: Error;
 }
 
-export default class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
@@ -38,7 +37,7 @@ export default class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
 
-      const t = this.props.t || ((key: string) => key);
+      const { t } = this.props;
 
       return (
         <div className={classNames('p-6 rounded-lg border border-red-500/20', 'bg-red-500/5 text-center')}>
@@ -74,4 +73,4 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-export default withI18n('providers')(ErrorBoundary);
+export default withTranslation('providers')(ErrorBoundary);
