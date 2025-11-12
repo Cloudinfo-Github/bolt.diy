@@ -3,9 +3,11 @@ import { TooltipProvider } from '@radix-ui/react-tooltip';
 import WithTooltip from '~/components/ui/Tooltip';
 import { useEditChatDescription } from '~/lib/hooks';
 import { description as descriptionStore } from '~/lib/persistence';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 export function ChatDescription() {
   const initialDescription = useStore(descriptionStore)!;
+  const { t } = useI18n('workbench');
 
   const { editing, handleChange, handleBlur, handleSubmit, handleKeyDown, currentDescription, toggleEditMode } =
     useEditChatDescription({
@@ -33,7 +35,7 @@ export function ChatDescription() {
             style={{ width: `${Math.max(currentDescription.length * 8, 100)}px` }}
           />
           <TooltipProvider>
-            <WithTooltip tooltip="Save title">
+            <WithTooltip tooltip={t('chat.saveTitle')}>
               <div className="flex justify-between items-center p-2 rounded-md bg-bolt-elements-item-backgroundAccent">
                 <button
                   type="submit"
@@ -48,7 +50,7 @@ export function ChatDescription() {
         <>
           {currentDescription}
           <TooltipProvider>
-            <WithTooltip tooltip="Rename chat">
+            <WithTooltip tooltip={t('chat.renameChat')}>
               <button
                 type="button"
                 className="ml-2 i-ph:pencil-fill scale-110 hover:text-bolt-elements-item-contentAccent"

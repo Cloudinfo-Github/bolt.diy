@@ -132,6 +132,16 @@
   "actions": {
     "reset": "Reset"
   },
+  "sync": {
+    "sync": "Sync",
+    "syncing": "Syncing...",
+    "syncFiles": "Sync Files",
+    "failedToSync": "Failed to sync files"
+  },
+  "chat": {
+    "saveTitle": "Save title",
+    "renameChat": "Rename chat"
+  },
   "artifact": {
     "projectRestored": "Project Restored",
     "projectCreated": "Project Created",

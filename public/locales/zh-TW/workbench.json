@@ -132,6 +132,16 @@
   "actions": {
     "reset": "重設"
   },
+  "sync": {
+    "sync": "同步",
+    "syncing": "同步中...",
+    "syncFiles": "同步檔案",
+    "failedToSync": "同步檔案失敗"
+  },
+  "chat": {
+    "saveTitle": "儲存標題",
+    "renameChat": "重新命名對話"
+  },
   "artifact": {
     "projectRestored": "專案已還原",
     "projectCreated": "專案已建立",

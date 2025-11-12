@@ -146,6 +146,18 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             response,
           }) => {
             logger.info('[onFinish] ========== CALLBACK CALLED ==========');
+
+            // Mark analysis as complete if it was started
+            if (filePaths.length > 0 && contextOptimization) {
+              dataStream.writeData({
+                type: 'progress',
+                label: 'summary',
+                status: 'complete',
+                order: progressCounter++,
+                message: 'Analysis Complete',
+              } satisfies ProgressAnnotation);
+            }
+
             logger.debug('usage', JSON.stringify(usage));
             logger.debug('finishReason', finishReason);
             logger.debug('experimental_providerMetadata', JSON.stringify(experimental_providerMetadata));
