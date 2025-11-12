@@ -3,12 +3,14 @@ import { Button } from '~/components/ui/Button';
 import { Card, CardContent } from '~/components/ui/Card';
 import { Cable, Server, ArrowLeft } from 'lucide-react';
 import { useLocalModelHealth } from '~/lib/hooks/useLocalModelHealth';
+import { useI18n } from '~/i18n/hooks/useI18n';
 import HealthStatusBadge from './HealthStatusBadge';
 import { PROVIDER_ICONS } from './types';
 
 // Status Dashboard Component
 function StatusDashboard({ onBack }: { onBack: () => void }) {
   const { healthStatuses } = useLocalModelHealth();
+  const { t } = useI18n('providers');
 
   return (
     <div className="space-y-6">
@@ -19,13 +21,13 @@ function StatusDashboard({ onBack }: { onBack: () => void }) {
           size="sm"
           onClick={onBack}
           className="bg-transparent hover:bg-transparent text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary transition-all duration-200 p-2"
-          aria-label="返回儀表板"
+          aria-label={t('local.backToDashboard')}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div>
-          <h2 className="text-xl font-semibold text-bolt-elements-textPrimary">Provider Status</h2>
-          <p className="text-sm text-bolt-elements-textSecondary">Monitor the health of your local AI providers</p>
+          <h2 className="text-xl font-semibold text-bolt-elements-textPrimary">{t('local.statusDashboard.title')}</h2>
+          <p className="text-sm text-bolt-elements-textSecondary">{t('local.statusDashboard.subtitle')}</p>
         </div>
       </div>
 
@@ -33,10 +35,10 @@ function StatusDashboard({ onBack }: { onBack: () => void }) {
         <Card className="bg-bolt-elements-background-depth-2">
           <CardContent className="p-8 text-center">
             <Cable className="w-16 h-16 mx-auto text-bolt-elements-textTertiary mb-4" />
-            <h3 className="text-lg font-medium text-bolt-elements-textPrimary mb-2">No Endpoints Configured</h3>
-            <p className="text-sm text-bolt-elements-textSecondary">
-              Configure and enable local providers to see their endpoint status here.
-            </p>
+            <h3 className="text-lg font-medium text-bolt-elements-textPrimary mb-2">
+              {t('local.statusDashboard.noEndpointsConfigured')}
+            </h3>
+            <p className="text-sm text-bolt-elements-textSecondary">{t('local.statusDashboard.noEndpointsDesc')}</p>
           </CardContent>
         </Card>
       ) : (
@@ -61,21 +63,23 @@ function StatusDashboard({ onBack }: { onBack: () => void }) {
 
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div className="text-center">
-                    <div className="text-bolt-elements-textSecondary">Models</div>
+                    <div className="text-bolt-elements-textSecondary">{t('local.statusDashboard.models')}</div>
                     <div className="text-lg font-semibold text-bolt-elements-textPrimary">
                       {status.availableModels?.length || 0}
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-bolt-elements-textSecondary">Version</div>
+                    <div className="text-bolt-elements-textSecondary">{t('local.statusDashboard.version')}</div>
                     <div className="text-lg font-semibold text-bolt-elements-textPrimary">
-                      {status.version || 'Unknown'}
+                      {status.version || t('local.statusDashboard.unknown')}
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-bolt-elements-textSecondary">Last Check</div>
+                    <div className="text-bolt-elements-textSecondary">{t('local.statusDashboard.lastCheck')}</div>
                     <div className="text-lg font-semibold text-bolt-elements-textPrimary">
-                      {status.lastChecked ? new Date(status.lastChecked).toLocaleTimeString() : 'Never'}
+                      {status.lastChecked
+                        ? new Date(status.lastChecked).toLocaleTimeString()
+                        : t('local.statusDashboard.never')}
                     </div>
                   </div>
                 </div>

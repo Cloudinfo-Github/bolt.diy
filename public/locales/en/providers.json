@@ -37,6 +37,17 @@
       "noProviders": "No local providers available",
       "noProvidersDesc": "Local providers will appear here once configured in the system.",
       "lmStudioInstructions": "Please ensure LM Studio is running and the local server is started with CORS enabled."
+    },
+    "statusDashboard": {
+      "title": "Provider Status",
+      "subtitle": "Monitor the health of your local AI providers",
+      "noEndpointsConfigured": "No Endpoints Configured",
+      "noEndpointsDesc": "Configure and enable local providers to see their endpoint status here.",
+      "models": "Models",
+      "version": "Version",
+      "lastCheck": "Last Check",
+      "unknown": "Unknown",
+      "never": "Never"
     }
   },
   "cloud": {
