@@ -9,6 +9,7 @@ import { logStore } from '~/lib/stores/logs';
 import { providerBaseUrlEnvKeys } from '~/utils/constants';
 import { useToast } from '~/components/ui/use-toast';
 import { useLocalModelHealth } from '~/lib/hooks/useLocalModelHealth';
+import { useI18n } from '~/i18n/hooks/useI18n';
 import ErrorBoundary from './ErrorBoundary';
 import { ModelCardSkeleton } from './LoadingSkeleton';
 import SetupGuide from './SetupGuide';
@@ -32,6 +33,7 @@ export default function LocalProvidersTab() {
   const [isLoadingLMStudioModels, setIsLoadingLMStudioModels] = useState(false);
   const { toast } = useToast();
   const { startMonitoring, stopMonitoring } = useLocalModelHealth();
+  const { t } = useI18n('providers');
 
   // Memoized filtered providers to prevent unnecessary re-renders
   const filteredProviders = useMemo(() => {
@@ -159,9 +161,9 @@ export default function LocalProvidersTab() {
       filteredProviders.forEach((provider) => {
         updateProviderSettings(provider.name, { ...provider.settings, enabled });
       });
-      toast(enabled ? '已啟用所有本機提供者' : '已停用所有本機提供者');
+      toast(enabled ? t('local.toast.allEnabled') : t('local.toast.allDisabled'));
     },
-    [filteredProviders, updateProviderSettings, toast],
+    [filteredProviders, updateProviderSettings, toast, t],
   );
 
   const handleToggleProvider = useCallback(
@@ -174,9 +176,13 @@ export default function LocalProvidersTab() {
       logStore.logProvider(`Provider ${provider.name} ${enabled ? 'enabled' : 'disabled'}`, {
         provider: provider.name,
       });
-      toast(`${provider.name} ${enabled ? '已啟用' : '已停用'}`);
+      toast(
+        enabled
+          ? t('local.toast.providerEnabled', { name: provider.name })
+          : t('local.toast.providerDisabled', { name: provider.name }),
+      );
     },
-    [updateProviderSettings, toast],
+    [updateProviderSettings, toast, t],
   );
 
   const handleUpdateBaseUrl = useCallback(
@@ -185,9 +191,9 @@ export default function LocalProvidersTab() {
         ...provider.settings,
         baseUrl: newBaseUrl,
       });
-      toast(`已更新 ${provider.name} 基礎網址`);
+      toast(t('local.toast.baseUrlUpdated', { name: provider.name }));
     },
-    [updateProviderSettings, toast],
+    [updateProviderSettings, toast, t],
   );
 
   const handleUpdateOllamaModel = async (modelName: string) => {
@@ -250,17 +256,17 @@ export default function LocalProvidersTab() {
       setOllamaModels((prev) =>
         prev.map((m) => (m.name === modelName ? { ...m, status: 'updated', progress: undefined } : m)),
       );
-      toast(`已成功更新 ${modelName}`);
+      toast(t('local.toast.modelUpdated', { name: modelName }));
     } catch {
       setOllamaModels((prev) =>
         prev.map((m) => (m.name === modelName ? { ...m, status: 'error', progress: undefined } : m)),
       );
-      toast(`無法更新 ${modelName}`, { type: 'error' });
+      toast(t('local.toast.modelUpdateFailed', { name: modelName }), { type: 'error' });
     }
   };
 
   const handleDeleteOllamaModel = async (modelName: string) => {
-    if (!window.confirm(`確定要刪除 ${modelName} 嗎？`)) {
+    if (!window.confirm(t('local.toast.deleteConfirm', { name: modelName }))) {
       return;
     }
 
@@ -276,9 +282,9 @@ export default function LocalProvidersTab() {
       }
 
       setOllamaModels((current) => current.filter((m) => m.name !== modelName));
-      toast(`已刪除 ${modelName}`);
+      toast(t('local.toast.modelDeleted', { name: modelName }));
     } catch {
-      toast(`無法刪除 ${modelName}`, { type: 'error' });
+      toast(t('local.toast.modelDeleteFailed', { name: modelName }), { type: 'error' });
     }
   };
 
@@ -309,17 +315,17 @@ export default function LocalProvidersTab() {
               <Cpu className="w-6 h-6 text-purple-500" />
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-bolt-elements-textPrimary">本機 AI 提供者</h2>
-              <p className="text-sm text-bolt-elements-textSecondary">配置和管理您的本機 AI 模型</p>
+              <h2 className="text-2xl font-semibold text-bolt-elements-textPrimary">{t('local.title')}</h2>
+              <p className="text-sm text-bolt-elements-textSecondary">{t('local.subtitle')}</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-bolt-elements-textSecondary">啟用全部</span>
+              <span className="text-sm font-medium text-bolt-elements-textSecondary">{t('local.enableAll')}</span>
               <Switch
                 checked={categoryEnabled}
                 onCheckedChange={handleToggleCategory}
-                aria-label="切換所有本地供應商"
+                aria-label={t('local.toggleAllLabel')}
               />
             </div>
             <div className="flex items-center gap-2">
@@ -330,7 +336,7 @@ export default function LocalProvidersTab() {
                 className="bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3 border-bolt-elements-borderColor hover:border-purple-500/30 transition-all duration-200 gap-2"
               >
                 <BookOpen className="w-4 h-4" />
-                設定指南
+                {t('local.setupGuide')}
               </Button>
               <Button
                 variant="outline"
@@ -339,7 +345,7 @@ export default function LocalProvidersTab() {
                 className="bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3 border-bolt-elements-borderColor hover:border-purple-500/30 transition-all duration-200 gap-2"
               >
                 <Activity className="w-4 h-4" />
-                狀態
+                {t('local.status')}
               </Button>
             </div>
           </div>
@@ -365,7 +371,9 @@ export default function LocalProvidersTab() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <PackageOpen className="w-5 h-5 text-purple-500" />
-                        <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">已安裝的模型</h3>
+                        <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">
+                          {t('local.models.installed')}
+                        </h3>
                       </div>
                       <Button
                         variant="outline"
@@ -379,7 +387,7 @@ export default function LocalProvidersTab() {
                         ) : (
                           <RotateCw className="w-4 h-4 mr-2" />
                         )}
-                        重新整理
+                        {t('local.models.refresh')}
                       </Button>
                     </div>
                   </CardHeader>
@@ -393,9 +401,11 @@ export default function LocalProvidersTab() {
                     ) : ollamaModels.length === 0 ? (
                       <div className="text-center py-8">
                         <PackageOpen className="w-16 h-16 mx-auto text-bolt-elements-textTertiary mb-4" />
-                        <h3 className="text-lg font-medium text-bolt-elements-textPrimary mb-2">未安裝模型</h3>
+                        <h3 className="text-lg font-medium text-bolt-elements-textPrimary mb-2">
+                          {t('local.emptyState.noModelsInstalled')}
+                        </h3>
                         <p className="text-sm text-bolt-elements-textSecondary mb-4">
-                          前往{' '}
+                          {t('local.models.browseTo')}{' '}
                           <a
                             href="https://ollama.com/library"
                             target="_blank"
@@ -405,7 +415,7 @@ export default function LocalProvidersTab() {
                             ollama.com/library
                             <ExternalLink className="w-3 h-3" />
                           </a>{' '}
-                          瀏覽可用的模型
+                          {t('local.models.browseAvailable')}
                         </p>
                         <Button
                           variant="outline"
@@ -420,7 +430,7 @@ export default function LocalProvidersTab() {
                             className="flex items-center justify-center gap-2"
                           >
                             <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 flex-shrink-0" />
-                            <span className="flex-1 text-center font-medium">瀏覽模型</span>
+                            <span className="flex-1 text-center font-medium">{t('local.models.browse')}</span>
                           </a>
                         </Button>
                       </div>
@@ -447,7 +457,9 @@ export default function LocalProvidersTab() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Monitor className="w-5 h-5 text-blue-500" />
-                        <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">可用的模型</h3>
+                        <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">
+                          {t('local.models.available')}
+                        </h3>
                       </div>
                       <Button
                         variant="outline"
@@ -461,7 +473,7 @@ export default function LocalProvidersTab() {
                         ) : (
                           <RotateCw className="w-4 h-4 mr-2" />
                         )}
-                        重新整理
+                        {t('local.models.refresh')}
                       </Button>
                     </div>
                   </CardHeader>
@@ -475,9 +487,11 @@ export default function LocalProvidersTab() {
                     ) : lmStudioModels.length === 0 ? (
                       <div className="text-center py-8">
                         <Monitor className="w-16 h-16 mx-auto text-bolt-elements-textTertiary mb-4" />
-                        <h3 className="text-lg font-medium text-bolt-elements-textPrimary mb-2">無可用模型</h3>
+                        <h3 className="text-lg font-medium text-bolt-elements-textPrimary mb-2">
+                          {t('local.emptyState.noModelsAvailable')}
+                        </h3>
                         <p className="text-sm text-bolt-elements-textSecondary mb-4">
-                          請確保 LM Studio 正在執行，且本機伺服器已啟動並啟用 CORS。
+                          {t('local.emptyState.lmStudioInstructions')}
                         </p>
                         <Button
                           variant="outline"
@@ -492,7 +506,9 @@ export default function LocalProvidersTab() {
                             className="flex items-center justify-center gap-2"
                           >
                             <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 flex-shrink-0" />
-                            <span className="flex-1 text-center font-medium">取得 LM Studio</span>
+                            <span className="flex-1 text-center font-medium">
+                              {t('local.models.getApp', { name: 'LM Studio' })}
+                            </span>
                           </a>
                         </Button>
                       </div>
@@ -507,7 +523,7 @@ export default function LocalProvidersTab() {
                                     {model.id}
                                   </h4>
                                   <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-500">
-                                    可用
+                                    {t('local.models.availableTag')}
                                   </span>
                                 </div>
                                 <div className="flex items-center gap-4 text-xs text-bolt-elements-textSecondary">
@@ -517,12 +533,16 @@ export default function LocalProvidersTab() {
                                   </div>
                                   <div className="flex items-center gap-1">
                                     <Activity className="w-3 h-3" />
-                                    <span>擁有者：{model.owned_by}</span>
+                                    <span>{t('local.models.owner', { owner: model.owned_by })}</span>
                                   </div>
                                   {model.created && (
                                     <div className="flex items-center gap-1">
                                       <Activity className="w-3 h-3" />
-                                      <span>建立時間：{new Date(model.created * 1000).toLocaleDateString()}</span>
+                                      <span>
+                                        {t('local.models.created', {
+                                          date: new Date(model.created * 1000).toLocaleDateString(),
+                                        })}
+                                      </span>
                                     </div>
                                   )}
                                 </div>
@@ -543,8 +563,10 @@ export default function LocalProvidersTab() {
           <Card className="bg-bolt-elements-background-depth-2">
             <CardContent className="p-8 text-center">
               <Server className="w-16 h-16 mx-auto text-bolt-elements-textTertiary mb-4" />
-              <h3 className="text-lg font-medium text-bolt-elements-textPrimary mb-2">無可用的本機提供者</h3>
-              <p className="text-sm text-bolt-elements-textSecondary">本機提供者在系統中配置後將顯示於此處。</p>
+              <h3 className="text-lg font-medium text-bolt-elements-textPrimary mb-2">
+                {t('local.emptyState.noProviders')}
+              </h3>
+              <p className="text-sm text-bolt-elements-textSecondary">{t('local.emptyState.noProvidersDesc')}</p>
             </CardContent>
           </Card>
         )}

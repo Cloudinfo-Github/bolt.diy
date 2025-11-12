@@ -1,0 +1,80 @@
+{
+  "local": {
+    "title": "本機 AI 提供者",
+    "subtitle": "配置和管理您的本機 AI 模型",
+    "enableAll": "啟用全部",
+    "toggleAllLabel": "切換所有本地供應商",
+    "setupGuide": "設定指南",
+    "status": "狀態",
+    "backToDashboard": "返回儀表板",
+    "toast": {
+      "allEnabled": "已啟用所有本機提供者",
+      "allDisabled": "已停用所有本機提供者",
+      "providerEnabled": "{{name}} 已啟用",
+      "providerDisabled": "{{name}} 已停用",
+      "baseUrlUpdated": "已更新 {{name}} 基礎網址",
+      "modelUpdated": "已成功更新 {{name}}",
+      "modelUpdateFailed": "無法更新 {{name}}",
+      "deleteConfirm": "確定要刪除 {{name}} 嗎？",
+      "modelDeleted": "已刪除 {{name}}",
+      "modelDeleteFailed": "無法刪除 {{name}}"
+    },
+    "models": {
+      "installed": "已安裝的模型",
+      "available": "可用的模型",
+      "refresh": "重新整理",
+      "browse": "瀏覽模型",
+      "browseTo": "前往",
+      "browseAvailable": "瀏覽可用的模型",
+      "getApp": "取得 {{name}}",
+      "owner": "擁有者：{{owner}}",
+      "created": "建立時間：{{date}}",
+      "availableTag": "可用"
+    },
+    "emptyState": {
+      "noModelsInstalled": "未安裝模型",
+      "noModelsAvailable": "無可用模型",
+      "noProviders": "無可用的本機提供者",
+      "noProvidersDesc": "本機提供者在系統中配置後將顯示於此處。",
+      "lmStudioInstructions": "請確保 LM Studio 正在執行，且本機伺服器已啟動並啟用 CORS。"
+    }
+  },
+  "cloud": {
+    "title": "雲端提供者",
+    "subtitle": "連接雲端 AI 模型和服務",
+    "enableAll": "啟用所有雲端",
+    "configurable": "可配置",
+    "toast": {
+      "allEnabled": "已啟用所有雲端提供者",
+      "allDisabled": "已停用所有雲端提供者",
+      "enabled": "已啟用 {{name}}",
+      "disabled": "已停用 {{name}}",
+      "baseUrlUpdated": "已更新 {{name}} 基礎網址"
+    },
+    "descriptions": {
+      "Anthropic": "使用 Claude 和其他 Anthropic 模型",
+      "Github": "透過 GitHub 基礎設施使用 OpenAI 模型",
+      "OpenAI": "使用 GPT-4、GPT-3.5 和其他 OpenAI 模型"
+    },
+    "config": {
+      "customEndpoint": "為此提供者配置自訂端點",
+      "standardIntegration": "標準 AI 提供者整合",
+      "baseUrlPlaceholder": "輸入 {{name}} 基礎網址",
+      "baseUrlNotSet": "點擊設定基礎網址",
+      "envVarSet": "環境變數網址已在 .env 檔案中設定"
+    }
+  },
+  "shared": {
+    "enabled": "啟用",
+    "disabled": "停用",
+    "configure": "配置",
+    "baseUrl": "基礎網址",
+    "apiKey": "API 金鑰",
+    "save": "儲存",
+    "cancel": "取消",
+    "edit": "編輯",
+    "delete": "刪除",
+    "loading": "載入中...",
+    "noData": "暫無資料"
+  }
+}

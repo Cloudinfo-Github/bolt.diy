@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { classNames } from '~/utils/classNames';
 import { toast } from 'react-toastify';
 import { providerBaseUrlEnvKeys } from '~/utils/constants';
+import { useI18n } from '~/i18n/hooks/useI18n';
 import { SiAmazon, SiGoogle, SiGithub, SiHuggingface, SiPerplexity, SiOpenai } from 'react-icons/si';
 import { BsRobot, BsCloud } from 'react-icons/bs';
 import { TbBrain, TbCloudComputing } from 'react-icons/tb';
@@ -53,18 +54,28 @@ const PROVIDER_ICONS: Record<ProviderName, IconType> = {
   XAI: BsRobot,
 };
 
-// Update PROVIDER_DESCRIPTIONS to use the same type
-const PROVIDER_DESCRIPTIONS: Partial<Record<ProviderName, string>> = {
-  Anthropic: '使用 Claude 和其他 Anthropic 模型',
-  Github: '透過 GitHub 基礎設施使用 OpenAI 模型',
-  OpenAI: '使用 GPT-4、GPT-3.5 和其他 OpenAI 模型',
-};
-
 const CloudProvidersTab = () => {
   const settings = useSettings();
+  const { t } = useI18n('providers');
   const [editingProvider, setEditingProvider] = useState<string | null>(null);
   const [filteredProviders, setFilteredProviders] = useState<IProviderConfig[]>([]);
   const [categoryEnabled, setCategoryEnabled] = useState<boolean>(false);
+
+  // Helper function to get provider description
+  const getProviderDescription = (providerName: string): string => {
+    const knownProviders: Record<string, string> = {
+      Anthropic: t('cloud.descriptions.Anthropic'),
+      Github: t('cloud.descriptions.Github'),
+      OpenAI: t('cloud.descriptions.OpenAI'),
+    };
+
+    return (
+      knownProviders[providerName] ||
+      (URL_CONFIGURABLE_PROVIDERS.includes(providerName)
+        ? t('cloud.config.customEndpoint')
+        : t('cloud.config.standardIntegration'))
+    );
+  };
 
   // Load and filter providers
   useEffect(() => {
@@ -96,9 +107,9 @@ const CloudProvidersTab = () => {
       });
 
       setCategoryEnabled(enabled);
-      toast.success(enabled ? '已啟用所有雲端提供者' : '已停用所有雲端提供者');
+      toast.success(enabled ? t('cloud.toast.allEnabled') : t('cloud.toast.allDisabled'));
     },
-    [filteredProviders, settings],
+    [filteredProviders, settings, t],
   );
 
   const handleToggleProvider = useCallback(
@@ -108,13 +119,13 @@ const CloudProvidersTab = () => {
 
       if (enabled) {
         logStore.logProvider(`Provider ${provider.name} enabled`, { provider: provider.name });
-        toast.success(`已啟用 ${provider.name}`);
+        toast.success(t('cloud.toast.enabled', { name: provider.name }));
       } else {
         logStore.logProvider(`Provider ${provider.name} disabled`, { provider: provider.name });
-        toast.success(`已停用 ${provider.name}`);
+        toast.success(t('cloud.toast.disabled', { name: provider.name }));
       }
     },
-    [settings],
+    [settings, t],
   );
 
   const handleUpdateBaseUrl = useCallback(
@@ -128,10 +139,10 @@ const CloudProvidersTab = () => {
         provider: provider.name,
         baseUrl: newBaseUrl,
       });
-      toast.success(`已更新 ${provider.name} 基礎網址`);
+      toast.success(t('cloud.toast.baseUrlUpdated', { name: provider.name }));
       setEditingProvider(null);
     },
-    [settings],
+    [settings, t],
   );
 
   return (
@@ -157,13 +168,13 @@ const CloudProvidersTab = () => {
               <TbCloudComputing className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-md font-medium text-bolt-elements-textPrimary">雲端提供者</h4>
-              <p className="text-sm text-bolt-elements-textSecondary">連接雲端 AI 模型和服務</p>
+              <h4 className="text-md font-medium text-bolt-elements-textPrimary">{t('cloud.title')}</h4>
+              <p className="text-sm text-bolt-elements-textSecondary">{t('cloud.subtitle')}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-bolt-elements-textSecondary">啟用所有雲端</span>
+            <span className="text-sm text-bolt-elements-textSecondary">{t('cloud.enableAll')}</span>
             <Switch checked={categoryEnabled} onCheckedChange={handleToggleCategory} />
           </div>
         </div>
@@ -192,7 +203,7 @@ const CloudProvidersTab = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    可配置
+                    {t('cloud.configurable')}
                   </motion.span>
                 )}
               </div>
@@ -223,10 +234,7 @@ const CloudProvidersTab = () => {
                         {provider.name}
                       </h4>
                       <p className="text-xs text-bolt-elements-textSecondary mt-0.5">
-                        {PROVIDER_DESCRIPTIONS[provider.name as keyof typeof PROVIDER_DESCRIPTIONS] ||
-                          (URL_CONFIGURABLE_PROVIDERS.includes(provider.name)
-                            ? '為此提供者配置自訂端點'
-                            : '標準 AI 提供者整合')}
+                        {getProviderDescription(provider.name)}
                       </p>
                     </div>
                     <Switch
@@ -247,7 +255,7 @@ const CloudProvidersTab = () => {
                           <input
                             type="text"
                             defaultValue={provider.settings.baseUrl}
-                            placeholder={`輸入 ${provider.name} 基礎網址`}
+                            placeholder={t('cloud.config.baseUrlPlaceholder', { name: provider.name })}
                             className={classNames(
                               'flex-1 px-3 py-1.5 rounded-lg text-sm',
                               'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
@@ -273,7 +281,7 @@ const CloudProvidersTab = () => {
                             <div className="flex items-center gap-2 text-bolt-elements-textSecondary">
                               <div className="i-ph:link text-sm" />
                               <span className="group-hover/url:text-purple-500 transition-colors">
-                                {provider.settings.baseUrl || '點擊設定基礎網址'}
+                                {provider.settings.baseUrl || t('cloud.config.baseUrlNotSet')}
                               </span>
                             </div>
                           </div>
@@ -284,7 +292,7 @@ const CloudProvidersTab = () => {
                         <div className="mt-2 text-xs text-green-500">
                           <div className="flex items-center gap-1">
                             <div className="i-ph:info" />
-                            <span>環境變數網址已在 .env 檔案中設定</span>
+                            <span>{t('cloud.config.envVarSet')}</span>
                           </div>
                         </div>
                       )}

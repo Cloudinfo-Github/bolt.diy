@@ -1,0 +1,80 @@
+{
+  "local": {
+    "title": "Local AI Providers",
+    "subtitle": "Configure and manage your local AI models",
+    "enableAll": "Enable All",
+    "toggleAllLabel": "Toggle all local providers",
+    "setupGuide": "Setup Guide",
+    "status": "Status",
+    "backToDashboard": "Back to Dashboard",
+    "toast": {
+      "allEnabled": "All local providers enabled",
+      "allDisabled": "All local providers disabled",
+      "providerEnabled": "{{name}} enabled",
+      "providerDisabled": "{{name}} disabled",
+      "baseUrlUpdated": "Updated {{name}} base URL",
+      "modelUpdated": "Successfully updated {{name}}",
+      "modelUpdateFailed": "Failed to update {{name}}",
+      "deleteConfirm": "Are you sure you want to delete {{name}}?",
+      "modelDeleted": "Deleted {{name}}",
+      "modelDeleteFailed": "Failed to delete {{name}}"
+    },
+    "models": {
+      "installed": "Installed Models",
+      "available": "Available Models",
+      "refresh": "Refresh",
+      "browse": "Browse Models",
+      "browseTo": "Go to",
+      "browseAvailable": "browse available models",
+      "getApp": "Get {{name}}",
+      "owner": "Owner: {{owner}}",
+      "created": "Created: {{date}}",
+      "availableTag": "Available"
+    },
+    "emptyState": {
+      "noModelsInstalled": "No Models Installed",
+      "noModelsAvailable": "No Models Available",
+      "noProviders": "No local providers available",
+      "noProvidersDesc": "Local providers will appear here once configured in the system.",
+      "lmStudioInstructions": "Please ensure LM Studio is running and the local server is started with CORS enabled."
+    }
+  },
+  "cloud": {
+    "title": "Cloud Providers",
+    "subtitle": "Connect to cloud AI models and services",
+    "enableAll": "Enable All Cloud",
+    "configurable": "Configurable",
+    "toast": {
+      "allEnabled": "All cloud providers enabled",
+      "allDisabled": "All cloud providers disabled",
+      "enabled": "{{name}} enabled",
+      "disabled": "{{name}} disabled",
+      "baseUrlUpdated": "Updated {{name}} base URL"
+    },
+    "descriptions": {
+      "Anthropic": "Use Claude and other Anthropic models",
+      "Github": "Use OpenAI models through GitHub infrastructure",
+      "OpenAI": "Use GPT-4, GPT-3.5, and other OpenAI models"
+    },
+    "config": {
+      "customEndpoint": "Configure custom endpoint for this provider",
+      "standardIntegration": "Standard AI provider integration",
+      "baseUrlPlaceholder": "Enter {{name}} base URL",
+      "baseUrlNotSet": "Click to set base URL",
+      "envVarSet": "Environment variable URL set in .env file"
+    }
+  },
+  "shared": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "configure": "Configure",
+    "baseUrl": "Base URL",
+    "apiKey": "API Key",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "noData": "No data available"
+  }
+}

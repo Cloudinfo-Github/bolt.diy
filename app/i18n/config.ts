@@ -16,6 +16,7 @@ export const supportedNamespaces = [
   'file',
   'errors',
   'workbench',
+  'providers',
 ] as const;
 
 export type SupportedNamespace = (typeof supportedNamespaces)[number];
