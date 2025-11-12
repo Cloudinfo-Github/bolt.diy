@@ -48,6 +48,216 @@
       "lastCheck": "Last Check",
       "unknown": "Unknown",
       "never": "Never"
+    },
+    "setupGuideDetail": {
+      "title": "Local Provider Setup Guide",
+      "subtitle": "Complete setup instructions for running AI models locally",
+      "systemRequirements": {
+        "title": "System Requirements",
+        "subtitle": "Recommended hardware for optimal performance",
+        "cpu": {
+          "label": "CPU",
+          "desc": "8+ cores, modern architecture"
+        },
+        "ram": {
+          "label": "RAM",
+          "desc": "16GB minimum, 32GB+ recommended"
+        },
+        "gpu": {
+          "label": "GPU",
+          "desc": "NVIDIA RTX 30xx+ or AMD RX 6000+"
+        }
+      },
+      "ollama": {
+        "title": "Ollama Setup",
+        "subtitle": "Most popular choice for running open-source models locally with desktop app",
+        "recommended": "Recommended",
+        "installation": {
+          "title": "1. Choose Installation Method",
+          "desktopApp": {
+            "title": "🆕 Desktop App (Recommended)",
+            "desc": "New user-friendly desktop application with built-in model management and web interface.",
+            "macOS": "macOS",
+            "windows": "Windows",
+            "downloadButton": "Download Desktop App",
+            "webInterface": "Built-in Web Interface",
+            "webInterfaceDesc": "Desktop app includes a web interface at"
+          },
+          "cli": {
+            "title": "Command Line (Advanced)",
+            "windows": "Windows",
+            "macOS": "macOS",
+            "linux": "Linux"
+          }
+        },
+        "models": {
+          "title": "2. Download Latest Models",
+          "codeDev": "Code & Development",
+          "codeComment": "# Latest Llama 3.2 for coding",
+          "generalChat": "General Purpose & Chat",
+          "generalComment": "# Latest general models",
+          "performance": {
+            "title": "Performance Optimized",
+            "llama": "Llama 3.2: 3B - Fastest, 8GB RAM",
+            "phi": "Phi-3.5: 3.8B - Great balance",
+            "qwen": "Qwen2.5: 7B - Excellent quality",
+            "mistral": "Mistral: 7B - Popular choice"
+          },
+          "tips": {
+            "title": "Pro Tips",
+            "tip1": "Start with 3B-7B models for best performance",
+            "tip2": "Use quantized versions for faster loading",
+            "tip3": "Desktop app auto-manages model storage",
+            "tip4": "Web UI available at localhost:11434"
+          }
+        },
+        "desktopFeatures": {
+          "title": "3. Desktop App Features",
+          "ui": {
+            "title": "🖥️ User Interface",
+            "browser": "Model library browser",
+            "downloads": "One-click model downloads",
+            "chat": "Built-in chat interface",
+            "monitoring": "System resource monitoring"
+          },
+          "management": {
+            "title": "🔧 Management Tools",
+            "updates": "Automatic updates",
+            "optimization": "Model size optimization",
+            "gpu": "GPU acceleration detection",
+            "compatibility": "Cross-platform compatibility"
+          }
+        },
+        "troubleshooting": {
+          "title": "4. Troubleshooting & Commands",
+          "commonIssues": {
+            "title": "Common Issues",
+            "notStarting": "Desktop app not starting: Restart system",
+            "noGpu": "GPU not detected: Update drivers",
+            "portBlocked": "Port 11434 blocked: Change port in settings",
+            "modelsNotLoading": "Models not loading: Check available disk space",
+            "slowPerformance": "Slow performance: Use smaller models or enable GPU"
+          },
+          "commands": {
+            "title": "Useful Commands",
+            "checkModels": "# Check installed models",
+            "removeModels": "# Remove unused models",
+            "checkGpu": "# Check GPU usage",
+            "viewLogs": "# View logs"
+          }
+        }
+      },
+      "lmstudio": {
+        "title": "LM Studio Setup",
+        "subtitle": "User-friendly GUI for running local models with excellent model management",
+        "installation": {
+          "title": "1. Download & Install",
+          "desc": "Download LM Studio for Windows, macOS, or Linux from the official website.",
+          "downloadButton": "Download LM Studio"
+        },
+        "configuration": {
+          "title": "2. Configure Local Server",
+          "serverSetup": {
+            "title": "Start Local Server",
+            "step1": "Download a model from the \"My Models\" tab",
+            "step2": "Go to \"Local Server\" tab",
+            "step3": "Select your downloaded model",
+            "step4": "Set port to 1234 (default)",
+            "step5": "Click \"Start Server\""
+          },
+          "cors": {
+            "title": "Critical: Enable CORS",
+            "warning": "To work with Bolt DIY, you MUST enable CORS in LM Studio:",
+            "step1": "In Server Settings, check \"Enable CORS\"",
+            "step2": "Set Network Interface to \"0.0.0.0\" for external access",
+            "step3": "Alternatively, use CLI:"
+          }
+        },
+        "advantages": {
+          "title": "LM Studio Advantages",
+          "downloader": "Built-in model downloader with search",
+          "switching": "Easy model switching and management",
+          "chat": "Built-in chat interface for testing",
+          "gguf": "GGUF format support (most compatible)",
+          "updates": "Regular updates with new features"
+        }
+      },
+      "localai": {
+        "title": "LocalAI Setup",
+        "subtitle": "Self-hosted OpenAI-compatible API server with extensive model support",
+        "installation": {
+          "title": "Installation Options",
+          "quickInstall": "Quick Install",
+          "quickInstallCommand": "# One-line install",
+          "docker": "Docker (Recommended)",
+          "dockerCommand": ""
+        },
+        "configuration": {
+          "title": "Configuration",
+          "desc": "LocalAI supports many model formats and provides a full OpenAI-compatible API.",
+          "exampleComment": "# Example configuration"
+        },
+        "advantages": {
+          "title": "LocalAI Advantages",
+          "apiCompatibility": "Full OpenAI API compatibility",
+          "multipleFormats": "Supports multiple model formats",
+          "docker": "Docker deployment option",
+          "gallery": "Built-in model gallery",
+          "restApi": "REST API for model management"
+        }
+      },
+      "performance": {
+        "title": "Performance Optimization",
+        "subtitle": "Tips to improve local AI performance",
+        "hardware": {
+          "title": "Hardware Optimizations",
+          "gpu": "Use NVIDIA GPU with CUDA for 5-10x speedup",
+          "ram": "Increase RAM for larger context windows",
+          "ssd": "Use SSD storage for faster model loading",
+          "closeApps": "Close other applications to free up RAM"
+        },
+        "software": {
+          "title": "Software Optimizations",
+          "smallerModels": "Use smaller models for faster responses",
+          "quantization": "Enable quantization (4-bit, 8-bit models)",
+          "contextLength": "Reduce context length for chat applications",
+          "streaming": "Use streaming responses for better UX"
+        }
+      },
+      "alternatives": {
+        "title": "Alternative Options",
+        "subtitle": "Other local AI solutions and cloud alternatives",
+        "local": {
+          "title": "Other Local Solutions",
+          "jan": {
+            "name": "Jan.ai",
+            "desc": "Modern interface with built-in model marketplace"
+          },
+          "oobabooga": {
+            "name": "Oobabooga",
+            "desc": "Advanced text generation web UI with extensions"
+          },
+          "koboldai": {
+            "name": "KoboldAI",
+            "desc": "Focus on creative writing and storytelling"
+          }
+        },
+        "cloud": {
+          "title": "Cloud Alternatives",
+          "openrouter": {
+            "name": "OpenRouter",
+            "desc": "Access to 100+ models through unified API"
+          },
+          "together": {
+            "name": "Together AI",
+            "desc": "Fast inference with open-source models"
+          },
+          "groq": {
+            "name": "Groq",
+            "desc": "Ultra-fast LPU inference for Llama models"
+          }
+        }
+      }
     }
   },
   "cloud": {

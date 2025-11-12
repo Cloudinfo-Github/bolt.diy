@@ -48,6 +48,216 @@
       "lastCheck": "上次檢查",
       "unknown": "未知",
       "never": "從未"
+    },
+    "setupGuideDetail": {
+      "title": "本機提供者設定指南",
+      "subtitle": "在本機執行 AI 模型的完整設定說明",
+      "systemRequirements": {
+        "title": "系統需求",
+        "subtitle": "建議的硬體規格以獲得最佳效能",
+        "cpu": {
+          "label": "處理器",
+          "desc": "8核心以上，現代架構"
+        },
+        "ram": {
+          "label": "記憶體",
+          "desc": "最低 16GB，建議 32GB 以上"
+        },
+        "gpu": {
+          "label": "顯示卡",
+          "desc": "NVIDIA RTX 30xx 以上或 AMD RX 6000 以上"
+        }
+      },
+      "ollama": {
+        "title": "Ollama 設定",
+        "subtitle": "使用桌面應用程式在本機執行開源模型的最熱門選擇",
+        "recommended": "推薦",
+        "installation": {
+          "title": "1. 選擇安裝方式",
+          "desktopApp": {
+            "title": "🆕 桌面應用程式（推薦）",
+            "desc": "全新的使用者友善桌面應用程式，內建模型管理和網頁介面。",
+            "macOS": "macOS",
+            "windows": "Windows",
+            "downloadButton": "下載桌面應用程式",
+            "webInterface": "內建網頁介面",
+            "webInterfaceDesc": "桌面應用程式包含網頁介面，位於"
+          },
+          "cli": {
+            "title": "命令列（進階）",
+            "windows": "Windows",
+            "macOS": "macOS",
+            "linux": "Linux"
+          }
+        },
+        "models": {
+          "title": "2. 下載最新模型",
+          "codeDev": "程式開發",
+          "codeComment": "# 最新 Llama 3.2 程式開發版",
+          "generalChat": "通用對話",
+          "generalComment": "# 最新通用模型",
+          "performance": {
+            "title": "效能優化版本",
+            "llama": "Llama 3.2: 3B - 最快，需要 8GB 記憶體",
+            "phi": "Phi-3.5: 3.8B - 絕佳平衡",
+            "qwen": "Qwen2.5: 7B - 卓越品質",
+            "mistral": "Mistral: 7B - 熱門選擇"
+          },
+          "tips": {
+            "title": "專業提示",
+            "tip1": "從 3B-7B 模型開始以獲得最佳效能",
+            "tip2": "使用量化版本以加快載入速度",
+            "tip3": "桌面應用程式自動管理模型儲存",
+            "tip4": "網頁介面位於 localhost:11434"
+          }
+        },
+        "desktopFeatures": {
+          "title": "3. 桌面應用程式功能",
+          "ui": {
+            "title": "🖥️ 使用者介面",
+            "browser": "模型庫瀏覽器",
+            "downloads": "一鍵下載模型",
+            "chat": "內建對話介面",
+            "monitoring": "系統資源監控"
+          },
+          "management": {
+            "title": "🔧 管理工具",
+            "updates": "自動更新",
+            "optimization": "模型大小優化",
+            "gpu": "GPU 加速偵測",
+            "compatibility": "跨平台相容性"
+          }
+        },
+        "troubleshooting": {
+          "title": "4. 疑難排解與指令",
+          "commonIssues": {
+            "title": "常見問題",
+            "notStarting": "桌面應用程式無法啟動：重新啟動系統",
+            "noGpu": "未偵測到 GPU：更新驅動程式",
+            "portBlocked": "連接埠 11434 被封鎖：在設定中變更連接埠",
+            "modelsNotLoading": "模型無法載入：檢查可用磁碟空間",
+            "slowPerformance": "效能緩慢：使用較小的模型或啟用 GPU"
+          },
+          "commands": {
+            "title": "實用指令",
+            "checkModels": "# 檢查已安裝的模型",
+            "removeModels": "# 移除未使用的模型",
+            "checkGpu": "# 檢查 GPU 使用狀況",
+            "viewLogs": "# 檢視記錄"
+          }
+        }
+      },
+      "lmstudio": {
+        "title": "LM Studio 設定",
+        "subtitle": "使用者友善的 GUI，可執行本機模型並具有出色的模型管理功能",
+        "installation": {
+          "title": "1. 下載與安裝",
+          "desc": "從官方網站下載適用於 Windows、macOS 或 Linux 的 LM Studio。",
+          "downloadButton": "下載 LM Studio"
+        },
+        "configuration": {
+          "title": "2. 配置本機伺服器",
+          "serverSetup": {
+            "title": "啟動本機伺服器",
+            "step1": "從「我的模型」標籤下載模型",
+            "step2": "前往「本機伺服器」標籤",
+            "step3": "選擇已下載的模型",
+            "step4": "設定連接埠為 1234（預設值）",
+            "step5": "點擊「啟動伺服器」"
+          },
+          "cors": {
+            "title": "重要：啟用 CORS",
+            "warning": "若要與 Bolt DIY 配合使用，您必須在 LM Studio 中啟用 CORS：",
+            "step1": "在伺服器設定中，勾選「啟用 CORS」",
+            "step2": "將網路介面設定為「0.0.0.0」以允許外部存取",
+            "step3": "或者，使用命令列："
+          }
+        },
+        "advantages": {
+          "title": "LM Studio 優勢",
+          "downloader": "內建模型下載器與搜尋功能",
+          "switching": "輕鬆切換和管理模型",
+          "chat": "內建對話介面以供測試",
+          "gguf": "支援 GGUF 格式（最相容）",
+          "updates": "定期更新並提供新功能"
+        }
+      },
+      "localai": {
+        "title": "LocalAI 設定",
+        "subtitle": "自架 OpenAI 相容 API 伺服器，支援多種模型",
+        "installation": {
+          "title": "安裝選項",
+          "quickInstall": "快速安裝",
+          "quickInstallCommand": "# 一行指令安裝",
+          "docker": "Docker（推薦）",
+          "dockerCommand": ""
+        },
+        "configuration": {
+          "title": "配置",
+          "desc": "LocalAI 支援多種模型格式，並提供完整的 OpenAI 相容 API。",
+          "exampleComment": "# 配置範例"
+        },
+        "advantages": {
+          "title": "LocalAI 優勢",
+          "apiCompatibility": "完整 OpenAI API 相容性",
+          "multipleFormats": "支援多種模型格式",
+          "docker": "Docker 部署選項",
+          "gallery": "內建模型庫",
+          "restApi": "REST API 模型管理"
+        }
+      },
+      "performance": {
+        "title": "效能優化",
+        "subtitle": "提升本機 AI 效能的技巧",
+        "hardware": {
+          "title": "硬體優化",
+          "gpu": "使用 NVIDIA GPU 搭配 CUDA 可獲得 5-10 倍加速",
+          "ram": "增加記憶體以支援更大的上下文視窗",
+          "ssd": "使用 SSD 儲存以加快模型載入速度",
+          "closeApps": "關閉其他應用程式以釋放記憶體"
+        },
+        "software": {
+          "title": "軟體優化",
+          "smallerModels": "使用較小的模型以獲得更快的回應",
+          "quantization": "啟用量化（4 位元、8 位元模型）",
+          "contextLength": "減少對話應用程式的上下文長度",
+          "streaming": "使用串流回應以改善使用者體驗"
+        }
+      },
+      "alternatives": {
+        "title": "替代選項",
+        "subtitle": "其他本機 AI 解決方案和雲端替代方案",
+        "local": {
+          "title": "其他本機解決方案",
+          "jan": {
+            "name": "Jan.ai",
+            "desc": "現代化介面，內建模型市集"
+          },
+          "oobabooga": {
+            "name": "Oobabooga",
+            "desc": "進階文字生成網頁介面，支援擴充功能"
+          },
+          "koboldai": {
+            "name": "KoboldAI",
+            "desc": "專注於創意寫作和故事創作"
+          }
+        },
+        "cloud": {
+          "title": "雲端替代方案",
+          "openrouter": {
+            "name": "OpenRouter",
+            "desc": "透過統一 API 存取 100 多種模型"
+          },
+          "together": {
+            "name": "Together AI",
+            "desc": "使用開源模型進行快速推理"
+          },
+          "groq": {
+            "name": "Groq",
+            "desc": "超快速 LPU 推理，支援 Llama 模型"
+          }
+        }
+      }
     }
   },
   "cloud": {
