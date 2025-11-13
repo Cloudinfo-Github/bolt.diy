@@ -36,7 +36,15 @@
     "new": "新建終端機",
     "clear": "清除",
     "split": "分割",
-    "kill": "終止"
+    "kill": "終止",
+    "bolt": "Bolt 終端機",
+    "name": "終端機",
+    "reset": "重置終端機",
+    "close": "關閉",
+    "toggle": "切換終端機"
+  },
+  "fileSearch": {
+    "placeholder": "搜尋檔案..."
   },
   "preview": {
     "refresh": "重新整理",

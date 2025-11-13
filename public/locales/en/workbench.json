@@ -36,7 +36,15 @@
     "new": "New Terminal",
     "clear": "Clear",
     "split": "Split",
-    "kill": "Kill"
+    "kill": "Kill",
+    "bolt": "Bolt Terminal",
+    "name": "Terminal",
+    "reset": "Reset Terminal",
+    "close": "Close",
+    "toggle": "Toggle Terminal"
+  },
+  "fileSearch": {
+    "placeholder": "Search files..."
   },
   "preview": {
     "refresh": "Refresh",

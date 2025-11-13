@@ -45,33 +45,203 @@ export default class AzureOpenAIProvider extends BaseProvider {
 
   staticModels: ModelInfo[] = [
     /*
-     * ✅ 經過測試確認可用的模型（2025-11-04）
-     * 測試使用直接 API 調用驗證，僅列出在 Azure AI Foundry 中已部署且可用的模型
+     * ✅ Azure AI Foundry 部署的模型
+     * 最後更新：2025-11-13
      */
 
-    // GPT-5 Series
+    // ==================== DeepSeek 系列 ====================
     {
-      name: 'gpt-5',
-      label: 'GPT-5 ✅',
+      name: 'DeepSeek-R1',
+      label: 'DeepSeek-R1 🔥',
       provider: 'AzureOpenAI',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
     },
     {
-      name: 'gpt-5-codex',
-      label: 'GPT-5 Codex ✅',
+      name: 'DeepSeek-V3.1',
+      label: 'DeepSeek-V3.1',
       provider: 'AzureOpenAI',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
     },
 
-    // GPT-4.1 Series
+    // ==================== GPT-5 系列 ====================
     {
-      name: 'gpt-4.1',
-      label: 'GPT-4.1 ✅',
+      name: 'gpt-5-2025-08-07',
+      label: 'GPT-5 (2025-08-07)',
       provider: 'AzureOpenAI',
-      maxTokenAllowed: 1047576,
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
+    },
+    {
+      name: 'gpt-5-chat-2025-10-03',
+      label: 'GPT-5 Chat (Latest)',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
+    },
+    {
+      name: 'gpt-5-mini-2025-08-07',
+      label: 'GPT-5 Mini',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 200000,
+      maxCompletionTokens: 64000,
+    },
+
+    // ==================== GPT-4.1 系列 ====================
+    {
+      name: 'gpt-4.1-2025-04-14',
+      label: 'GPT-4.1 (2025-04-14)',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 1048576,
       maxCompletionTokens: 32768,
+    },
+    {
+      name: 'gpt-4.1-mini-2025-04-14',
+      label: 'GPT-4.1 Mini',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 1048576,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'gpt-4.1-nano-2025-04-14',
+      label: 'GPT-4.1 Nano',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 524288,
+      maxCompletionTokens: 16384,
+    },
+
+    // ==================== GPT-4.5 系列 ====================
+    {
+      name: 'gpt-4.5-preview-2025-02-27',
+      label: 'GPT-4.5 Preview',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 300000,
+      maxCompletionTokens: 96000,
+    },
+
+    // ==================== GPT-4o 系列 ====================
+    {
+      name: 'gpt-4o-2024-11-20',
+      label: 'GPT-4o (Latest)',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 16384,
+    },
+    {
+      name: 'gpt-4o-2024-08-06',
+      label: 'GPT-4o (2024-08-06)',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 16384,
+    },
+    {
+      name: 'gpt-4o-mini-2024-07-18',
+      label: 'GPT-4o Mini',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 16384,
+    },
+
+    // ==================== O 系列 (推理模型) ====================
+    {
+      name: 'o1-2024-12-17',
+      label: 'O1 (2024-12-17)',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 200000,
+      maxCompletionTokens: 100000,
+    },
+    {
+      name: 'o1-mini-2024-09-12',
+      label: 'O1 Mini',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 65000,
+    },
+    {
+      name: 'o3-2025-04-16',
+      label: 'O3 (2025-04-16)',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 200000,
+      maxCompletionTokens: 100000,
+    },
+    {
+      name: 'o3-mini-2025-01-31',
+      label: 'O3 Mini',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 65000,
+    },
+    {
+      name: 'o4-mini-2025-04-16',
+      label: 'O4 Mini',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 150000,
+      maxCompletionTokens: 75000,
+    },
+
+    // ==================== Llama 系列 ====================
+    {
+      name: 'Llama-3.3-70B-Instruct',
+      label: 'Llama 3.3 70B',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+    {
+      name: 'Meta-Llama-3.1-405B-Instruct',
+      label: 'Llama 3.1 405B',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+    {
+      name: 'Meta-Llama-3.1-70B-Instruct',
+      label: 'Llama 3.1 70B',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // ==================== Mistral 系列 ====================
+    {
+      name: 'Mistral-Large-2411-2',
+      label: 'Mistral Large',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+    {
+      name: 'mistral-small-2503',
+      label: 'Mistral Small',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 32000,
+      maxCompletionTokens: 8192,
+    },
+
+    // ==================== Phi 系列 (Microsoft) ====================
+    {
+      name: 'Phi-4',
+      label: 'Phi-4',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 16384,
+      maxCompletionTokens: 4096,
+    },
+    {
+      name: 'Phi-3.5-mini-instruct',
+      label: 'Phi-3.5 Mini',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 4096,
+    },
+
+    // ==================== Cohere 系列 ====================
+    {
+      name: 'Cohere-command-r-plus-08-2024',
+      label: 'Command R+',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 4096,
     },
   ];
 

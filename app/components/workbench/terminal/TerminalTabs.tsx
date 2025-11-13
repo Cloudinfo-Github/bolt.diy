@@ -9,6 +9,7 @@ import { classNames } from '~/utils/classNames';
 import { Terminal, type TerminalRef } from './Terminal';
 import { TerminalManager } from './TerminalManager';
 import { createScopedLogger } from '~/utils/logger';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 const logger = createScopedLogger('Terminal');
 
@@ -16,6 +17,7 @@ const MAX_TERMINALS = 3;
 export const DEFAULT_TERMINAL_SIZE = 25;
 
 export const TerminalTabs = memo(() => {
+  const { t } = useI18n('workbench');
   const showTerminal = useStore(workbenchStore.showTerminal);
   const theme = useStore(themeStore);
 
@@ -153,7 +155,7 @@ export const TerminalTabs = memo(() => {
                       onClick={() => setActiveTerminal(index)}
                     >
                       <div className="i-ph:terminal-window-duotone text-lg" />
-                      Bolt 終端機
+                      {t('terminal.bolt')}
                     </button>
                   ) : (
                     <React.Fragment>
@@ -170,7 +172,7 @@ export const TerminalTabs = memo(() => {
                         onClick={() => setActiveTerminal(index)}
                       >
                         <div className="i-ph:terminal-window-duotone text-lg" />
-                        終端機 {terminalCount > 1 && index}
+                        {t('terminal.name')} {terminalCount > 1 && index}
                         <button
                           className="bg-transparent text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary hover:bg-transparent rounded"
                           onClick={(e) => {
@@ -189,7 +191,7 @@ export const TerminalTabs = memo(() => {
             {terminalCount < MAX_TERMINALS && <IconButton icon="i-ph:plus" size="md" onClick={addTerminal} />}
             <IconButton
               icon="i-ph:arrow-clockwise"
-              title="重置終端機"
+              title={t('terminal.reset')}
               size="md"
               onClick={() => {
                 const ref = terminalRefs.current.get(activeTerminal);
@@ -210,7 +212,7 @@ export const TerminalTabs = memo(() => {
             <IconButton
               className="ml-auto"
               icon="i-ph:caret-down"
-              title="關閉"
+              title={t('terminal.close')}
               size="md"
               onClick={() => workbenchStore.toggleTerminal(false)}
             />

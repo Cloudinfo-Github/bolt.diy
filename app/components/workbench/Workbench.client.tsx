@@ -68,6 +68,7 @@ const FileModifiedDropdown = memo(
     fileHistory: Record<string, FileHistory>;
     onSelectFile: (filePath: string) => void;
   }) => {
+    const { t } = useI18n('workbench');
     const modifiedFiles = Object.entries(fileHistory);
     const hasChanges = modifiedFiles.length > 0;
     const [searchQuery, setSearchQuery] = useState('');
@@ -103,7 +104,7 @@ const FileModifiedDropdown = memo(
                     <div className="relative mx-2 mb-2">
                       <input
                         type="text"
-                        placeholder="搜尋檔案..."
+                        placeholder={t('fileSearch.placeholder')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-8 pr-3 py-1.5 text-sm rounded-lg bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor focus:outline-none focus:ring-2 focus:ring-blue-500/50"
@@ -466,7 +467,7 @@ export const Workbench = memo(
                           className="rounded-md items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-3 py-1.5 text-xs bg-accent-500 text-white hover:text-bolt-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-bolt-elements-button-primary-backgroundHover outline-accent-500 flex gap-1.7"
                         >
                           <div className="i-ph:terminal" />
-                          切換終端機
+                          {t('terminal.toggle')}
                         </button>
                       </div>
                     </div>
