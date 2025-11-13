@@ -46,10 +46,15 @@ export function isReasoningModel(modelName: string): boolean {
     return false;
   }
 
+  // DeepSeek-R1-0528 supports tools, so exclude it from reasoning models
+  if (/deepseek-r1-0528/i.test(modelName)) {
+    return false;
+  }
+
   const reasoningPatterns = [
     /^o[1-4]/i, // o1, o2, o3, o4 系列
     /^gpt-5/i, // GPT-5 系列
-    /deepseek-r1/i, // DeepSeek-R1
+    /deepseek-r1/i, // DeepSeek-R1 (原版，不支援 tools)
     /deepseek-v3/i, // DeepSeek-V3 系列
     /mai-ds-r1/i, // Microsoft AI DeepSeek R1
     /grok-.*-reasoning/i, // Grok reasoning 系列

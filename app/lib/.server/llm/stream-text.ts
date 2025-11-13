@@ -328,8 +328,11 @@ export async function streamText(props: {
     // 加入工具（如果有的話）
     ...(Object.keys(tools).length > 0 ? { tools } : {}),
 
-    // 為 reasoning 模型配置 providerOptions 以啟用思考過程顯示
-    ...(isReasoning
+    /*
+     * 為 reasoning 模型配置 providerOptions 以啟用思考過程顯示
+     * 注意：Grok 模型不支援 reasoningEffort 參數
+     */
+    ...(isReasoning && !/grok/i.test(modelDetails.name)
       ? {
           providerOptions: {
             azure: {
