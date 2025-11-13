@@ -33,9 +33,25 @@ export const PROVIDER_COMPLETION_LIMITS: Record<string, number> = {
 /*
  * Reasoning models that require maxCompletionTokens instead of maxTokens
  * These models use internal reasoning tokens and have different API parameter requirements
+ *
+ * Supported reasoning models:
+ * - OpenAI: o1, o3, o4, gpt-5 series
+ * - DeepSeek: DeepSeek-R1, DeepSeek-V3 series, MAI-DS-R1
+ * - xAI: grok-4-fast-reasoning
+ * - Phi: Phi-4-reasoning, Phi-4-mini-reasoning
  */
 export function isReasoningModel(modelName: string): boolean {
-  const result = /^(o1|o3|gpt-5)/i.test(modelName);
+  const reasoningPatterns = [
+    /^o[1-4]/i, // o1, o2, o3, o4 系列
+    /^gpt-5/i, // GPT-5 系列
+    /deepseek-r1/i, // DeepSeek-R1
+    /deepseek-v3/i, // DeepSeek-V3 系列
+    /mai-ds-r1/i, // Microsoft AI DeepSeek R1
+    /grok-.*-reasoning/i, // Grok reasoning 系列
+    /phi-.*-reasoning/i, // Phi reasoning 系列
+  ];
+
+  const result = reasoningPatterns.some((pattern) => pattern.test(modelName));
 
   // DEBUG: Test regex matching
   console.log(`REGEX TEST: "${modelName}" matches reasoning pattern: ${result}`);

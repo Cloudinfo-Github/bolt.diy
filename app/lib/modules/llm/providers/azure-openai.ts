@@ -243,6 +243,45 @@ export default class AzureOpenAIProvider extends BaseProvider {
       maxTokenAllowed: 128000,
       maxCompletionTokens: 4096,
     },
+
+    // ==================== Grok 系列 (xAI) ====================
+    {
+      name: 'grok-4-fast-reasoning',
+      label: 'Grok-4 Fast Reasoning 🧠',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'grok-4-fast-non-reasoning',
+      label: 'Grok-4 Fast',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'grok-3',
+      label: 'Grok-3',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'grok-3-mini',
+      label: 'Grok-3 Mini',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 16384,
+    },
+
+    // ==================== MAI (Microsoft AI) ====================
+    {
+      name: 'MAI-DS-R1',
+      label: 'MAI-DS-R1 (Microsoft AI)',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
   ];
 
   async getDynamicModels(
