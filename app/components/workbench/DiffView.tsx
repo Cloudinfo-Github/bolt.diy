@@ -10,6 +10,7 @@ import { diffFiles, extractRelativePath } from '~/utils/diff';
 import type { FileHistory } from '~/types/actions';
 import { getLanguageFromExtension } from '~/utils/getLanguageFromExtension';
 import { themeStore } from '~/lib/stores/theme';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface CodeComparisonProps {
   beforeCode: string;
@@ -36,15 +37,18 @@ interface FullscreenButtonProps {
   isFullscreen: boolean;
 }
 
-const FullscreenButton = memo(({ onClick, isFullscreen }: FullscreenButtonProps) => (
-  <button
-    onClick={onClick}
-    className="ml-4 p-1 rounded hover:bg-bolt-elements-background-depth-3 text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary transition-colors"
-    title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-  >
-    <div className={isFullscreen ? 'i-ph:corners-in' : 'i-ph:corners-out'} />
-  </button>
-));
+const FullscreenButton = memo(({ onClick, isFullscreen }: FullscreenButtonProps) => {
+  const { t } = useI18n('workbench');
+  return (
+    <button
+      onClick={onClick}
+      className="ml-4 p-1 rounded hover:bg-bolt-elements-background-depth-3 text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary transition-colors"
+      title={isFullscreen ? t('diff.exitFullscreen') : t('diff.enterFullscreen')}
+    >
+      <div className={isFullscreen ? 'i-ph:corners-in' : 'i-ph:corners-out'} />
+    </button>
+  );
+});
 
 const FullscreenOverlay = memo(({ isFullscreen, children }: { isFullscreen: boolean; children: React.ReactNode }) => {
   if (!isFullscreen) {
@@ -330,16 +334,14 @@ const changeColorStyles = {
   unchanged: 'text-bolt-elements-textPrimary',
 };
 
-const renderContentWarning = (type: 'binary' | 'error') => (
+const renderContentWarning = (type: 'binary' | 'error', t: any) => (
   <div className="h-full flex items-center justify-center p-4">
     <div className="text-center text-bolt-elements-textTertiary">
       <div className={`i-ph:${type === 'binary' ? 'file-x' : 'warning-circle'} text-4xl text-red-400 mb-2 mx-auto`} />
       <p className="font-medium text-bolt-elements-textPrimary">
-        {type === 'binary' ? 'Binary file detected' : 'Error processing file'}
+        {type === 'binary' ? t('diff.binaryFileDetected') : t('diff.errorProcessingFile')}
       </p>
-      <p className="text-sm mt-1">
-        {type === 'binary' ? 'Diff view is not available for binary files' : 'Could not generate diff preview'}
-      </p>
+      <p className="text-sm mt-1">{type === 'binary' ? t('diff.diffNotAvailable') : t('diff.couldNotGenerateDiff')}</p>
     </div>
   </div>
 );
@@ -355,43 +357,46 @@ const NoChangesView = memo(
     language: string;
     highlighter: any;
     theme: string;
-  }) => (
-    <div className="h-full flex flex-col items-center justify-center p-4">
-      <div className="text-center text-bolt-elements-textTertiary">
-        <div className="i-ph:files text-4xl text-green-400 mb-2 mx-auto" />
-        <p className="font-medium text-bolt-elements-textPrimary">Files are identical</p>
-        <p className="text-sm mt-1">Both versions match exactly</p>
-      </div>
-      <div className="mt-4 w-full max-w-2xl bg-bolt-elements-background-depth-1 rounded-lg border border-bolt-elements-borderColor overflow-hidden">
-        <div className="p-2 text-xs font-bold text-bolt-elements-textTertiary border-b border-bolt-elements-borderColor">
-          Current Content
+  }) => {
+    const { t } = useI18n('workbench');
+    return (
+      <div className="h-full flex flex-col items-center justify-center p-4">
+        <div className="text-center text-bolt-elements-textTertiary">
+          <div className="i-ph:files text-4xl text-green-400 mb-2 mx-auto" />
+          <p className="font-medium text-bolt-elements-textPrimary">{t('diff.filesIdentical')}</p>
+          <p className="text-sm mt-1">{t('diff.versionsMatch')}</p>
         </div>
-        <div className="overflow-auto max-h-96">
-          {beforeCode.split('\n').map((line, index) => (
-            <div key={index} className="flex group min-w-fit">
-              <div className={lineNumberStyles}>{index + 1}</div>
-              <div className={lineContentStyles}>
-                <span className="mr-2"> </span>
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: highlighter
-                      ? highlighter
-                          .codeToHtml(line, {
-                            lang: language,
-                            theme: theme === 'dark' ? 'github-dark' : 'github-light',
-                          })
-                          .replace(/<\/?pre[^>]*>/g, '')
-                          .replace(/<\/?code[^>]*>/g, '')
-                      : line,
-                  }}
-                />
+        <div className="mt-4 w-full max-w-2xl bg-bolt-elements-background-depth-1 rounded-lg border border-bolt-elements-borderColor overflow-hidden">
+          <div className="p-2 text-xs font-bold text-bolt-elements-textTertiary border-b border-bolt-elements-borderColor">
+            {t('diff.currentContent')}
+          </div>
+          <div className="overflow-auto max-h-96">
+            {beforeCode.split('\n').map((line, index) => (
+              <div key={index} className="flex group min-w-fit">
+                <div className={lineNumberStyles}>{index + 1}</div>
+                <div className={lineContentStyles}>
+                  <span className="mr-2"> </span>
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: highlighter
+                        ? highlighter
+                            .codeToHtml(line, {
+                              lang: language,
+                              theme: theme === 'dark' ? 'github-dark' : 'github-light',
+                            })
+                            .replace(/<\/?pre[^>]*>/g, '')
+                            .replace(/<\/?code[^>]*>/g, '')
+                        : line,
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  ),
+    );
+  },
 );
 
 // Otimização do processamento de diferenças com memoização
@@ -485,6 +490,8 @@ const FileInfo = memo(
     beforeCode: string;
     afterCode: string;
   }) => {
+    const { t } = useI18n('workbench');
+
     // Calculate additions and deletions from the current document
     const { additions, deletions } = useMemo(() => {
       if (!hasChanges) {
@@ -528,11 +535,11 @@ const FileInfo = memo(
                   {deletions > 0 && <span className="text-red-700 dark:text-red-500">-{deletions}</span>}
                 </div>
               )}
-              <span className="text-yellow-600 dark:text-yellow-400">Modified</span>
+              <span className="text-yellow-600 dark:text-yellow-400">{t('diff.modified')}</span>
               <span className="text-bolt-elements-textTertiary text-xs">{new Date().toLocaleTimeString()}</span>
             </>
           ) : (
-            <span className="text-green-700 dark:text-green-400">No Changes</span>
+            <span className="text-green-700 dark:text-green-400">{t('diff.noChanges')}</span>
           )}
           <FullscreenButton onClick={onToggleFullscreen} isFullscreen={isFullscreen} />
         </span>
@@ -585,6 +592,7 @@ const getSharedHighlighter = async () => {
 };
 
 const InlineDiffComparison = memo(({ beforeCode, afterCode, filename, language }: CodeComparisonProps) => {
+  const { t } = useI18n('workbench');
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Use state to hold the shared highlighter instance
@@ -612,14 +620,14 @@ const InlineDiffComparison = memo(({ beforeCode, afterCode, filename, language }
   }, []); // Empty dependency array ensures this runs only once on mount
 
   if (isBinary || error) {
-    return renderContentWarning(isBinary ? 'binary' : 'error');
+    return renderContentWarning(isBinary ? 'binary' : 'error', t);
   }
 
   // Render a loading state or null while highlighter is not ready
   if (!highlighter) {
     return (
       <div className="h-full flex items-center justify-center">
-        <div className="text-bolt-elements-textTertiary">Loading diff...</div>
+        <div className="text-bolt-elements-textTertiary">{t('diff.loadingDiff')}</div>
       </div>
     );
   }
@@ -666,6 +674,7 @@ interface DiffViewProps {
 }
 
 export const DiffView = memo(({ fileHistory, setFileHistory }: DiffViewProps) => {
+  const { t } = useI18n('workbench');
   const files = useStore(workbenchStore.files) as FileMap;
   const selectedFile = useStore(workbenchStore.selectedFile);
   const currentDocument = useStore(workbenchStore.currentDocument) as EditorDocument;
@@ -756,7 +765,7 @@ export const DiffView = memo(({ fileHistory, setFileHistory }: DiffViewProps) =>
   if (!selectedFile || !currentDocument) {
     return (
       <div className="flex w-full h-full justify-center items-center bg-bolt-elements-background-depth-1 text-bolt-elements-textPrimary">
-        Select a file to view differences
+        {t('diff.selectFile')}
       </div>
     );
   }
@@ -788,7 +797,7 @@ export const DiffView = memo(({ fileHistory, setFileHistory }: DiffViewProps) =>
       <div className="flex w-full h-full justify-center items-center bg-bolt-elements-background-depth-1 text-red-400">
         <div className="text-center">
           <div className="i-ph:warning-circle text-4xl mb-2" />
-          <p>Failed to render diff view</p>
+          <p>{t('diff.failedToRender')}</p>
         </div>
       </div>
     );

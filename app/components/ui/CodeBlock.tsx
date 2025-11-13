@@ -3,6 +3,7 @@ import { classNames } from '~/utils/classNames';
 import { motion } from 'framer-motion';
 import { FileIcon } from './FileIcon';
 import { Tooltip } from './Tooltip';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface CodeBlockProps {
   code: string;
@@ -25,6 +26,7 @@ export function CodeBlock({
   className,
   onCopy,
 }: CodeBlockProps) {
+  const { t } = useI18n('ui');
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -61,7 +63,7 @@ export function CodeBlock({
             </span>
           )}
         </div>
-        <Tooltip content={copied ? 'Copied!' : 'Copy code'}>
+        <Tooltip content={copied ? t('codeBlock.copied') : t('codeBlock.copy')}>
           <motion.button
             onClick={handleCopy}
             className="p-1.5 rounded-md text-bolt-elements-textTertiary hover:text-bolt-elements-textSecondary dark:text-bolt-elements-textTertiary-dark dark:hover:text-bolt-elements-textSecondary-dark hover:bg-bolt-elements-background-depth-2 dark:hover:bg-bolt-elements-background-depth-3 transition-colors"

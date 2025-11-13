@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './Button';
 import { classNames } from '~/utils/classNames';
 import { GitBranch, Check, Shield, Star, RefreshCw, X } from 'lucide-react';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface BranchInfo {
   name: string;
@@ -39,6 +40,7 @@ export function BranchSelector({
   isOpen,
   className,
 }: BranchSelectorProps) {
+  const { t } = useI18n('ui');
   const [branches, setBranches] = useState<BranchInfo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -147,7 +149,7 @@ export function BranchSelector({
                 <GitBranch className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">Select Branch</h3>
+                <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">{t('branchSelector.title')}</h3>
                 <p className="text-sm text-bolt-elements-textSecondary">
                   {repoOwner}/{repoName}
                 </p>
@@ -166,7 +168,7 @@ export function BranchSelector({
             {isLoading ? (
               <div className="flex flex-col items-center justify-center p-8 space-y-4">
                 <div className="animate-spin w-8 h-8 border-2 border-bolt-elements-borderColorActive border-t-transparent rounded-full" />
-                <p className="text-sm text-bolt-elements-textSecondary">載入分支中...</p>
+                <p className="text-sm text-bolt-elements-textSecondary">{t('branchSelector.loading')}</p>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center p-8 space-y-4">
@@ -176,7 +178,7 @@ export function BranchSelector({
                 <p className="text-sm text-red-600 text-center">{error}</p>
                 <Button onClick={fetchBranches} variant="outline" size="sm">
                   <RefreshCw className="w-4 h-4 mr-2" />
-                  Retry
+                  {t('branchSelector.retry')}
                 </Button>
               </div>
             ) : (
@@ -186,7 +188,7 @@ export function BranchSelector({
                   <div className="p-4 border-b border-bolt-elements-borderColor">
                     <input
                       type="text"
-                      placeholder="搜尋分支..."
+                      placeholder={t('branchSelector.searchPlaceholder')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full px-3 py-2 rounded-lg bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive"
@@ -229,7 +231,7 @@ export function BranchSelector({
                   ) : (
                     <div className="flex items-center justify-center p-8">
                       <p className="text-sm text-bolt-elements-textSecondary">
-                        {searchQuery ? 'No branches found matching your search.' : 'No branches available.'}
+                        {searchQuery ? t('branchSelector.noMatches') : t('branchSelector.noBranches')}
                       </p>
                     </div>
                   )}
@@ -250,7 +252,7 @@ export function BranchSelector({
               </div>
               <div className="flex items-center gap-3">
                 <Button onClick={onClose} variant="outline" size="sm">
-                  取消
+                  {t('branchSelector.cancel')}
                 </Button>
                 <Button
                   onClick={handleConfirmSelection}
@@ -258,7 +260,7 @@ export function BranchSelector({
                   size="sm"
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  Clone Branch
+                  {t('branchSelector.cloneBranch')}
                 </Button>
               </div>
             </div>

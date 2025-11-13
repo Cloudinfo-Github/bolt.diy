@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { classNames } from '~/utils/classNames';
 import type { DeployAlert } from '~/types/actions';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface DeployAlertProps {
   alert: DeployAlert;
@@ -9,6 +10,7 @@ interface DeployAlertProps {
 }
 
 export default function DeployChatAlert({ alert, clearAlert, postMessage }: DeployAlertProps) {
+  const { t } = useI18n('deploy');
   const { type, title, description, content, url, stage, buildStatus, deployStatus } = alert;
 
   // Determine if we should show the deployment progress
@@ -88,7 +90,7 @@ export default function DeployChatAlert({ alert, clearAlert, postMessage }: Depl
                           <span className="text-white text-xs">1</span>
                         )}
                       </div>
-                      <span className="ml-2">Build</span>
+                      <span className="ml-2">{t('alert.build')}</span>
                     </div>
 
                     {/* Connector Line */}
@@ -123,7 +125,7 @@ export default function DeployChatAlert({ alert, clearAlert, postMessage }: Depl
                           <span className="text-white text-xs">2</span>
                         )}
                       </div>
-                      <span className="ml-2">Deploy</span>
+                      <span className="ml-2">{t('alert.deploy')}</span>
                     </div>
                   </div>
                 </div>
@@ -142,7 +144,7 @@ export default function DeployChatAlert({ alert, clearAlert, postMessage }: Depl
                     rel="noopener noreferrer"
                     className="text-bolt-elements-item-contentAccent hover:underline flex items-center"
                   >
-                    <span className="mr-1">View deployed site</span>
+                    <span className="mr-1">{t('alert.viewDeployedSite')}</span>
                     <div className="i-ph:arrow-square-out"></div>
                   </a>
                 </div>
@@ -159,9 +161,7 @@ export default function DeployChatAlert({ alert, clearAlert, postMessage }: Depl
               <div className={classNames('flex gap-2')}>
                 {type === 'error' && (
                   <button
-                    onClick={() =>
-                      postMessage(`*Fix this deployment error*\n\`\`\`\n${content || description}\n\`\`\`\n`)
-                    }
+                    onClick={() => postMessage(`*${t('alert.fixError')}*\n\`\`\`\n${content || description}\n\`\`\`\n`)}
                     className={classNames(
                       `px-2 py-1.5 rounded-md text-sm font-medium`,
                       'bg-bolt-elements-button-primary-background',
@@ -172,7 +172,7 @@ export default function DeployChatAlert({ alert, clearAlert, postMessage }: Depl
                     )}
                   >
                     <div className="i-ph:chat-circle-duotone"></div>
-                    Ask Bolt
+                    {t('alert.askBolt')}
                   </button>
                 )}
                 <button
@@ -185,7 +185,7 @@ export default function DeployChatAlert({ alert, clearAlert, postMessage }: Depl
                     'text-bolt-elements-button-secondary-text',
                   )}
                 >
-                  Dismiss
+                  {t('alert.dismiss')}
                 </button>
               </div>
             </motion.div>

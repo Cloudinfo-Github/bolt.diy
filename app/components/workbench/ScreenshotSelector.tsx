@@ -1,5 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface ScreenshotSelectorProps {
   isSelectionMode: boolean;
@@ -9,6 +10,7 @@ interface ScreenshotSelectorProps {
 
 export const ScreenshotSelector = memo(
   ({ isSelectionMode, setIsSelectionMode, containerRef }: ScreenshotSelectorProps) => {
+    const { t } = useI18n('workbench');
     const [isCapturing, setIsCapturing] = useState(false);
     const [selectionStart, setSelectionStart] = useState<{ x: number; y: number } | null>(null);
     const [selectionEnd, setSelectionEnd] = useState<{ x: number; y: number } | null>(null);
@@ -84,7 +86,7 @@ export const ScreenshotSelector = memo(
         } catch (error) {
           console.error('Failed to initialize stream:', error);
           setIsSelectionMode(false);
-          toast.error('Failed to initialize screen capture');
+          toast.error(t('screenshot.failedToInitialize'));
         }
       }
 
@@ -193,16 +195,16 @@ export const ScreenshotSelector = memo(
               const file = new File([blob], 'screenshot.png', { type: 'image/png' });
               setUploadedFiles([...uploadedFiles, file]);
               setImageDataList([...imageDataList, base64Image]);
-              toast.success('Screenshot captured and added to chat');
+              toast.success(t('screenshot.capturedSuccess'));
             } else {
-              toast.error('Could not add screenshot to chat');
+              toast.error(t('screenshot.couldNotAdd'));
             }
           }
         };
         reader.readAsDataURL(blob);
       } catch (error) {
         console.error('Failed to capture screenshot:', error);
-        toast.error('Failed to capture screenshot');
+        toast.error(t('screenshot.failedToCapture'));
 
         if (mediaStreamRef.current) {
           mediaStreamRef.current.getTracks().forEach((track) => track.stop());

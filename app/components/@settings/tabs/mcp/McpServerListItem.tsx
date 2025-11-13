@@ -1,4 +1,5 @@
 import type { Tool } from 'ai';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 type ParameterProperty = {
   type?: string;
@@ -18,6 +19,8 @@ type McpToolProps = {
 };
 
 export default function McpServerListItem({ toolName, toolSchema }: McpToolProps) {
+  const { t } = useI18n('settings');
+
   if (!toolSchema) {
     return null;
   }
@@ -32,11 +35,11 @@ export default function McpServerListItem({ toolName, toolSchema }: McpToolProps
           {toolName}
         </h3>
 
-        <p className="text-bolt-elements-textSecondary">{toolSchema.description || 'No description available'}</p>
+        <p className="text-bolt-elements-textSecondary">{toolSchema.description || t('mcp.server.noDescription')}</p>
 
         {Object.keys(parameters).length > 0 && (
           <div className="mt-2.5">
-            <h4 className="text-bolt-elements-textSecondary font-semibold mb-1.5">Parameters:</h4>
+            <h4 className="text-bolt-elements-textSecondary font-semibold mb-1.5">{t('mcp.server.parameters')}:</h4>
             <ul className="ml-1 space-y-2">
               {Object.entries(parameters).map(([paramName, paramDetails]) => (
                 <li key={paramName} className="break-words">

@@ -4,6 +4,7 @@ import { classNames } from '~/utils/classNames';
 import { supabaseConnection } from '~/lib/stores/supabase';
 import { useStore } from '@nanostores/react';
 import { useState } from 'react';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface Props {
   alert: SupabaseAlert;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export function SupabaseChatAlert({ alert, clearAlert, postMessage }: Props) {
+  const { t } = useI18n('chat');
   const { content } = alert;
   const connection = useStore(supabaseConnection);
   const [isExecuting, setIsExecuting] = useState(false);
@@ -21,11 +23,9 @@ export function SupabaseChatAlert({ alert, clearAlert, postMessage }: Props) {
   const isConnected = !!(connection.token && connection.selectedProjectId);
 
   // Set title and description based on connection state
-  const title = isConnected ? 'Supabase Query' : 'Supabase Connection Required';
-  const description = isConnected ? 'Execute database query' : 'Supabase connection required';
-  const message = isConnected
-    ? 'Please review the proposed changes and apply them to your database.'
-    : 'Please connect to Supabase to continue with this operation.';
+  const title = isConnected ? t('supabase.title') : t('supabase.connectionRequired');
+  const description = isConnected ? t('supabase.executeQuery') : t('supabase.connectionRequired');
+  const message = isConnected ? t('supabase.reviewChanges') : t('supabase.connectToSupabase');
 
   const handleConnectClick = () => {
     // Dispatch an event to open the Supabase connection dialog
@@ -67,7 +67,7 @@ export function SupabaseChatAlert({ alert, clearAlert, postMessage }: Props) {
     } catch (error) {
       console.error('Failed to execute Supabase action:', error);
       postMessage(
-        `*Error executing Supabase query please fix and return the query again*\n\`\`\`\n${error instanceof Error ? error.message : String(error)}\n\`\`\`\n`,
+        `*${t('supabase.error')}*\n\`\`\`\n${error instanceof Error ? error.message : String(error)}\n\`\`\`\n`,
       );
     } finally {
       setIsExecuting(false);
@@ -113,9 +113,7 @@ export function SupabaseChatAlert({ alert, clearAlert, postMessage }: Props) {
         <div className="px-4">
           {!isConnected ? (
             <div className="p-3 rounded-md bg-bolt-elements-background-depth-3">
-              <span className="text-sm text-bolt-elements-textPrimary">
-                You must first connect to Supabase and select a project.
-              </span>
+              <span className="text-sm text-bolt-elements-textPrimary">{t('supabase.mustConnect')}</span>
             </div>
           ) : (
             <>
@@ -125,7 +123,7 @@ export function SupabaseChatAlert({ alert, clearAlert, postMessage }: Props) {
               >
                 <div className="i-ph:database text-bolt-elements-textPrimary mr-2"></div>
                 <span className="text-sm text-bolt-elements-textPrimary flex-grow">
-                  {description || 'Create table and setup auth'}
+                  {description || t('supabase.defaultDescription')}
                 </span>
                 <div
                   className={`i-ph:caret-up text-bolt-elements-textPrimary transition-transform ${isCollapsed ? 'rotate-180' : ''}`}
@@ -158,7 +156,7 @@ export function SupabaseChatAlert({ alert, clearAlert, postMessage }: Props) {
                   'flex items-center gap-1.5',
                 )}
               >
-                Connect to Supabase
+                {t('supabase.connectButton')}
               </button>
             ) : (
               <button
@@ -174,7 +172,7 @@ export function SupabaseChatAlert({ alert, clearAlert, postMessage }: Props) {
                   isExecuting ? 'opacity-70 cursor-not-allowed' : '',
                 )}
               >
-                {isExecuting ? 'Applying...' : 'Apply Changes'}
+                {isExecuting ? t('supabase.applying') : t('supabase.applyChanges')}
               </button>
             )}
             <button
@@ -189,7 +187,7 @@ export function SupabaseChatAlert({ alert, clearAlert, postMessage }: Props) {
                 isExecuting ? 'opacity-70 cursor-not-allowed' : '',
               )}
             >
-              Dismiss
+              {t('supabase.dismiss')}
             </button>
           </div>
         </div>

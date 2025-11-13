@@ -1,5 +1,6 @@
 import { memo, useEffect, useRef } from 'react';
 import type { PreviewInfo } from '~/lib/stores/previews';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface PortDropdownProps {
   activePreviewIndex: number;
@@ -19,6 +20,7 @@ export const PortDropdown = memo(
     setHasSelectedPreview,
     previews,
   }: PortDropdownProps) => {
+    const { t } = useI18n('workbench');
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     // sort previews, preserving original index
@@ -60,7 +62,7 @@ export const PortDropdown = memo(
         {isDropdownOpen && (
           <div className="absolute left-0 mt-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor rounded shadow-sm min-w-[140px] dropdown-animation">
             <div className="px-4 py-2 border-b border-bolt-elements-borderColor text-sm font-semibold text-bolt-elements-textPrimary">
-              Ports
+              {t('portDropdown.title')}
             </div>
             {sortedPreviews.map((preview) => (
               <div

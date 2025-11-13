@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import type { ActionAlert } from '~/types/actions';
 import { classNames } from '~/utils/classNames';
+import { useI18n } from '~/i18n/hooks/useI18n';
 
 interface Props {
   alert: ActionAlert;
@@ -9,13 +10,12 @@ interface Props {
 }
 
 export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
+  const { t } = useI18n('chat');
   const { description, content, source } = alert;
 
   const isPreview = source === 'preview';
-  const title = isPreview ? 'Preview Error' : 'Terminal Error';
-  const message = isPreview
-    ? 'We encountered an error while running the preview. Would you like Bolt to analyze and help resolve this issue?'
-    : 'We encountered an error while running terminal commands. Would you like Bolt to analyze and help resolve this issue?';
+  const title = isPreview ? t('alert.previewError') : t('alert.terminalError');
+  const message = isPreview ? t('alert.previewErrorMessage') : t('alert.terminalErrorMessage');
 
   return (
     <AnimatePresence>
@@ -55,7 +55,7 @@ export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
               <p>{message}</p>
               {description && (
                 <div className="text-xs text-bolt-elements-textSecondary p-2 bg-bolt-elements-background-depth-3 rounded mt-4 mb-4">
-                  Error: {description}
+                  {t('alert.errorLabel')} {description}
                 </div>
               )}
             </motion.div>
@@ -84,7 +84,7 @@ export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
                   )}
                 >
                   <div className="i-ph:chat-circle-duotone"></div>
-                  Ask Bolt
+                  {t('alert.askBolt')}
                 </button>
                 <button
                   onClick={clearAlert}
@@ -96,7 +96,7 @@ export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
                     'text-bolt-elements-button-secondary-text',
                   )}
                 >
-                  Dismiss
+                  {t('alert.dismiss')}
                 </button>
               </div>
             </motion.div>
