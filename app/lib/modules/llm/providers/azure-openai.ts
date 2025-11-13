@@ -310,13 +310,43 @@ export default class AzureOpenAIProvider extends BaseProvider {
       }
 
       /*
-       * Azure OpenAI doesn't have a models listing endpoint like OpenAI
-       * Users should create deployments in Azure Portal and use deployment names
-       * Return empty array as dynamic models are deployment-specific
+       * Azure AI Foundry: 使用 /openai/models API 獲取已部署的模型
+       * API 路徑: {baseUrl}/models?api-version=2024-10-21
        */
-      return [];
+      const modelsUrl = `${baseUrl}/models?api-version=2024-10-21`;
+
+      const response = await fetch(modelsUrl, {
+        headers: {
+          'api-key': apiKey,
+        },
+      });
+
+      if (!response.ok) {
+        console.warn(`Azure AI Foundry models API 失敗: ${response.status} ${response.statusText}`);
+        return [];
+      }
+
+      const data = await response.json();
+
+      if (!data.data || !Array.isArray(data.data)) {
+        console.warn('Azure AI Foundry models API 回應格式異常');
+        return [];
+      }
+
+      // 將 Azure 回傳的模型轉換為我們的 ModelInfo 格式
+      const dynamicModels: ModelInfo[] = data.data.map((model: any) => ({
+        name: model.id,
+        label: model.id,
+        provider: 'AzureOpenAI',
+        maxTokenAllowed: model.context_length || 128000,
+        maxCompletionTokens: model.max_output_tokens || 8192,
+      }));
+
+      console.log(`✅ 從 Azure AI Foundry 動態獲取 ${dynamicModels.length} 個已部署模型`);
+
+      return dynamicModels;
     } catch (error) {
-      console.error('Error fetching Azure OpenAI models:', error);
+      console.error('獲取 Azure AI Foundry 模型時發生錯誤:', error);
       return [];
     }
   }
