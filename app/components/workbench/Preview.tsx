@@ -1021,8 +1021,29 @@ export const Preview = memo(({ setSelectedElement }: PreviewProps) => {
               />
             </>
           ) : (
-            <div className="flex w-full h-full justify-center items-center bg-bolt-elements-background-depth-1 text-bolt-elements-textPrimary">
-              {t('preview.noPreview')}
+            <div className="flex flex-col w-full h-full justify-center items-center bg-bolt-elements-background-depth-1 text-bolt-elements-textPrimary p-8 gap-4">
+              <div className="i-ph:browsers text-6xl text-bolt-elements-textTertiary opacity-50" />
+              <div className="text-xl font-semibold">{t('preview.noPreview')}</div>
+              <div className="text-sm text-bolt-elements-textSecondary text-center max-w-md">
+                <p className="mb-2">預覽需要應用程式在 WebContainer 中運行。</p>
+                <p className="mb-4">請確認：</p>
+                <ul className="text-left list-disc list-inside space-y-1">
+                  <li>應用程式是否已成功創建檔案</li>
+                  <li>開發伺服器是否已啟動（檢查終端機輸出）</li>
+                  <li>是否有錯誤訊息或警告</li>
+                </ul>
+              </div>
+              <div className="text-xs text-bolt-elements-textTertiary mt-2">
+                提示：打開瀏覽器控制台查看 [Preview] 日誌以獲取更多資訊
+              </div>
+              {/* 調試資訊 */}
+              {import.meta.env.DEV && (
+                <div className="text-xs text-bolt-elements-textTertiary mt-4 p-3 bg-bolt-elements-background-depth-3 rounded border border-bolt-elements-borderColor max-w-md">
+                  <div className="font-semibold mb-2">調試資訊：</div>
+                  <div>可用預覽數量: {previews.length}</div>
+                  <div>當前預覽索引: {activePreviewIndex}</div>
+                </div>
+              )}
             </div>
           )}
 

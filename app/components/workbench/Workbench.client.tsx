@@ -20,6 +20,7 @@ import { cubicEasingFn } from '~/utils/easings';
 import { renderLogger } from '~/utils/logger';
 import { EditorPanel } from './EditorPanel';
 import { Preview } from './Preview';
+import { PreviewDiagnostics } from './PreviewDiagnostics';
 import useViewport from '~/lib/hooks';
 
 import { usePreviewStore } from '~/lib/stores/previews';
@@ -514,6 +515,8 @@ export const Workbench = memo(
               </div>
             </div>
           </div>
+          {/* 預覽診斷工具 */}
+          {import.meta.env.DEV && showWorkbench && <PreviewDiagnostics />}
         </motion.div>
       )
     );

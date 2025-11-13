@@ -18,7 +18,7 @@ export class StreamRecoveryManager {
   constructor(private _options: StreamRecoveryOptions = {}) {
     this._options = {
       maxRetries: 3,
-      timeout: 30000, // 30 seconds default
+      timeout: 180000, // 180 seconds (3 minutes) default - Azure OpenAI recommended timeout
       ..._options,
     };
   }

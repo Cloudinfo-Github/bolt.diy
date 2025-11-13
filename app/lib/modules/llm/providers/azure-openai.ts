@@ -45,8 +45,9 @@ export default class AzureOpenAIProvider extends BaseProvider {
 
   staticModels: ModelInfo[] = [
     /*
-     * ✅ Azure AI Foundry 部署的模型
+     * ✅ Azure AI Foundry 實際部署的模型
      * 最後更新：2025-11-13
+     * 說明：只包含用戶實際部署在 Azure AI Foundry 專案中的 11 個模型
      */
 
     // ==================== DeepSeek 系列 ====================
@@ -64,188 +65,45 @@ export default class AzureOpenAIProvider extends BaseProvider {
       maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
     },
-    {
-      name: 'DeepSeek-V3.1',
-      label: 'DeepSeek-V3.1',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 8192,
-    },
 
-    // ==================== GPT-5 系列 ====================
+    // ==================== GPT-4.1 ====================
     {
-      name: 'gpt-5-2025-08-07',
-      label: 'GPT-5 (2025-08-07)',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
-    },
-    {
-      name: 'gpt-5-chat-2025-10-03',
-      label: 'GPT-5 Chat (Latest)',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
-    },
-    {
-      name: 'gpt-5-mini-2025-08-07',
-      label: 'GPT-5 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 64000,
-    },
-
-    // ==================== GPT-4.1 系列 ====================
-    {
-      name: 'gpt-4.1-2025-04-14',
-      label: 'GPT-4.1 (2025-04-14)',
+      name: 'gpt-4.1',
+      label: 'GPT-4.1',
       provider: 'AzureOpenAI',
       maxTokenAllowed: 1048576,
       maxCompletionTokens: 32768,
-    },
-    {
-      name: 'gpt-4.1-mini-2025-04-14',
-      label: 'GPT-4.1 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 1048576,
-      maxCompletionTokens: 32768,
-    },
-    {
-      name: 'gpt-4.1-nano-2025-04-14',
-      label: 'GPT-4.1 Nano',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 524288,
-      maxCompletionTokens: 16384,
-    },
-
-    // ==================== GPT-4.5 系列 ====================
-    {
-      name: 'gpt-4.5-preview-2025-02-27',
-      label: 'GPT-4.5 Preview',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 300000,
-      maxCompletionTokens: 96000,
     },
 
     // ==================== GPT-4o 系列 ====================
     {
-      name: 'gpt-4o-2024-11-20',
-      label: 'GPT-4o (Latest)',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 16384,
-    },
-    {
-      name: 'gpt-4o-2024-08-06',
-      label: 'GPT-4o (2024-08-06)',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 16384,
-    },
-    {
-      name: 'gpt-4o-mini-2024-07-18',
-      label: 'GPT-4o Mini',
+      name: 'gpt-4o-realtime-preview',
+      label: 'GPT-4o Realtime Preview',
       provider: 'AzureOpenAI',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 16384,
     },
 
-    // ==================== O 系列 (推理模型) ====================
+    // ==================== GPT-5 系列 ====================
     {
-      name: 'o1-2024-12-17',
-      label: 'O1 (2024-12-17)',
+      name: 'gpt-5',
+      label: 'GPT-5',
       provider: 'AzureOpenAI',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 100000,
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
     },
     {
-      name: 'o1-mini-2024-09-12',
-      label: 'O1 Mini',
+      name: 'gpt-5-codex',
+      label: 'GPT-5 Codex',
       provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 65000,
-    },
-    {
-      name: 'o3-2025-04-16',
-      label: 'O3 (2025-04-16)',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 100000,
-    },
-    {
-      name: 'o3-mini-2025-01-31',
-      label: 'O3 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 65000,
-    },
-    {
-      name: 'o4-mini-2025-04-16',
-      label: 'O4 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 150000,
-      maxCompletionTokens: 75000,
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
     },
 
-    // ==================== Llama 系列 ====================
+    // ==================== 圖像生成模型 ====================
     {
-      name: 'Llama-3.3-70B-Instruct',
-      label: 'Llama 3.3 70B',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'Meta-Llama-3.1-405B-Instruct',
-      label: 'Llama 3.1 405B',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'Meta-Llama-3.1-70B-Instruct',
-      label: 'Llama 3.1 70B',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 8192,
-    },
-
-    // ==================== Mistral 系列 ====================
-    {
-      name: 'Mistral-Large-2411-2',
-      label: 'Mistral Large',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'mistral-small-2503',
-      label: 'Mistral Small',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 32000,
-      maxCompletionTokens: 8192,
-    },
-
-    // ==================== Phi 系列 (Microsoft) ====================
-    {
-      name: 'Phi-4',
-      label: 'Phi-4',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 16384,
-      maxCompletionTokens: 4096,
-    },
-    {
-      name: 'Phi-3.5-mini-instruct',
-      label: 'Phi-3.5 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4096,
-    },
-
-    // ==================== Cohere 系列 ====================
-    {
-      name: 'Cohere-command-r-plus-08-2024',
-      label: 'Command R+',
+      name: 'gpt-image-1',
+      label: 'GPT Image 1',
       provider: 'AzureOpenAI',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 4096,
@@ -259,96 +117,52 @@ export default class AzureOpenAIProvider extends BaseProvider {
       maxTokenAllowed: 128000,
       maxCompletionTokens: 32768,
     },
+
+    // ==================== O3 系列 (推理模型) ====================
     {
-      name: 'grok-4-fast-non-reasoning',
-      label: 'Grok-4 Fast',
+      name: 'o3-mini',
+      label: 'O3 Mini',
       provider: 'AzureOpenAI',
       maxTokenAllowed: 128000,
-      maxCompletionTokens: 32768,
-    },
-    {
-      name: 'grok-3',
-      label: 'Grok-3',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 32768,
-    },
-    {
-      name: 'grok-3-mini',
-      label: 'Grok-3 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 16384,
+      maxCompletionTokens: 65000,
     },
 
-    // ==================== MAI (Microsoft AI) ====================
+    // ==================== Sora 系列 (視頻生成) ====================
     {
-      name: 'MAI-DS-R1',
-      label: 'MAI-DS-R1 (Microsoft AI)',
+      name: 'sora',
+      label: 'Sora',
       provider: 'AzureOpenAI',
       maxTokenAllowed: 128000,
-      maxCompletionTokens: 8192,
+      maxCompletionTokens: 4096,
+    },
+    {
+      name: 'sora-2',
+      label: 'Sora 2',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 4096,
     },
   ];
 
   async getDynamicModels(
-    apiKeys?: Record<string, string>,
-    settings?: IProviderSetting,
-    serverEnv?: Record<string, string>,
+    _apiKeys?: Record<string, string>,
+    _settings?: IProviderSetting,
+    _serverEnv?: Record<string, string>,
   ): Promise<ModelInfo[]> {
-    try {
-      const { apiKey, baseUrl } = this.getProviderBaseUrlAndKey({
-        apiKeys,
-        providerSettings: settings,
-        serverEnv: serverEnv as any,
-        defaultBaseUrlKey: 'AZURE_OPENAI_ENDPOINT',
-        defaultApiTokenKey: 'AZURE_OPENAI_API_KEY',
-      });
-
-      if (!apiKey || !baseUrl) {
-        return [];
-      }
-
-      /*
-       * Azure AI Foundry: 使用 /openai/models API 獲取已部署的模型
-       * API 路徑: {baseUrl}/models?api-version=2024-10-21
-       */
-      const modelsUrl = `${baseUrl}/models?api-version=2024-10-21`;
-
-      const response = await fetch(modelsUrl, {
-        headers: {
-          'api-key': apiKey,
-        },
-      });
-
-      if (!response.ok) {
-        console.warn(`Azure AI Foundry models API 失敗: ${response.status} ${response.statusText}`);
-        return [];
-      }
-
-      const data = await response.json();
-
-      if (!data.data || !Array.isArray(data.data)) {
-        console.warn('Azure AI Foundry models API 回應格式異常');
-        return [];
-      }
-
-      // 將 Azure 回傳的模型轉換為我們的 ModelInfo 格式
-      const dynamicModels: ModelInfo[] = data.data.map((model: any) => ({
-        name: model.id,
-        label: model.id,
-        provider: 'AzureOpenAI',
-        maxTokenAllowed: model.context_length || 128000,
-        maxCompletionTokens: model.max_output_tokens || 8192,
-      }));
-
-      console.log(`✅ 從 Azure AI Foundry 動態獲取 ${dynamicModels.length} 個已部署模型`);
-
-      return dynamicModels;
-    } catch (error) {
-      console.error('獲取 Azure AI Foundry 模型時發生錯誤:', error);
-      return [];
-    }
+    /*
+     * 🔍 Azure AI Foundry 動態模型獲取功能已禁用
+     *
+     * 原因：
+     * 1. 專案特定的部署 API (/api/projects/_project/deployments) 需要 OAuth2 認證，API Key 無法使用
+     * 2. 全局模型 API (/openai/models) 會返回所有 237 個可用模型，而不是專案實際部署的模型
+     * 3. 這是 bolt.diy 社群的主流做法 - 使用靜態模型列表
+     *
+     * 解決方案：
+     * 請在上方的 staticModels 陣列中維護實際部署的模型列表
+     * 當您在 Azure AI Foundry 中添加或刪除部署時，請手動更新 staticModels 陣列
+     */
+    console.log('[AzureOpenAI] 使用靜態模型列表（動態獲取已禁用）');
+    return [];
   }
 
   /**

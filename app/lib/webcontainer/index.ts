@@ -23,6 +23,7 @@ if (!import.meta.env.SSR) {
     import.meta.hot?.data.webcontainer ??
     Promise.resolve()
       .then(() => {
+        console.log('[WebContainer] 🚀 開始啟動 WebContainer...');
         return WebContainer.boot({
           coep: 'credentialless',
           workdirName: WORK_DIR_NAME,
@@ -30,6 +31,7 @@ if (!import.meta.env.SSR) {
         });
       })
       .then(async (webcontainer) => {
+        console.log('[WebContainer] ✅ WebContainer 啟動成功');
         webcontainerContext.loaded = true;
 
         const { workbenchStore } = await import('~/lib/stores/workbench');
@@ -37,10 +39,21 @@ if (!import.meta.env.SSR) {
         const response = await fetch('/inspector-script.js');
         const inspectorScript = await response.text();
         await webcontainer.setPreviewScript(inspectorScript);
+        console.log('[WebContainer] 📜 預覽腳本已設置');
+
+        // Listen for server-ready events
+        webcontainer.on('server-ready', (port, url) => {
+          console.log(`[WebContainer] 🌐 伺服器就緒 - Port: ${port}, URL: ${url}`);
+        });
+
+        // Listen for port events with detailed logging
+        webcontainer.on('port', (port, type, url) => {
+          console.log(`[WebContainer] 🔌 端口事件 - Port: ${port}, Type: ${type}, URL: ${url}`);
+        });
 
         // Listen for preview errors
         webcontainer.on('preview-message', (message) => {
-          console.log('WebContainer preview message:', message);
+          console.log('[WebContainer] 📨 預覽訊息:', message);
 
           // Handle both uncaught exceptions and unhandled promise rejections
           if (message.type === 'PREVIEW_UNCAUGHT_EXCEPTION' || message.type === 'PREVIEW_UNHANDLED_REJECTION') {
@@ -56,7 +69,13 @@ if (!import.meta.env.SSR) {
           }
         });
 
+        console.log('[WebContainer] 🎧 事件監聽器已設置');
+
         return webcontainer;
+      })
+      .catch((error) => {
+        console.error('[WebContainer] ❌ 初始化失敗:', error);
+        throw error;
       });
 
   if (import.meta.hot) {
