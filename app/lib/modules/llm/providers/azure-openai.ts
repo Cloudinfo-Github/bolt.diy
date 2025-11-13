@@ -58,6 +58,13 @@ export default class AzureOpenAIProvider extends BaseProvider {
       maxCompletionTokens: 8192,
     },
     {
+      name: 'DeepSeek-R1-0528',
+      label: 'DeepSeek-R1-0528 🔥⚡',
+      provider: 'AzureOpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+    {
       name: 'DeepSeek-V3.1',
       label: 'DeepSeek-V3.1',
       provider: 'AzureOpenAI',
