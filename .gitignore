@@ -51,3 +51,9 @@ docs/instructions/Roadmap.md
 mcp-*-test.json
 nul
 uvx.bat
+
+# Temporary files and editor artifacts
+_ul
+_*_temp
+*.tmp
+*~
