@@ -2,7 +2,7 @@
   "title": "工作台",
   "previewLabel": "預覽",
   "code": "程式碼",
-  "diff": "差異",
+  "diffLabel": "差異",
   "editor": "編輯器",
   "terminal": "終端機",
   "files": "檔案",

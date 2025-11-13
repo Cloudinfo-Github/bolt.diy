@@ -246,9 +246,11 @@ export async function streamText(props: {
    */
   const boltInternalParams = ['supabaseConnection'];
 
-  // 2. Parameters not supported by reasoning models (o1, GPT-5)
+  /*
+   * 2. Parameters not supported by reasoning models (o1, GPT-5, DeepSeek-R1, Grok reasoning)
+   * Note: temperature is allowed but will be overridden to 1
+   */
   const reasoningUnsupportedParams = [
-    'temperature',
     'topP',
     'presencePenalty',
     'frequencyPenalty',
@@ -256,6 +258,8 @@ export async function streamText(props: {
     'topLogprobs',
     'logitBias',
     'maxSteps', // Responses API uses 'stopWhen' instead of 'maxSteps'
+    'tools', // Reasoning models do not support tools
+    'toolChoice', // Reasoning models do not support toolChoice
   ];
 
   const filteredOptions = options
@@ -286,19 +290,24 @@ export async function streamText(props: {
   // 建立可用的工具陣列
   const tools: Record<string, any> = {};
 
-  // 加入 Tavily 網路搜尋工具（如果啟用且有 API key）
-  if (webSearchEnabled !== false) {
-    // webSearchEnabled 預設為 true（undefined 視為 true），除非明確設為 false
-    const webSearchTool = createWebSearchTool(serverEnv);
+  // 推理模型不支援 tools，完全跳過工具配置
+  if (!isReasoning) {
+    // 加入 Tavily 網路搜尋工具（如果啟用且有 API key）
+    if (webSearchEnabled !== false) {
+      // webSearchEnabled 預設為 true（undefined 視為 true），除非明確設為 false
+      const webSearchTool = createWebSearchTool(serverEnv);
 
-    if (webSearchTool) {
-      tools.webSearch = webSearchTool;
-      logger.info('Tavily 網路搜尋工具已啟用');
+      if (webSearchTool) {
+        tools.webSearch = webSearchTool;
+        logger.info('Tavily 網路搜尋工具已啟用');
+      } else {
+        logger.info('Tavily 網路搜尋工具未啟用（未找到 TAVILY_API_KEY）');
+      }
     } else {
-      logger.info('Tavily 網路搜尋工具未啟用（未找到 TAVILY_API_KEY）');
+      logger.info('Tavily 網路搜尋工具已停用（使用者設定）');
     }
   } else {
-    logger.info('Tavily 網路搜尋工具已停用（使用者設定）');
+    logger.info(`推理模型 "${modelDetails.name}" 不支援 tools，已跳過工具配置`);
   }
 
   const streamParams = {

@@ -298,7 +298,7 @@ export const Workbench = memo(
         },
         middle: {
           value: 'diff',
-          text: t('diff'),
+          text: t('diffLabel'),
         },
         right: {
           value: 'preview',

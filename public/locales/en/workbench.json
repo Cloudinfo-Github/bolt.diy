@@ -2,7 +2,7 @@
   "title": "Workbench",
   "previewLabel": "Preview",
   "code": "Code",
-  "diff": "Diff",
+  "diffLabel": "Diff",
   "editor": "Editor",
   "terminal": "Terminal",
   "files": "Files",
