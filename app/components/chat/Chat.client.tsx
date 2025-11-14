@@ -32,6 +32,33 @@ import { webSearchEnabledStore } from '~/lib/stores/settings';
 
 const logger = createScopedLogger('Chat');
 
+type TextPartLike = { type: 'text'; text: string };
+
+const isTextPart = (part: unknown): part is TextPartLike => {
+  if (typeof part !== 'object' || part === null) {
+    return false;
+  }
+
+  const candidate = part as Record<string, unknown>;
+
+  return candidate.type === 'text' && typeof candidate.text === 'string';
+};
+
+const getMessageText = (message: Message) => {
+  if (typeof message.content === 'string') {
+    return message.content;
+  }
+
+  const maybeParts = message.content as unknown;
+
+  if (Array.isArray(maybeParts)) {
+    const textPart = (maybeParts as unknown[]).find(isTextPart);
+    return textPart?.text ?? '';
+  }
+
+  return '';
+};
+
 export function Chat() {
   renderLogger.trace('Chat');
 
@@ -629,9 +656,11 @@ export const ChatImpl = memo(
             return message;
           }
 
+          const fallbackContent = getMessageText(message);
+
           return {
             ...message,
-            content: parsedMessages[i] || '',
+            content: parsedMessages[i] ?? fallbackContent,
           };
         })}
         enhancePrompt={() => {

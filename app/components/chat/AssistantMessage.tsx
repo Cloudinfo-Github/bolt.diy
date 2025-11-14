@@ -111,7 +111,11 @@ export const AssistantMessage = memo(
      * Azure/OpenAI 不會在流中發送 reasoning parts，但會在 onFinish 中提供 reasoningSummary
      */
     const reasoningAnnotation = filteredAnnotations.find((annotation) => annotation.type === 'reasoning');
-    let reasoningSummary = reasoningAnnotation?.value as string | undefined;
+    let reasoningSummary: string | undefined;
+
+    if (reasoningAnnotation && typeof reasoningAnnotation.value === 'string') {
+      reasoningSummary = reasoningAnnotation.value;
+    }
 
     // 備用方案：仍然檢查 parts 中的 reasoning（某些模型可能支持）
     const reasoningParts = parts?.filter((part) => part.type === 'reasoning') as ReasoningUIPart[] | undefined;
@@ -134,12 +138,7 @@ export const AssistantMessage = memo(
       // 檢查是否完全匹配無意義模式
       const isMeaningless = meaninglessPatterns.some((pattern) => pattern.test(trimmedSummary));
 
-      // 只在完全無意義或太短（< 20 字符）時才隱藏
-      if (isMeaningless || trimmedSummary.length < 20) {
-        reasoningSummary = undefined;
-      }
-
-      // 否則保留原始內容（即使包含英文）
+      reasoningSummary = isMeaningless ? undefined : trimmedSummary;
     }
 
     // 最終判斷：有 annotation 或有 parts

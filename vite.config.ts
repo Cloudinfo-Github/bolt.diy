@@ -73,6 +73,7 @@ export default defineConfig((config) => {
       },
     },
     test: {
+      environment: 'jsdom',
       exclude: [
         '**/node_modules/**',
         '**/dist/**',

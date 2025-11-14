@@ -7,7 +7,12 @@ import SwitchableStream from '~/lib/.server/llm/switchable-stream';
 import type { IProviderSetting } from '~/types/model';
 import { createScopedLogger } from '~/utils/logger';
 import { getFilePaths } from '~/lib/.server/llm/select-context';
-import type { ProgressAnnotation } from '~/types/context';
+import {
+  REASONING_ANNOTATION_TYPE,
+  USAGE_ANNOTATION_TYPE,
+  type ProgressAnnotation,
+  type ReasoningAnnotation,
+} from '~/types/context';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 import type { DesignScheme } from '~/types/design-scheme';
 import { MCPService } from '~/lib/services/mcpService';
@@ -267,11 +272,19 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
                 logger.info('[Reasoning] ✅ Reasoning content found, length:', finalReasoningContent.length);
                 logger.debug('[Reasoning] Content preview:', finalReasoningContent.substring(0, 200));
 
-                // 發送 reasoning 內容作為自定義註解
-                dataStream.writeMessageAnnotation({
-                  type: 'reasoning',
-                  value: finalReasoningContent,
-                });
+                // 發送 reasoning 內容作為自定義註解（統一格式）
+                const reasoningAnnotation: ReasoningAnnotation = {
+                  type: REASONING_ANNOTATION_TYPE,
+                  summary: finalReasoningContent,
+                  provider: experimental_providerMetadata?.azure
+                    ? 'azure'
+                    : experimental_providerMetadata?.openai
+                      ? 'openai'
+                      : undefined,
+                  model: response?.modelId,
+                };
+
+                dataStream.writeMessageAnnotation(reasoningAnnotation);
 
                 logger.info('[Reasoning] ✅ Reasoning annotation sent to frontend');
               } else {
@@ -307,7 +320,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
             if (finishReason !== 'length') {
               dataStream.writeMessageAnnotation({
-                type: 'usage',
+                type: USAGE_ANNOTATION_TYPE,
                 value: {
                   completionTokens: cumulativeUsage.completionTokens,
                   promptTokens: cumulativeUsage.promptTokens,
