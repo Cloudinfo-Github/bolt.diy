@@ -221,8 +221,16 @@ export default class AzureOpenAIProvider extends BaseProvider {
     if (baseUrl && this._isAzureAIFoundry(baseUrl)) {
       const requiresResponsesAPI = this._requiresResponsesAPI(model);
 
+      // Normalize base URL: ensure it ends with /v1
+      let normalizedBaseUrl = baseUrl.trim().replace(/\/+$/, ''); // Remove trailing slashes
+
+      if (!normalizedBaseUrl.endsWith('/v1')) {
+        normalizedBaseUrl = `${normalizedBaseUrl}/v1`;
+      }
+
       console.log('[AzureOpenAI] ====== Detected Azure AI Foundry endpoint ======');
-      console.log('[AzureOpenAI] Base URL:', baseUrl);
+      console.log('[AzureOpenAI] Original Base URL:', baseUrl);
+      console.log('[AzureOpenAI] Normalized Base URL:', normalizedBaseUrl);
       console.log('[AzureOpenAI] Model:', model);
       console.log('[AzureOpenAI] Requires Responses API:', requiresResponsesAPI);
 
@@ -233,7 +241,7 @@ export default class AzureOpenAIProvider extends BaseProvider {
 
       const openai = createOpenAI({
         apiKey,
-        baseURL: baseUrl, // 直接使用完整的 base URL（包含 /openai/v1/）
+        baseURL: normalizedBaseUrl, // 使用規範化後的 base URL（包含 /v1）
         headers: {
           'api-key': apiKey, // Azure AI Foundry 使用 api-key header
         },
