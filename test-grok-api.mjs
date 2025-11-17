@@ -6,9 +6,11 @@ config({ path: '.env.local' });
 
 const AZURE_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT;
 const AZURE_API_KEY = process.env.AZURE_OPENAI_API_KEY;
+const MODEL_NAME = process.env.TEST_GROK_MODEL || 'grok-4-fast-reasoning';
 
-console.log('🔍 測試 Azure AI Foundry grok-4-fast-reasoning API');
+console.log('🔍 測試 Azure AI Foundry grok 模型 API');
 console.log('📋 Endpoint:', AZURE_ENDPOINT);
+console.log('🧠 Model:', MODEL_NAME);
 console.log('🔑 API Key:', AZURE_API_KEY ? `${AZURE_API_KEY.substring(0, 8)}...` : 'Missing!');
 console.log('');
 
@@ -17,10 +19,11 @@ if (!AZURE_ENDPOINT || !AZURE_API_KEY) {
   process.exit(1);
 }
 
-const url = `${AZURE_ENDPOINT}/chat/completions`;
+const sanitizedEndpoint = AZURE_ENDPOINT.replace(/\/$/, '');
+const url = `${sanitizedEndpoint}/chat/completions`;
 
 const requestBody = {
-  model: 'grok-2-latest',  // 改用非 reasoning 模型測試
+  model: MODEL_NAME,
   messages: [
     {
       role: 'user',
@@ -29,7 +32,7 @@ const requestBody = {
   ],
   stream: true,
   temperature: 1,
-  max_completion_tokens: 100
+  max_completion_tokens: MODEL_NAME.includes('reasoning') ? 4096 : 200
 };
 
 console.log('📤 發送請求...');

@@ -3,7 +3,6 @@ import { createDataStream, generateId } from 'ai';
 import { MAX_RESPONSE_SEGMENTS, MAX_TOKENS, isReasoningModel, type FileMap } from '~/lib/.server/llm/constants';
 import { CONTINUE_PROMPT } from '~/lib/common/prompts/prompts';
 import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/llm/stream-text';
-import SwitchableStream from '~/lib/.server/llm/switchable-stream';
 import type { IProviderSetting } from '~/types/model';
 import { createScopedLogger } from '~/utils/logger';
 import { getFilePaths } from '~/lib/.server/llm/select-context';
@@ -51,6 +50,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
       logger.warn('Stream timeout - attempting recovery');
     },
   });
+  let responseSegments = 0;
 
   const {
     messages,
@@ -86,8 +86,6 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
   const providerSettings: Record<string, IProviderSetting> = JSON.parse(
     parseCookies(cookieHeader || '').providers || '{}',
   );
-
-  const stream = new SwitchableStream();
 
   const cumulativeUsage = {
     completionTokens: 0,
@@ -334,16 +332,18 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
                 order: progressCounter++,
                 message: 'Response Generated',
               } satisfies ProgressAnnotation);
+              streamRecovery.stop();
               await new Promise((resolve) => setTimeout(resolve, 0));
 
               return;
             }
 
-            if (stream.switches >= MAX_RESPONSE_SEGMENTS) {
+            if (responseSegments >= MAX_RESPONSE_SEGMENTS) {
+              streamRecovery.stop();
               throw Error('Cannot continue message: Maximum segments reached');
             }
 
-            const switchesLeft = MAX_RESPONSE_SEGMENTS - stream.switches;
+            const switchesLeft = MAX_RESPONSE_SEGMENTS - responseSegments;
             logger.info(`Reached max token limit (${MAX_TOKENS}): Continuing message (${switchesLeft} switches left)`);
 
             const lastUserMessage = processedMessages.filter((x) => x.role === 'user').slice(-1)[0];
@@ -354,6 +354,8 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               role: 'user',
               content: `[Model: ${model}]\n\n[Provider: ${provider}]\n\n${CONTINUE_PROMPT}`,
             });
+
+            responseSegments += 1;
 
             const result = await streamText({
               messages: [...processedMessages],
@@ -420,6 +422,8 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         });
       },
       onError: (error: any) => {
+        streamRecovery.stop();
+
         // Provide more specific error messages for common issues
         const errorMessage = error.message || 'Unknown error';
 
@@ -495,6 +499,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
       },
     });
   } catch (error: any) {
+    streamRecovery.stop();
     logger.error(error);
 
     const errorResponse = {
