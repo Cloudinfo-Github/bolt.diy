@@ -16,7 +16,7 @@ import type {
   StepStartUIPart,
 } from '@ai-sdk/ui-utils';
 import { ToolInvocations } from './ToolInvocations';
-import type { ToolCallAnnotation } from '~/types/context';
+import type { ReasoningAnnotation, ToolCallAnnotation } from '~/types/context';
 import ThoughtBox from './ThoughtBox';
 import { useI18n } from '~/i18n/hooks/useI18n';
 
@@ -110,11 +110,23 @@ export const AssistantMessage = memo(
      * 提取推理內容（官方推薦方式：從 annotations 提取，而非從 parts）
      * Azure/OpenAI 不會在流中發送 reasoning parts，但會在 onFinish 中提供 reasoningSummary
      */
-    const reasoningAnnotation = filteredAnnotations.find((annotation) => annotation.type === 'reasoning');
+    const reasoningAnnotation = filteredAnnotations.find(
+      (annotation): annotation is ReasoningAnnotation | (ReasoningAnnotation & { value?: unknown }) =>
+        annotation?.type === 'reasoning',
+    );
     let reasoningSummary: string | undefined;
 
-    if (reasoningAnnotation && typeof reasoningAnnotation.value === 'string') {
-      reasoningSummary = reasoningAnnotation.value;
+    if (reasoningAnnotation) {
+      const summaryFromAnnotation =
+        typeof reasoningAnnotation.summary === 'string'
+          ? reasoningAnnotation.summary
+          : typeof (reasoningAnnotation as { value?: unknown }).value === 'string'
+            ? ((reasoningAnnotation as { value?: string }).value as string)
+            : undefined;
+
+      if (summaryFromAnnotation) {
+        reasoningSummary = summaryFromAnnotation;
+      }
     }
 
     // 備用方案：仍然檢查 parts 中的 reasoning（某些模型可能支持）
@@ -143,14 +155,6 @@ export const AssistantMessage = memo(
 
     // 最終判斷：有 annotation 或有 parts
     const hasReasoning = !!reasoningSummary || hasReasoningParts;
-
-    // DEBUG: 查看前端收到的數據
-    console.log('[AssistantMessage] annotations:', filteredAnnotations);
-    console.log('[AssistantMessage] reasoningAnnotation:', reasoningAnnotation);
-    console.log('[AssistantMessage] reasoningSummary:', reasoningSummary);
-    console.log('[AssistantMessage] parts:', parts);
-    console.log('[AssistantMessage] reasoningParts:', reasoningParts);
-    console.log('[AssistantMessage] hasReasoning:', hasReasoning);
 
     return (
       <div className="overflow-hidden w-full">

@@ -29,6 +29,7 @@ import VercelTab from '~/components/@settings/tabs/vercel/VercelTab';
 import NetlifyTab from '~/components/@settings/tabs/netlify/NetlifyTab';
 import CloudProvidersTab from '~/components/@settings/tabs/providers/cloud/CloudProvidersTab';
 import LocalProvidersTab from '~/components/@settings/tabs/providers/local/LocalProvidersTab';
+import { ModelsTab } from '~/components/@settings/tabs/models/ModelsTab';
 import McpTab from '~/components/@settings/tabs/mcp/McpTab';
 
 interface ControlPanelProps {
@@ -137,6 +138,8 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
         return <FeaturesTab />;
       case 'data':
         return <DataTab />;
+      case 'models':
+        return <ModelsTab />;
       case 'cloud-providers':
         return <CloudProvidersTab />;
       case 'local-providers':

@@ -214,7 +214,16 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
         }
 
         setIsModelLoading('all');
-        fetch('/api/models')
+
+        // 獲取自定義模型並添加到請求頭
+        const customModelsJson = localStorage.getItem('bolt_custom_models');
+        const headers: HeadersInit = {};
+
+        if (customModelsJson) {
+          headers['X-Custom-Models'] = encodeURIComponent(customModelsJson);
+        }
+
+        fetch('/api/models', { headers })
           .then((response) => response.json())
           .then((data) => {
             const typedData = data as { modelList: ModelInfo[] };
@@ -239,7 +248,15 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       let providerModels: ModelInfo[] = [];
 
       try {
-        const response = await fetch(`/api/models/${encodeURIComponent(providerName)}`);
+        // 獲取自定義模型並添加到請求頭
+        const customModelsJson = localStorage.getItem('bolt_custom_models');
+        const headers: HeadersInit = {};
+
+        if (customModelsJson) {
+          headers['X-Custom-Models'] = encodeURIComponent(customModelsJson);
+        }
+
+        const response = await fetch(`/api/models/${encodeURIComponent(providerName)}`, { headers });
         const data = await response.json();
         providerModels = (data as { modelList: ModelInfo[] }).modelList;
       } catch (error) {

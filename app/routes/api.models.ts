@@ -3,6 +3,7 @@ import { LLMManager } from '~/lib/modules/llm/manager';
 import type { ModelInfo } from '~/lib/modules/llm/types';
 import type { ProviderInfo } from '~/types/model';
 import { getApiKeysFromCookie, getProviderSettingsFromCookie } from '~/lib/api/cookies';
+import type { CustomModelConfig } from '~/types/custom-models';
 
 interface ModelsResponse {
   modelList: ModelInfo[];
@@ -80,6 +81,33 @@ export async function loader({
       providerSettings,
       serverEnv: context.cloudflare?.env,
     });
+  }
+
+  // 從 localStorage 獲取自定義模型（通過 cookie 傳遞）
+  const customModelsJson = request.headers.get('X-Custom-Models');
+  let customModels: CustomModelConfig[] = [];
+
+  if (customModelsJson) {
+    try {
+      customModels = JSON.parse(decodeURIComponent(customModelsJson));
+
+      // 將已啟用的自定義模型轉換為 ModelInfo 格式並添加到列表中
+      const enabledCustomModels: ModelInfo[] = customModels
+        .filter((model) => model.enabled)
+        .map((model) => ({
+          name: model.name,
+          label: model.label,
+          provider: model.provider,
+          maxTokenAllowed: model.maxTokenAllowed,
+          maxCompletionTokens: model.maxCompletionTokens,
+          description: model.description,
+        }));
+
+      // 將自定義模型添加到模型列表
+      modelList = [...modelList, ...enabledCustomModels];
+    } catch (error) {
+      console.error('Failed to parse custom models:', error);
+    }
   }
 
   return json<ModelsResponse>({
