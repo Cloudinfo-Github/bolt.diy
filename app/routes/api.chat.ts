@@ -460,6 +460,9 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     }).pipeThrough(
       new TransformStream({
         transform: (chunk, controller) => {
+          // Reset stream timeout on each chunk
+          streamRecovery.updateActivity();
+
           if (!lastChunk) {
             lastChunk = ' ';
           }
