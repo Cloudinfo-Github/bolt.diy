@@ -323,6 +323,23 @@ export default class AzureOpenAIProvider extends BaseProvider {
               console.log('[AzureOpenAI] Request body keys:', Object.keys(body));
               console.log('[AzureOpenAI] Has tools:', !!body.tools);
               console.log('[AzureOpenAI] Has tool_choice:', !!body.tool_choice);
+
+              /*
+               * 🔥 關鍵修復：為 Chat Completions API 的 reasoning models 添加 stream: true
+               * AI SDK 的 generateText 不會自動添加，但 xAI 的 reasoning models 需要 streaming
+               */
+              if (!body.stream) {
+                console.log('[AzureOpenAI] ⚠️ Adding stream: true for Chat Completions API');
+                body.stream = true;
+                init.body = JSON.stringify(body);
+              }
+
+              if (!body.max_tokens && !body.max_completion_tokens) {
+                // 🔥 確保 max_completion_tokens 存在（如果是 reasoning model）
+                console.log('[AzureOpenAI] ⚠️ Adding default max_completion_tokens: 32768');
+                body.max_completion_tokens = 32768;
+                init.body = JSON.stringify(body);
+              }
             } catch {
               console.log('[AzureOpenAI] Could not parse body for logging');
             }
@@ -342,95 +359,178 @@ export default class AzureOpenAIProvider extends BaseProvider {
             headersTimeout: 60000, // 1 minute - wait for initial headers
           });
 
-          return fetchPromise
-            .then(async (response) => {
+          // 添加超時保護
+          const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => {
+              reject(new Error('[AzureOpenAI] Fetch timeout after 60 seconds - no response received'));
+            }, 60000);
+          });
+
+          return Promise.race([fetchPromise, timeoutPromise])
+            .then(async (response: any) => {
               console.log('[AzureOpenAI] ✅ Received response!');
               console.log('[AzureOpenAI] Status:', response.status, response.statusText);
 
               // 記錄所有 response headers
               console.log('[AzureOpenAI] [回應 Headers]:');
-              response.headers.forEach((value, key) => {
+              response.headers.forEach((value: string, key: string) => {
                 console.log(`  ${key}: ${value}`);
               });
 
-              // 對於非串流回應，嘗試讀取完整內容
+              /*
+               * 🔥 關鍵修復：為 Chat Completions API 也提取 reasoning content
+               * 但使用不同的方式：從 streaming chunks 的 reasoning_content 欄位提取
+               */
+              if (!requiresResponsesAPI) {
+                console.log(
+                  '[AzureOpenAI] ✅ Using Chat Completions API - will extract reasoning from streaming chunks',
+                );
+
+                if (!response.body) {
+                  console.log('[AzureOpenAI] ⚠️ Response has no body');
+                  return response;
+                }
+
+                const [captureStream, clientStream] = response.body.tee();
+                const newHeaders = new Headers(response.headers);
+                const requestId =
+                  response.headers.get('x-request-id') ||
+                  response.headers.get('x-ms-request-id') ||
+                  response.headers.get('apim-request-id') ||
+                  crypto.randomUUID();
+
+                newHeaders.set('x-reasoning-request-id', requestId);
+
+                void (async () => {
+                  let reasoningContent = '';
+
+                  try {
+                    const reader = captureStream.getReader();
+                    const decoder = new TextDecoder();
+                    let buffer = '';
+                    let chunkCount = 0;
+
+                    while (chunkCount < 200) {
+                      const { done, value } = await reader.read();
+
+                      if (done) {
+                        console.log('[AzureOpenAI] 🔍 Chat completion stream reader done');
+                        break;
+                      }
+
+                      const chunkText = decoder.decode(value, { stream: true });
+                      buffer += chunkText;
+                      chunkCount++;
+
+                      const lines = buffer.split('\n');
+                      const incompleteLine = lines.pop() || '';
+                      buffer = incompleteLine;
+
+                      for (const line of lines) {
+                        if (!line.trim() || line.startsWith(':')) {
+                          continue;
+                        }
+
+                        if (line.startsWith('data: ')) {
+                          const dataContent = line.substring(6).trim();
+
+                          if (dataContent === '[DONE]') {
+                            continue;
+                          }
+
+                          try {
+                            const data = JSON.parse(dataContent);
+
+                            if (data.choices && data.choices[0]?.delta?.reasoning_content) {
+                              reasoningContent += data.choices[0].delta.reasoning_content;
+
+                              if (reasoningContent.length % 500 === 0) {
+                                console.log(
+                                  `[AzureOpenAI] 📝 Extracting reasoning_content, length: ${reasoningContent.length}`,
+                                );
+                              }
+                            }
+                          } catch (parseError) {
+                            console.log('[AzureOpenAI] ⚠️ Failed to parse SSE chunk for reasoning:', parseError);
+                          }
+                        }
+                      }
+
+                      if (reasoningContent.length > 4000) {
+                        console.log('[AzureOpenAI] ✅ Collected sufficient reasoning content (Chat Completions)');
+                        break;
+                      }
+                    }
+
+                    if (reasoningContent) {
+                      reasoningSummaryStore.set(requestId, {
+                        summary: reasoningContent,
+                        encrypted: undefined,
+                      });
+
+                      cleanupOldReasoningSummaries();
+
+                      console.log('[AzureOpenAI] ✅ Stored reasoning summary for Chat Completions');
+                    } else {
+                      console.log('[AzureOpenAI] ⚠️ No reasoning_content found in streaming response');
+                    }
+                  } catch (error) {
+                    console.error('[AzureOpenAI] ❌ Error extracting reasoning from Chat Completions API:', error);
+                  }
+                })();
+
+                return new Response(clientStream, {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: newHeaders,
+                });
+              }
+
+              // 以下是 Responses API 的推理提取邏輯
+
+              // 對於非串流回應（如 llmcall），繼續使用同步 JSON 解析
+              const contentType = response.headers.get('content-type') || '';
+              const isStreamResponse = contentType.includes('text/event-stream');
+
+              if (!isStreamResponse) {
+                console.log('[AzureOpenAI] 🔍 Non-streaming response detected, skipping SSE parsing');
+                return response;
+              }
+
               if (!response.body) {
                 console.log('[AzureOpenAI] ⚠️ Response has no body');
                 return response;
               }
 
-              // 檢查響應類型
-              const contentType = response.headers.get('content-type') || '';
-              const isJsonResponse = contentType.includes('application/json');
-              const isStreamResponse = contentType.includes('text/event-stream');
+              const [captureStream, clientStream] = response.body.tee();
+              const newHeaders = new Headers(response.headers);
+              const requestId =
+                response.headers.get('x-request-id') ||
+                response.headers.get('x-ms-request-id') ||
+                response.headers.get('apim-request-id') ||
+                crypto.randomUUID();
 
-              console.log('[AzureOpenAI] 🔍 響應類型:', contentType);
-              console.log('[AzureOpenAI] 🔍 是 JSON 響應:', isJsonResponse);
-              console.log('[AzureOpenAI] 🔍 是流式響應:', isStreamResponse);
+              newHeaders.set('x-reasoning-request-id', requestId);
 
-              // 克隆回應以便我們可以讀取它而不影響原始流
-              const clonedResponse = response.clone();
+              void (async () => {
+                try {
+                  let reasoningSummary: string | undefined;
+                  let reasoningEncrypted: string | undefined;
 
-              try {
-                let reasoningSummary: string | undefined;
-                let reasoningEncrypted: string | undefined;
-
-                // 如果是 JSON 響應，直接解析 JSON
-                if (isJsonResponse) {
-                  console.log('[AzureOpenAI] 🔍 檢測到 JSON 響應，直接解析...');
-
-                  try {
-                    const jsonData = (await clonedResponse.json()) as any;
-                    console.log('[AzureOpenAI] 📄 JSON 響應結構:', Object.keys(jsonData));
-
-                    // 🔍 DEBUG: 記錄完整的 reasoning 和 output 物件
-                    if (jsonData.reasoning) {
-                      console.log('[AzureOpenAI] 📋 reasoning 物件:', JSON.stringify(jsonData.reasoning, null, 2));
-                    }
-
-                    if (jsonData.output) {
-                      console.log('[AzureOpenAI] 📋 output 物件類型:', typeof jsonData.output);
-                      console.log('[AzureOpenAI] 📋 output 物件鍵:', Object.keys(jsonData.output || {}));
-                    }
-
-                    /*
-                     * 🔥 JSON 響應不提取推理摘要
-                     * Azure Responses API 的 JSON 響應中，推理摘要不在 output 中，而是通過 SSE 流式傳輸
-                     * JSON 響應只用於非流式調用（如 api.llmcall.ts），這類調用不需要推理摘要
-                     */
-                    console.log('[AzureOpenAI] 🔍 JSON 響應不提取推理摘要（僅用於非流式調用）');
-                  } catch (jsonError) {
-                    console.log('[AzureOpenAI] ❌ JSON 解析失敗:', (jsonError as Error).message);
-                  }
-                } else {
-                  // 如果是 SSE 流，使用原有的流式讀取邏輯
                   console.log('[AzureOpenAI] 🔍 開始讀取 SSE 流以提取 reasoning...');
 
-                  if (!clonedResponse.body) {
-                    console.log('[AzureOpenAI] ⚠️ Cloned response has no body, skipping SSE reading');
-                    return response;
-                  }
-
-                  const reader = clonedResponse.body.getReader();
+                  const reader = captureStream.getReader();
                   const decoder = new TextDecoder();
                   let buffer = '';
                   let chunkCount = 0;
-
-                  // 🔥 新增：用於累積增量推理摘要文本的變數
                   let reasoningSummaryAccumulator = '';
                   let isAccumulatingReasoning = false;
 
-                  /*
-                   * 讀取足夠的資料來找到 reasoning output items
-                   * 增加限制以確保能夠完整讀取推理內容
-                   */
-                  console.log('[AzureOpenAI] 🔍 進入 while 循環，開始讀取 chunks...');
-
-                  while (chunkCount < 100 && buffer.length < 200000) {
+                  while (chunkCount < 200 && buffer.length < 400000) {
                     const { done, value } = await reader.read();
 
                     if (done) {
-                      console.log('[AzureOpenAI] 🔍 Reader 已完成，退出循環');
+                      console.log('[AzureOpenAI] 🔍 SSE reader 完成');
                       break;
                     }
 
@@ -438,22 +538,17 @@ export default class AzureOpenAIProvider extends BaseProvider {
                     buffer += chunkText;
                     chunkCount++;
 
-                    // 每10個chunk記錄一次，減少日誌量
                     if (chunkCount % 10 === 0) {
                       console.log(
                         `[AzureOpenAI] 🔍 Chunk ${chunkCount}: 長度=${chunkText.length}, Buffer總長度=${buffer.length}`,
                       );
                     }
 
-                    // 改進的 SSE 事件解析 - 處理跨 chunk 的事件
                     const lines = buffer.split('\n');
-
-                    // 保留最後一行（可能不完整），避免解析不完整的 JSON
                     const incompleteLine = lines.pop() || '';
                     buffer = incompleteLine;
 
                     for (const line of lines) {
-                      // 跳過空行和註釋
                       if (!line.trim() || line.startsWith(':')) {
                         continue;
                       }
@@ -461,7 +556,6 @@ export default class AzureOpenAIProvider extends BaseProvider {
                       if (line.startsWith('data: ')) {
                         const dataContent = line.substring(6).trim();
 
-                        // 跳過 [DONE] 標記
                         if (dataContent === '[DONE]') {
                           continue;
                         }
@@ -469,190 +563,81 @@ export default class AzureOpenAIProvider extends BaseProvider {
                         try {
                           const data = JSON.parse(dataContent);
 
-                          // 🔍 DEBUG: 記錄推理相關事件
                           if (data.type && (data.type.includes('reasoning') || data.type.includes('summary'))) {
                             console.log('[AzureOpenAI] [SSE事件] 🔥', data.type);
-                            console.log('[AzureOpenAI] [SSE事件] 📋 data 鍵:', Object.keys(data));
                           }
 
-                          // 🔥 新格式：response.reasoning_summary_part.added - 推理摘要部分開始
                           if (data.type === 'response.reasoning_summary_part.added') {
                             isAccumulatingReasoning = true;
                             reasoningSummaryAccumulator = '';
-                            console.log('[AzureOpenAI] ✅✅✅ 開始接收推理摘要增量事件');
-                            console.log('[AzureOpenAI] 📋 isAccumulatingReasoning 設置為:', isAccumulatingReasoning);
                           }
 
-                          // 🔥 新格式：response.reasoning_summary_text.delta - 推理摘要增量文本
-                          if (data.type === 'response.reasoning_summary_text.delta') {
-                            console.log('[AzureOpenAI] 📝 收到 delta 事件，data.delta 存在:', !!data.delta);
-                            console.log('[AzureOpenAI] 📝 isAccumulatingReasoning 狀態:', isAccumulatingReasoning);
-
-                            if (data.delta) {
-                              console.log('[AzureOpenAI] 📝 delta 內容長度:', data.delta.length);
-
-                              if (isAccumulatingReasoning) {
-                                reasoningSummaryAccumulator += data.delta;
-
-                                // 每10個delta記錄一次，減少日誌量
-                                if (reasoningSummaryAccumulator.length % 100 < 10) {
-                                  console.log(
-                                    `[AzureOpenAI] 📝 累積推理摘要，當前長度: ${reasoningSummaryAccumulator.length}`,
-                                  );
-                                }
-                              } else {
-                                console.log('[AzureOpenAI] ⚠️ isAccumulatingReasoning 為 false，無法累積');
-                              }
-                            } else {
-                              console.log('[AzureOpenAI] ⚠️ data.delta 不存在或為空');
+                          if (data.type === 'response.reasoning_summary_text.delta' && data.delta) {
+                            if (isAccumulatingReasoning) {
+                              reasoningSummaryAccumulator += data.delta;
                             }
                           }
 
-                          // 🔥 新格式：response.reasoning_summary_text.done - 推理摘要完成
                           if (data.type === 'response.reasoning_summary_text.done') {
-                            console.log('[AzureOpenAI] 📝 收到 done 事件');
-                            console.log('[AzureOpenAI] 📝 isAccumulatingReasoning:', isAccumulatingReasoning);
-                            console.log(
-                              '[AzureOpenAI] 📝 reasoningSummaryAccumulator 長度:',
-                              reasoningSummaryAccumulator.length,
-                            );
-
                             if (isAccumulatingReasoning && reasoningSummaryAccumulator) {
                               reasoningSummary = reasoningSummaryAccumulator;
-                              console.log('[AzureOpenAI] ✅✅✅ 推理摘要接收完成，總長度:', reasoningSummary.length);
-                              console.log('[AzureOpenAI] 📝 摘要前300字:', reasoningSummary.substring(0, 300));
-                              isAccumulatingReasoning = false;
-                            } else {
-                              console.log(
-                                '[AzureOpenAI] ⚠️ 無法完成累積：isAccumulatingReasoning=',
-                                isAccumulatingReasoning,
-                                ', accumulator length=',
-                                reasoningSummaryAccumulator.length,
-                              );
                             }
+
+                            isAccumulatingReasoning = false;
                           }
 
-                          // 檢查其他可能的事件格式（向後兼容）
-
-                          // 格式 1: response.output_item.added
                           if (data.type === 'response.output_item.added' && data.item) {
                             const item = data.item;
-                            console.log('[AzureOpenAI] [SSE] ✅ output_item.added, type:', item.type);
 
-                            // 提取 reasoning encrypted content
                             if (item.type === 'reasoning' && item.encrypted_content) {
                               reasoningEncrypted = item.encrypted_content;
-                              console.log('[AzureOpenAI] ✅ 找到加密推理內容，長度:', reasoningEncrypted?.length ?? 0);
                             }
-
-                            // 提取 summary_text
-                            if (item.type === 'summary_text' && item.text) {
-                              reasoningSummary = item.text;
-                              console.log(
-                                '[AzureOpenAI] ✅✅✅ 找到推理摘要文本，長度:',
-                                reasoningSummary?.length ?? 0,
-                              );
-                              console.log('[AzureOpenAI] 推理摘要前300字:', reasoningSummary?.substring(0, 300) ?? '');
-                            }
-                          }
-
-                          // 格式 2: response.output_item.done（完整事件）
-                          if (data.type === 'response.output_item.done' && data.item) {
-                            const item = data.item;
 
                             if (item.type === 'summary_text' && item.text) {
                               reasoningSummary = item.text;
-                              console.log(
-                                '[AzureOpenAI] ✅✅✅ 從 output_item.done 找到推理摘要，長度:',
-                                reasoningSummary?.length ?? 0,
-                              );
                             }
                           }
 
-                          // 格式 3: 直接的 reasoning 事件
-                          if (data.type === 'reasoning' || data.reasoning) {
-                            if (data.summary || data.text) {
-                              reasoningSummary = data.summary || data.text;
-                              console.log(
-                                '[AzureOpenAI] ✅ 從 reasoning 事件找到摘要，長度:',
-                                reasoningSummary?.length ?? 0,
-                              );
+                          if (data.type === 'response.output_item.done' && data.item?.type === 'reasoning') {
+                            if (data.item?.summary && !reasoningSummary) {
+                              reasoningSummary = data.item.summary;
                             }
                           }
                         } catch (parseError) {
-                          // 只記錄非空的解析錯誤，減少日誌量
-                          if (dataContent.length > 10) {
-                            console.log('[AzureOpenAI] ⚠️ JSON 解析失敗:', (parseError as Error).message);
-                          }
+                          console.log('[AzureOpenAI] ⚠️ 解析 SSE 事件失敗:', parseError);
                         }
                       }
                     }
 
-                    /*
-                     * 如果已經找到 reasoning summary，再多讀幾個 chunk 確保完整性
-                     * 避免過早退出導致內容截斷
-                     */
-                    if (reasoningSummary && chunkCount > 15) {
-                      console.log('[AzureOpenAI] ✅ 已找到推理摘要且讀取足夠，停止讀取');
+                    if (reasoningSummary && reasoningSummary.length > 1000 && chunkCount > 20) {
+                      console.log('[AzureOpenAI] ✅ 收集到足夠推理摘要，提前退出');
                       break;
                     }
                   }
 
-                  console.log(`[AzureOpenAI] 🔍 循環結束，共讀取 ${chunkCount} 個 chunks`);
-                  console.log(`[AzureOpenAI] 🔍 reasoningSummary 存在: ${!!reasoningSummary}`);
-                  console.log(`[AzureOpenAI] 🔍 reasoningEncrypted 存在: ${!!reasoningEncrypted}`);
-                }
+                  if (reasoningSummary || reasoningEncrypted) {
+                    reasoningSummaryStore.set(requestId, {
+                      summary: reasoningSummary,
+                      encrypted: reasoningEncrypted,
+                    });
 
-                // 🔥 存儲推理摘要到全局 Map，供 onFinish 使用
-                if (reasoningSummary || reasoningEncrypted) {
-                  // 從 response headers 獲取 request ID，或生成 UUID
-                  const requestId =
-                    response.headers.get('x-request-id') ||
-                    response.headers.get('x-ms-request-id') ||
-                    response.headers.get('apim-request-id') ||
-                    crypto.randomUUID();
+                    cleanupOldReasoningSummaries();
 
-                  // 存儲到全局 Map
-                  reasoningSummaryStore.set(requestId, {
-                    summary: reasoningSummary,
-                    encrypted: reasoningEncrypted,
-                  });
-
-                  console.log('[AzureOpenAI] ✅✅✅ Reasoning 資料已存儲到全局 Map');
-                  console.log('[AzureOpenAI] 📋 Request ID:', requestId);
-
-                  if (reasoningSummary) {
-                    console.log('[AzureOpenAI] Summary 長度:', reasoningSummary.length);
-                    console.log('[AzureOpenAI] Summary 開頭:', reasoningSummary.substring(0, 100));
+                    console.log('[AzureOpenAI] ✅✅✅ Reasoning 資料已存儲到全局 Map (Responses API)');
+                  } else {
+                    console.log('[AzureOpenAI] ⚠️⚠️⚠️ 未找到 reasoning 摘要或加密內容');
                   }
-
-                  /*
-                   * 🔥 將 request ID 添加到 response headers，讓 onFinish 能夠讀取
-                   * 創建新的 Headers 物件（因為原始 headers 可能是只讀的）
-                   */
-                  const newHeaders = new Headers(response.headers);
-                  newHeaders.set('x-reasoning-request-id', requestId);
-
-                  // 創建新的 Response 物件with修改後的 headers
-                  response = new Response(response.body, {
-                    status: response.status,
-                    statusText: response.statusText,
-                    headers: newHeaders,
-                  });
-
-                  console.log('[AzureOpenAI] ✅ Request ID 已添加到 response headers');
-
-                  // 執行清理
-                  cleanupOldReasoningSummaries();
-                } else {
-                  console.log('[AzureOpenAI] ⚠️⚠️⚠️ 未找到 reasoning 摘要或加密內容');
+                } catch (readError) {
+                  console.log('[AzureOpenAI] ❌ 讀取回應內容時出錯:', readError);
+                  console.log('[AzureOpenAI] ❌ 錯誤詳情:', (readError as Error).message);
                 }
-              } catch (readError) {
-                console.log('[AzureOpenAI] ❌ 讀取回應內容時出錯:', readError);
-                console.log('[AzureOpenAI] ❌ 錯誤詳情:', (readError as Error).message);
-              }
+              })();
 
-              return response;
+              return new Response(clientStream, {
+                status: response.status,
+                statusText: response.statusText,
+                headers: newHeaders,
+              });
             })
             .catch((error) => {
               console.error('[AzureOpenAI] ❌ Fetch error:', error);

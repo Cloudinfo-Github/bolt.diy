@@ -1,8 +1,9 @@
 import { useStore } from '@nanostores/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { computed } from 'nanostores';
-import { memo, useEffect, useRef, useState } from 'react';
-import { createHighlighter, type BundledLanguage, type BundledTheme, type HighlighterGeneric } from 'shiki';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import hljs from 'highlight.js/lib/core';
+import bash from 'highlight.js/lib/languages/bash';
 import type { ActionState } from '~/lib/runtime/action-runner';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
@@ -10,17 +11,31 @@ import { cubicEasingFn } from '~/utils/easings';
 import { WORK_DIR } from '~/utils/constants';
 import { useI18n } from '~/i18n/hooks/useI18n';
 
-const highlighterOptions = {
-  langs: ['shell'],
-  themes: ['light-plus', 'dark-plus'],
+let highlightRegistered = false;
+
+const ensureShellLanguage = () => {
+  if (!highlightRegistered) {
+    hljs.registerLanguage('bash', bash);
+    highlightRegistered = true;
+  }
 };
 
-const shellHighlighter: HighlighterGeneric<BundledLanguage, BundledTheme> =
-  import.meta.hot?.data.shellHighlighter ?? (await createHighlighter(highlighterOptions));
+const escapeHtml = (code: string) =>
+  code
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
-if (import.meta.hot) {
-  import.meta.hot.data.shellHighlighter = shellHighlighter;
-}
+const highlightShell = (code: string) => {
+  try {
+    ensureShellLanguage();
+    return hljs.highlight(code, { language: 'bash' }).value;
+  } catch {
+    return escapeHtml(code);
+  }
+};
 
 interface ArtifactProps {
   messageId: string;
@@ -165,17 +180,9 @@ interface ShellCodeBlockProps {
 }
 
 function ShellCodeBlock({ classsName, code }: ShellCodeBlockProps) {
-  return (
-    <div
-      className={classNames('text-xs', classsName)}
-      dangerouslySetInnerHTML={{
-        __html: shellHighlighter.codeToHtml(code, {
-          lang: 'shell',
-          theme: 'dark-plus',
-        }),
-      }}
-    ></div>
-  );
+  const html = useMemo(() => highlightShell(code), [code]);
+
+  return <div className={classNames('text-xs hljs', classsName)} dangerouslySetInnerHTML={{ __html: html }}></div>;
 }
 
 interface ActionListProps {

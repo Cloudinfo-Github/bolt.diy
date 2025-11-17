@@ -9,12 +9,13 @@ export class TerminalStore {
   #terminals: Array<{ terminal: ITerminal; process: WebContainerProcess }> = [];
   #boltTerminal = newBoltShellProcess();
 
-  showTerminal: WritableAtom<boolean> = import.meta.hot?.data.showTerminal ?? atom(true);
+  showTerminal: WritableAtom<boolean> = import.meta.hot?.data?.showTerminal ?? atom(true);
 
   constructor(webcontainerPromise: Promise<WebContainer>) {
     this.#webcontainer = webcontainerPromise;
 
     if (import.meta.hot) {
+      (import.meta.hot.data as any) ??= {};
       import.meta.hot.data.showTerminal = this.showTerminal;
     }
   }

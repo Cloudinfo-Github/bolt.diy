@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useStore } from '@nanostores/react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { chatStore } from '~/lib/stores/chat';
@@ -5,7 +6,7 @@ import { classNames } from '~/utils/classNames';
 import { HeaderActionButtons } from './HeaderActionButtons.client';
 import { ChatDescription } from '~/lib/persistence/ChatDescription.client';
 
-export function Header() {
+export const Header = memo(() => {
   const chat = useStore(chatStore);
 
   return (
@@ -39,4 +40,4 @@ export function Header() {
       )}
     </header>
   );
-}
+});

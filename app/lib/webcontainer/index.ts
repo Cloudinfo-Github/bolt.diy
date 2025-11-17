@@ -6,11 +6,12 @@ interface WebContainerContext {
   loaded: boolean;
 }
 
-export const webcontainerContext: WebContainerContext = import.meta.hot?.data.webcontainerContext ?? {
+export const webcontainerContext: WebContainerContext = import.meta.hot?.data?.webcontainerContext ?? {
   loaded: false,
 };
 
 if (import.meta.hot) {
+  (import.meta.hot.data as any) ??= {};
   import.meta.hot.data.webcontainerContext = webcontainerContext;
 }
 
@@ -20,7 +21,7 @@ export let webcontainer: Promise<WebContainer> = new Promise(() => {
 
 if (!import.meta.env.SSR) {
   webcontainer =
-    import.meta.hot?.data.webcontainer ??
+    import.meta.hot?.data?.webcontainer ??
     Promise.resolve()
       .then(() => {
         console.log('[WebContainer] 🚀 開始啟動 WebContainer...');
@@ -79,6 +80,7 @@ if (!import.meta.env.SSR) {
       });
 
   if (import.meta.hot) {
+    (import.meta.hot.data as any) ??= {};
     import.meta.hot.data.webcontainer = webcontainer;
   }
 }

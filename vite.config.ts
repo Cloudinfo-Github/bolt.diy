@@ -18,6 +18,52 @@ export default defineConfig((config) => {
     },
     build: {
       target: 'esnext',
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            // 將程式碼語言檔案分組到獨立 chunk（延遲載入）
+            if (id.includes('shiki/langs')) {
+              return 'code-languages';
+            }
+            // 將大型依賴項分組
+            if (id.includes('node_modules')) {
+              // AI SDK 相關
+              if (id.includes('@ai-sdk') || id.includes('ai/')) {
+                return 'ai-sdk';
+              }
+              // CodeMirror 編輯器
+              if (id.includes('@codemirror') || id.includes('@lezer')) {
+                return 'codemirror';
+              }
+              // Chart 和視覺化
+              if (id.includes('chart.js') || id.includes('react-chartjs')) {
+                return 'charts';
+              }
+              // PDF 和文件處理
+              if (id.includes('jspdf') || id.includes('html2canvas')) {
+                return 'document';
+              }
+              // 圖示庫
+              if (id.includes('@iconify') || id.includes('@phosphor-icons') || id.includes('react-icons')) {
+                return 'icons';
+              }
+              // Radix UI 元件
+              if (id.includes('@radix-ui')) {
+                return 'radix-ui';
+              }
+              // WebContainer
+              if (id.includes('@webcontainer')) {
+                return 'webcontainer';
+              }
+              // Markdown 和語法突顯
+              if (id.includes('react-markdown') || id.includes('rehype') || id.includes('remark')) {
+                return 'markdown';
+              }
+            }
+          },
+        },
+      },
+      chunkSizeWarningLimit: 1000,
     },
     plugins: [
       nodePolyfills({
