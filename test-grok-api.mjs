@@ -20,7 +20,7 @@ if (!AZURE_ENDPOINT || !AZURE_API_KEY) {
 }
 
 const sanitizedEndpoint = AZURE_ENDPOINT.replace(/\/$/, '');
-const url = `${sanitizedEndpoint}/chat/completions`;
+const url = `${sanitizedEndpoint}/v1/chat/completions`;
 
 const requestBody = {
   model: MODEL_NAME,

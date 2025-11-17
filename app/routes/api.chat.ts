@@ -92,15 +92,12 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     promptTokens: 0,
     totalTokens: 0,
   };
-  const encoder: TextEncoder = new TextEncoder();
   let progressCounter: number = 1;
 
   try {
     const mcpService = MCPService.getInstance();
     const totalMessageContent = messages.reduce((acc, message) => acc + message.content, '');
     logger.debug(`Total message length: ${totalMessageContent.split(' ').length}, words`);
-
-    let lastChunk: string | undefined = undefined;
 
     const dataStream = createDataStream({
       async execute(dataStream) {
@@ -374,6 +371,28 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               webSearchEnabled,
             });
 
+            // Monitor fullStream in continuation
+            (async () => {
+              try {
+                for await (const part of result.fullStream) {
+                  streamRecovery.updateActivity();
+
+                  if (part.type === 'error') {
+                    const error: any = part.error;
+                    logger.error('Continuation streaming error:', error);
+                    streamRecovery.stop();
+
+                    return;
+                  }
+                }
+
+                streamRecovery.stop();
+              } catch (error) {
+                logger.error('Error in continuation fullStream monitoring:', error);
+                streamRecovery.stop();
+              }
+            })();
+
             // 使用 AI SDK 正確的流合併方法，並啟用推理內容傳輸
             result.mergeIntoDataStream(dataStream, {
               sendReasoning: true,
@@ -416,6 +435,35 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           webSearchEnabled,
         });
 
+        // Monitor fullStream to update recovery activity and handle errors
+        (async () => {
+          try {
+            for await (const part of result.fullStream) {
+              streamRecovery.updateActivity();
+
+              if (part.type === 'error') {
+                const error: any = part.error;
+                logger.error('Streaming error:', error);
+                streamRecovery.stop();
+
+                // Enhanced error handling for common streaming issues
+                if (error.message?.includes('Invalid JSON response')) {
+                  logger.error('Invalid JSON response detected - likely malformed API response');
+                } else if (error.message?.includes('token')) {
+                  logger.error('Token-related error detected - possible token limit exceeded');
+                }
+
+                return;
+              }
+            }
+
+            streamRecovery.stop();
+          } catch (error) {
+            logger.error('Error in fullStream monitoring:', error);
+            streamRecovery.stop();
+          }
+        })();
+
         // 使用 AI SDK 正確的流合併方法，並啟用推理內容傳輸
         result.mergeIntoDataStream(dataStream, {
           sendReasoning: true,
@@ -457,40 +505,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
         return `Custom error: ${errorMessage}`;
       },
-    }).pipeThrough(
-      new TransformStream({
-        transform: (chunk, controller) => {
-          // Reset stream timeout on each chunk
-          streamRecovery.updateActivity();
-
-          if (!lastChunk) {
-            lastChunk = ' ';
-          }
-
-          // 已改為在 fullStream 迴圈中即時輸出推理內容，這裡不再二次注入
-
-          // 移除自動注入 __boltThought__ 的包裹，改由 fullStream 邏輯主導
-
-          lastChunk = chunk;
-
-          let transformedChunk = chunk;
-
-          if (typeof chunk === 'string' && chunk.startsWith('g')) {
-            let content = chunk.split(':').slice(1).join(':');
-
-            if (content.endsWith('\n')) {
-              content = content.slice(0, content.length - 1);
-            }
-
-            transformedChunk = `0:${content}\n`;
-          }
-
-          // Convert the string stream to a byte stream
-          const str = typeof transformedChunk === 'string' ? transformedChunk : JSON.stringify(transformedChunk);
-          controller.enqueue(encoder.encode(str));
-        },
-      }),
-    );
+    });
 
     return new Response(dataStream, {
       status: 200,
