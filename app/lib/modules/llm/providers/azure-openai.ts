@@ -298,18 +298,23 @@ export default class AzureOpenAIProvider extends BaseProvider {
               }
 
               /*
-               * 🔥 關鍵修復：不設置 include 參數，讓 Azure 返回所有預設內容
-               * 包括 summary_text（摘要）和 encrypted_content（加密內容）
-               * 如果我們只指定 ["reasoning.encrypted_content"]，Azure 可能只返回加密內容而不返回摘要
+               * 🔥 依照官方建議，Responses API 需要透過 include 指定 output item
+               * 這裡強制加入 reasoning / reasoning_summary / output_text，以確保可取得摘要與加密內容
                */
 
-              // 移除任何現有的 include 限制，讓 Azure 返回完整的推理數據
-              if (body.include) {
-                console.log('[AzureOpenAI] [移除] 刪除 include 參數以獲取完整推理數據（包括摘要）');
-                delete body.include;
-              } else {
-                console.log('[AzureOpenAI] [確認] 未設置 include 參數，將獲取所有預設推理內容');
+              const requiredIncludes = ['reasoning', 'reasoning_summary', 'output_text'];
+
+              if (!Array.isArray(body.include)) {
+                body.include = [];
               }
+
+              for (const item of requiredIncludes) {
+                if (!body.include.includes(item)) {
+                  body.include.push(item);
+                }
+              }
+
+              console.log('[AzureOpenAI] [設置] include:', JSON.stringify(body.include));
 
               // 更新 init.body（直接修改屬性而不是重新賦值）
               init.body = JSON.stringify(body);
