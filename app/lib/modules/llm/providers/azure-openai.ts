@@ -115,7 +115,7 @@ export default class AzureOpenAIProvider extends BaseProvider {
       label: 'Grok-4 Fast Reasoning 🧠',
       provider: 'AzureOpenAI',
       maxTokenAllowed: 128000,
-      maxCompletionTokens: 32768,
+      maxCompletionTokens: 4096, // 降低以符合 Azure S0 tier 的 50K tokens/min 限制
     },
 
     // ==================== O3 系列 (推理模型) ====================
@@ -220,6 +220,7 @@ export default class AzureOpenAIProvider extends BaseProvider {
     // 檢測是否為 Azure AI Foundry 端點
     if (baseUrl && this._isAzureAIFoundry(baseUrl)) {
       const requiresResponsesAPI = this._requiresResponsesAPI(model);
+      const defaultMaxCompletionTokens = this.staticModels.find((m) => m.name === model)?.maxCompletionTokens ?? 8192;
 
       // Normalize base URL: ensure it ends with /v1
       let normalizedBaseUrl = baseUrl.trim().replace(/\/+$/, ''); // Remove trailing slashes
@@ -233,6 +234,7 @@ export default class AzureOpenAIProvider extends BaseProvider {
       console.log('[AzureOpenAI] Normalized Base URL:', normalizedBaseUrl);
       console.log('[AzureOpenAI] Model:', model);
       console.log('[AzureOpenAI] Requires Responses API:', requiresResponsesAPI);
+      console.log('[AzureOpenAI] Default max_completion_tokens:', defaultMaxCompletionTokens);
 
       /*
        * Azure AI Foundry v1 API: https://xxx.services.ai.azure.com/openai/v1/
@@ -273,12 +275,10 @@ export default class AzureOpenAIProvider extends BaseProvider {
                * 我們需要從 URL 參數或使用預設值手動添加 max_output_tokens
                */
               if (!body.max_output_tokens) {
-                // 使用 128000 作為 gpt-5-codex 的預設值（來自模型配置）
-                const defaultMaxOutputTokens = 128000;
                 console.log(
-                  `[AzureOpenAI] ⚠️ AI SDK 未傳遞 max_output_tokens，手動添加預設值: ${defaultMaxOutputTokens}`,
+                  `[AzureOpenAI] ⚠️ AI SDK 未傳遞 max_output_tokens，手動添加預設值: ${defaultMaxCompletionTokens}`,
                 );
-                body.max_output_tokens = defaultMaxOutputTokens;
+                body.max_output_tokens = defaultMaxCompletionTokens;
               }
 
               // 🔥 關鍵修復：添加 reasoning summary 參數
@@ -344,8 +344,8 @@ export default class AzureOpenAIProvider extends BaseProvider {
 
               if (!body.max_tokens && !body.max_completion_tokens) {
                 // 🔥 確保 max_completion_tokens 存在（如果是 reasoning model）
-                console.log('[AzureOpenAI] ⚠️ Adding default max_completion_tokens: 32768');
-                body.max_completion_tokens = 32768;
+                console.log(`[AzureOpenAI] ⚠️ Adding default max_completion_tokens: ${defaultMaxCompletionTokens}`);
+                body.max_completion_tokens = defaultMaxCompletionTokens;
                 init.body = JSON.stringify(body);
               }
             } catch {
