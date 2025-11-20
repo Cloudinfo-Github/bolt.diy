@@ -1,5 +1,5 @@
 import { useSearchParams } from '@remix-run/react';
-import { generateId, type Message } from 'ai';
+import { generateId, type UIMessage as Message } from 'ai';
 import ignore from 'ignore';
 import { useEffect, useState } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
@@ -76,7 +76,11 @@ export function GitUrlImport() {
 
           const filesMessage: Message = {
             role: 'assistant',
-            content: `Cloning the repo ${repoUrl} into ${workdir}
+            id: generateId(),
+            parts: [
+              {
+                type: 'text',
+                text: `Cloning the repo ${repoUrl} into ${workdir}
 <boltArtifact id="imported-files" title="${t('gitClone.clonedFiles')}"  type="bundled">
 ${fileContents
   .map(
@@ -87,17 +91,17 @@ ${escapeBoltTags(file.content)}
   )
   .join('\n')}
 </boltArtifact>`,
-            id: generateId(),
-            createdAt: new Date(),
+              },
+            ],
           };
 
-          const messages = [filesMessage];
+          const messages: Message[] = [filesMessage];
 
           if (commandsMessage) {
             messages.push({
               role: 'user',
               id: generateId(),
-              content: 'Setup the codebase and Start the application',
+              parts: [{ type: 'text', text: 'Setup the codebase and Start the application' }],
             });
             messages.push(commandsMessage);
           }

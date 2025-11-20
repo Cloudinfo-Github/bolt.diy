@@ -1,4 +1,4 @@
-import type { Message } from 'ai';
+import type { UIMessage as Message } from 'ai';
 import { Fragment } from 'react';
 import { classNames } from '~/utils/classNames';
 import { AssistantMessage } from './AssistantMessage';
@@ -55,10 +55,10 @@ export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
       <div id={id} className={props.className} ref={ref}>
         {messages.length > 0
           ? messages.map((message, index) => {
-              const { role, content, id: messageId, annotations, parts } = message;
+              const { role, id: messageId, parts } = message;
               const isUserMessage = role === 'user';
               const isFirst = index === 0;
-              const isHidden = annotations?.includes('hidden');
+              const isHidden = false; // annotations?.includes('hidden');
 
               if (isHidden) {
                 return <Fragment key={index} />;
@@ -73,11 +73,11 @@ export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
                 >
                   <div className="grid grid-col-1 w-full">
                     {isUserMessage ? (
-                      <UserMessage content={content} parts={parts} />
+                      <UserMessage content={''} parts={parts as any} />
                     ) : (
                       <AssistantMessage
-                        content={content}
-                        annotations={message.annotations}
+                        content={''}
+                        annotations={undefined}
                         messageId={messageId}
                         onRewind={handleRewind}
                         onFork={handleFork}
@@ -86,7 +86,7 @@ export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
                         setChatMode={props.setChatMode}
                         model={props.model}
                         provider={props.provider}
-                        parts={parts}
+                        parts={parts as any}
                         addToolResult={props.addToolResult}
                       />
                     )}

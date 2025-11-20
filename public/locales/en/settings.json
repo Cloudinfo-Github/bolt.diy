@@ -80,6 +80,7 @@
     "data": "Data Management",
     "cloudProviders": "Cloud Providers",
     "localProviders": "Local Providers",
+    "models": "Models",
     "github": "GitHub",
     "gitlab": "GitLab",
     "netlify": "Netlify",
@@ -96,6 +97,7 @@
     "data": "Manage your data and storage",
     "cloudProviders": "Configure cloud AI providers and models",
     "localProviders": "Configure local AI providers and models",
+    "models": "Manage available AI models",
     "github": "Connect and manage GitHub integration",
     "gitlab": "Connect and manage GitLab integration",
     "netlify": "Configure Netlify deployment settings",
@@ -379,6 +381,9 @@
       "title": "Azure OpenAI Configuration",
       "description": "Configure Azure OpenAI Service connection information",
       "envConfigured": ".env.local configured",
+      "envConfiguredDetail": "Current values stored in .env.local",
+      "envMissing": "Not set on server",
+      "envApiKeyStored": "API key stored securely in .env.local",
       "apiKey": {
         "label": "API Key",
         "required": "Required",
@@ -417,7 +422,8 @@
         "helpLink": "Azure Portal",
         "helpTextMiddle": "Model deployments page",
         "warningTraditional": "Traditional Azure OpenAI endpoint requires Deployment Name (not model name)",
-        "infoFoundry": "Azure AI Foundry endpoint can be left empty, will use model name"
+        "infoFoundry": "Azure AI Foundry endpoint can be left empty, will use model name",
+        "disabledForFoundry": "Azure AI Foundry endpoints don't require deployment names"
       },
       "apiVersion": {
         "label": "API Version",

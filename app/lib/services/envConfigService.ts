@@ -203,10 +203,30 @@ export class EnvConfigService {
       if (key.startsWith('AZURE_OPENAI_')) {
         // Remove prefix for easier handling
         const shortKey = key.replace('AZURE_OPENAI_', '').toLowerCase();
+
+        if (shortKey === 'api_key') {
+          azureConfig.api_key_masked = this._maskSecret(value);
+          return;
+        }
+
         azureConfig[shortKey] = value;
       }
     });
 
     return azureConfig;
+  }
+
+  private static _maskSecret(secret: string) {
+    if (!secret) {
+      return '';
+    }
+
+    const visibleStart = Math.min(4, secret.length);
+    const visibleEnd = secret.length > 8 ? 3 : 1;
+    const prefix = secret.slice(0, visibleStart);
+    const suffix = secret.slice(-visibleEnd);
+    const maskedLength = Math.max(secret.length - visibleStart - visibleEnd, 4);
+
+    return `${prefix}${'*'.repeat(maskedLength)}${suffix}`;
   }
 }

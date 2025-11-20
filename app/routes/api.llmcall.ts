@@ -103,9 +103,9 @@ async function llmCallAction({ context, request }: ActionFunctionArgs) {
         messages: [
           {
             role: 'user',
-            content: `${message}`,
+            parts: [{ type: 'text', text: `${message}` }],
           },
-        ],
+        ] as any,
         env: context.cloudflare?.env as any,
         apiKeys,
         providerSettings,

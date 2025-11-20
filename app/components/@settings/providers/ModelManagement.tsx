@@ -4,17 +4,140 @@
  */
 
 import { useStore } from '@nanostores/react';
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { customModels$, customModelsStore } from '~/lib/stores/custom-models';
-import type { CustomModelConfig } from '~/types/custom-models';
+import { modelOverrides$, modelOverridesStore } from '~/lib/stores/model-overrides';
+import type { CustomModelConfig, ModelOverride } from '~/types/custom-models';
+import type { ModelInfo } from '~/lib/modules/llm/types';
 import { toast } from 'react-toastify';
 
 export function ModelManagement() {
   const models = useStore(customModels$);
+  const overrides = useStore(modelOverrides$);
   const [isAddingModel, setIsAddingModel] = useState(false);
   const [editingModel, setEditingModel] = useState<CustomModelConfig | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterProvider, setFilterProvider] = useState<string>('all');
+  const [isSystemLoading, setIsSystemLoading] = useState(true);
+  const [systemError, setSystemError] = useState<string | null>(null);
+  const [systemEditorModel, setSystemEditorModel] = useState<ModelInfo | null>(null);
+  const [expandedProviders, setExpandedProviders] = useState<Set<string>>(new Set());
+
+  /*
+   * const [showHiddenModels, setShowHiddenModels] = useState(false);
+   */
+
+  const overridesMap = useMemo(() => {
+    return overrides.reduce<Record<string, ModelOverride>>((acc, override) => {
+      acc[override.target] = override;
+      return acc;
+    }, {});
+  }, [overrides]);
+
+  /*
+   * const sortedSystemModels = useMemo(() => {
+   *   return [...systemModels].sort((a, b) => {
+   *     if (a.provider === b.provider) {
+   *       return (a.label || a.name).localeCompare(b.label || b.name);
+   *     }
+   *
+   *     return a.provider.localeCompare(b.provider);
+   *   });
+   * }, [systemModels]);
+   *
+   * const annotatedSystemModels = useMemo(
+   *   () =>
+   *     sortedSystemModels.map((model) => ({
+   *       model,
+   *       override: overridesMap[model.name],
+   *     })),
+   *   [sortedSystemModels, overridesMap],
+   * );
+   */
+
+  // 將自訂模型中已啟用的 AzureOpenAI 模型作為系統模型列表
+  const allSystemModels = useMemo(() => {
+    const customAzureModels = models
+      .filter((m) => m.enabled && m.provider === 'AzureOpenAI')
+      .map((m) => ({
+        model: {
+          name: m.name,
+          label: m.label,
+          provider: m.provider,
+          maxTokenAllowed: m.maxTokenAllowed,
+          maxCompletionTokens: m.maxCompletionTokens,
+          description: m.description,
+        } as ModelInfo,
+        override: overridesMap[m.name],
+        isCustom: true,
+        customModelId: m.id,
+      }));
+
+    return customAzureModels;
+  }, [models, overridesMap]);
+
+  const groupedSystemModels = useMemo(() => {
+    const groups = new Map<
+      string,
+      Array<{ model: ModelInfo; override?: ModelOverride; isCustom?: boolean; customModelId?: string }>
+    >();
+
+    allSystemModels.forEach((item) => {
+      const provider = item.model.provider;
+
+      if (!groups.has(provider)) {
+        groups.set(provider, []);
+      }
+
+      groups.get(provider)!.push(item);
+    });
+
+    return Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [allSystemModels]);
+
+  const toggleProvider = (provider: string) => {
+    setExpandedProviders((prev) => {
+      const next = new Set(prev);
+
+      if (next.has(provider)) {
+        next.delete(provider);
+      } else {
+        next.add(provider);
+      }
+
+      return next;
+    });
+  };
+
+  const loadSystemModels = useCallback(async () => {
+    setIsSystemLoading(true);
+    setSystemError(null);
+
+    try {
+      const response = await fetch('/api/models');
+
+      if (!response.ok) {
+        throw new Error(`Failed to load system models: ${response.status}`);
+      }
+
+      await response.json(); // Response not currently used
+
+      /*
+       * Note: systemModels state was removed as models now come from custom models list
+       * const data = (await response.json()) as { modelList: ModelInfo[] };
+       * setSystemModels(data.modelList);
+       */
+    } catch (error) {
+      console.error('Error loading system models:', error);
+      setSystemError('無法載入系統模型，請稍後再試');
+    } finally {
+      setIsSystemLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadSystemModels();
+  }, [loadSystemModels]);
 
   // 獲取所有提供商列表
   const providers = Array.from(new Set(models.map((m) => m.provider))).sort();
@@ -82,91 +205,263 @@ export function ModelManagement() {
     }
   };
 
+  const handleSystemEdit = (model: ModelInfo) => {
+    setSystemEditorModel(model);
+  };
+
+  const handleSystemToggle = (model: ModelInfo) => {
+    const nextHidden = !(overridesMap[model.name]?.hidden ?? false);
+    modelOverridesStore.toggleHidden(model.name, model.provider);
+    toast.success(nextHidden ? '模型已隱藏於選單' : '模型已重新顯示');
+  };
+
+  const handleSystemReset = (model: ModelInfo) => {
+    if (!overridesMap[model.name]) {
+      toast.info('此模型尚未自訂設定，無需清除');
+      return;
+    }
+
+    if (
+      confirm(
+        `確定要清除「${model.label || model.name}」的所有自訂設定嗎？\n\n此操作會移除覆寫設定，模型將恢復為系統預設值。`,
+      )
+    ) {
+      modelOverridesStore.removeOverride(model.name);
+      toast.success('已清除自訂設定');
+    }
+  };
+
+  const handleResetAllOverrides = () => {
+    const count = overrides.length;
+
+    if (count === 0) {
+      toast.info('目前沒有任何自訂設定需要清除');
+      return;
+    }
+
+    if (
+      confirm(`確定要清除所有 ${count} 個模型的自訂設定嗎？\n\n此操作會將所有模型恢復為系統預設值，包括已隱藏的模型。`)
+    ) {
+      // 清空所有 overrides
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('bolt_model_overrides');
+        window.location.reload();
+      }
+    }
+  };
+
+  const handleSystemEditorClose = () => {
+    setSystemEditorModel(null);
+  };
+
+  const handleSystemEditorSave = ({ updates, remove }: SystemOverridePayload) => {
+    if (!systemEditorModel) {
+      return;
+    }
+
+    if (remove) {
+      modelOverridesStore.removeOverride(systemEditorModel.name);
+      toast.success('已還原此模型設定');
+    } else {
+      modelOverridesStore.upsertOverride(systemEditorModel.name, systemEditorModel.provider, updates);
+      toast.success('系統模型設定已更新');
+    }
+
+    setSystemEditorModel(null);
+  };
+
   return (
-    <div className="p-4 space-y-4">
-      {/* 標題和操作按鈕 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-bolt-elements-textPrimary">自定義模型管理</h2>
-          <p className="text-sm text-bolt-elements-textSecondary mt-1">添加和管理您的自定義 AI 模型配置</p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={handleExport}
-            className="px-4 py-2 bg-bolt-elements-button-secondary-background text-bolt-elements-button-secondary-text rounded-lg hover:bg-bolt-elements-button-secondary-backgroundHover transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <div className="i-ph:download-simple" />
-              <span>導出</span>
-            </div>
-          </button>
-          <label className="px-4 py-2 bg-bolt-elements-button-secondary-background text-bolt-elements-button-secondary-text rounded-lg hover:bg-bolt-elements-button-secondary-backgroundHover transition-colors cursor-pointer">
-            <div className="flex items-center gap-2">
-              <div className="i-ph:upload-simple" />
-              <span>導入</span>
-            </div>
-            <input type="file" accept=".json" onChange={handleImport} className="hidden" />
-          </label>
-          <button
-            onClick={handleAddModel}
-            className="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <div className="i-ph:plus" />
-              <span>添加模型</span>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* 搜索和過濾 */}
-      <div className="flex gap-3">
-        <div className="flex-1">
-          <div className="relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 i-ph:magnifying-glass text-bolt-elements-textSecondary" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="搜索模型名稱..."
-              className="w-full pl-10 pr-4 py-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor rounded-lg text-bolt-elements-textPrimary placeholder:text-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500"
-            />
+    <div className="p-4 space-y-8">
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-bolt-elements-textPrimary">系統內建模型</h2>
+            <p className="text-sm text-bolt-elements-textSecondary mt-1">
+              檢視目前載入的模型清單，必要時可覆寫描述或隱藏不需要的項目
+            </p>
+          </div>
+          <div className="flex gap-2">
+            {overrides.length > 0 && (
+              <button
+                onClick={handleResetAllOverrides}
+                className="px-4 py-2 bg-red-500/10 text-red-300 hover:bg-red-500/20 rounded-lg transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="i-ph:trash" />
+                  <span>全部重置 ({overrides.length})</span>
+                </div>
+              </button>
+            )}
+            <button
+              onClick={() => void loadSystemModels()}
+              disabled={isSystemLoading}
+              className="px-4 py-2 bg-bolt-elements-button-secondary-background text-bolt-elements-button-secondary-text rounded-lg hover:bg-bolt-elements-button-secondary-backgroundHover transition-colors disabled:opacity-60"
+            >
+              <div className="flex items-center gap-2">
+                <div className={isSystemLoading ? 'i-ph:spinner-gap animate-spin' : 'i-ph:arrow-clockwise'} />
+                <span>{isSystemLoading ? '載入中...' : '重新整理'}</span>
+              </div>
+            </button>
           </div>
         </div>
-        <select
-          value={filterProvider}
-          onChange={(e) => setFilterProvider(e.target.value)}
-          className="px-4 py-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor rounded-lg text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-accent-500"
-        >
-          <option value="all">所有提供商</option>
-          {providers.map((provider) => (
-            <option key={provider} value={provider}>
-              {provider}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* 模型列表 */}
-      <div className="space-y-2">
-        {filteredModels.length === 0 ? (
-          <div className="text-center py-12 text-bolt-elements-textSecondary">
-            <div className="i-ph:database text-4xl mx-auto mb-3 opacity-50" />
-            <p>尚未添加任何自定義模型</p>
-            <p className="text-sm mt-1">點擊上方「添加模型」按鈕開始</p>
+        {systemError && (
+          <div className="p-3 rounded-lg border border-red-400/40 bg-red-500/10 text-sm text-red-200">
+            {systemError}
           </div>
-        ) : (
-          filteredModels.map((model) => (
-            <ModelCard
-              key={model.id}
-              model={model}
-              onEdit={() => handleEditModel(model)}
-              onDelete={() => handleDeleteModel(model.id)}
-              onToggle={() => handleToggleModel(model.id)}
-            />
-          ))
         )}
-      </div>
+        <div className="space-y-3 max-h-[480px] overflow-y-auto modern-scrollbar pr-2">
+          {isSystemLoading && groupedSystemModels.length === 0 ? (
+            <div className="text-center py-12 text-bolt-elements-textSecondary">正在載入系統模型…</div>
+          ) : groupedSystemModels.length === 0 ? (
+            <div className="text-center py-12 text-bolt-elements-textSecondary">尚未取得任何系統模型</div>
+          ) : (
+            groupedSystemModels.map(([provider, models]) => {
+              const isExpanded = expandedProviders.has(provider);
+              const modelCount = models.length;
+              const hiddenCount = models.filter((m) => m.override?.hidden).length;
+
+              return (
+                <div key={provider} className="border border-bolt-elements-borderColor rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => toggleProvider(provider)}
+                    className="w-full px-4 py-3 bg-bolt-elements-background-depth-2 hover:bg-bolt-elements-background-depth-3 transition-colors flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`i-ph:caret-right text-xl transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                      />
+                      <h3 className="font-semibold text-bolt-elements-textPrimary">{provider}</h3>
+                      <span className="px-2 py-0.5 text-xs rounded-full bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary">
+                        {modelCount} 個模型
+                      </span>
+                      {hiddenCount > 0 && (
+                        <span className="px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300">
+                          {hiddenCount} 已隱藏
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                  {isExpanded && (
+                    <div className="p-2 space-y-2 bg-bolt-elements-background-depth-1">
+                      {models.map(({ model, override, isCustom, customModelId }) => (
+                        <SystemModelCard
+                          key={`${model.provider}-${model.name}`}
+                          model={model}
+                          override={override}
+                          isCustom={isCustom}
+                          onEdit={() => handleSystemEdit(model)}
+                          onToggle={() => handleSystemToggle(model)}
+                          onReset={() => handleSystemReset(model)}
+                          onDelete={() => {
+                            if (customModelId) {
+                              handleDeleteModel(customModelId);
+                            }
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </section>
+
+      <section className="space-y-4 border-t border-bolt-elements-borderColor pt-6">
+        {/* 標題和操作按鈕 */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-bolt-elements-textPrimary">自定義模型管理</h2>
+            <p className="text-sm text-bolt-elements-textSecondary mt-1">添加和管理您的自定義 AI 模型配置</p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleExport}
+              className="px-4 py-2 bg-bolt-elements-button-secondary-background text-bolt-elements-button-secondary-text rounded-lg hover:bg-bolt-elements-button-secondary-backgroundHover transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <div className="i-ph:download-simple" />
+                <span>導出</span>
+              </div>
+            </button>
+            <label className="px-4 py-2 bg-bolt-elements-button-secondary-background text-bolt-elements-button-secondary-text rounded-lg hover:bg-bolt-elements-button-secondary-backgroundHover transition-colors cursor-pointer">
+              <div className="flex items-center gap-2">
+                <div className="i-ph:upload-simple" />
+                <span>導入</span>
+              </div>
+              <input type="file" accept=".json" onChange={handleImport} className="hidden" />
+            </label>
+            <button
+              onClick={handleAddModel}
+              className="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <div className="i-ph:plus" />
+                <span>添加模型</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* 搜索和過濾 */}
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <div className="relative">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 i-ph:magnifying-glass text-bolt-elements-textSecondary" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="搜索模型名稱..."
+                className="w-full pl-10 pr-4 py-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor rounded-lg text-bolt-elements-textPrimary placeholder:text-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+            </div>
+          </div>
+          <select
+            value={filterProvider}
+            onChange={(e) => setFilterProvider(e.target.value)}
+            className="px-4 py-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor rounded-lg text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-accent-500"
+          >
+            <option value="all">所有提供商</option>
+            {providers.map((provider) => (
+              <option key={provider} value={provider}>
+                {provider}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 模型列表 */}
+        <div className="space-y-2">
+          {filteredModels.length === 0 ? (
+            <div className="text-center py-12 text-bolt-elements-textSecondary">
+              <div className="i-ph:database text-4xl mx-auto mb-3 opacity-50" />
+              <p>尚未添加任何自定義模型</p>
+              <p className="text-sm mt-1">點擊上方「添加模型」按鈕開始</p>
+            </div>
+          ) : (
+            filteredModels.map((model) => (
+              <ModelCard
+                key={model.id}
+                model={model}
+                onEdit={() => handleEditModel(model)}
+                onDelete={() => handleDeleteModel(model.id)}
+                onToggle={() => handleToggleModel(model.id)}
+              />
+            ))
+          )}
+        </div>
+      </section>
+
+      {systemEditorModel && (
+        <SystemModelEditor
+          model={systemEditorModel}
+          override={overridesMap[systemEditorModel.name]}
+          onClose={handleSystemEditorClose}
+          onSave={handleSystemEditorSave}
+        />
+      )}
 
       {/* 添加/編輯模型對話框 */}
       {isAddingModel && (
@@ -190,6 +485,256 @@ export function ModelManagement() {
           }}
         />
       )}
+    </div>
+  );
+}
+
+interface SystemOverridePayload {
+  updates: Partial<Omit<ModelOverride, 'target' | 'provider' | 'updatedAt'>>;
+  remove?: boolean;
+}
+
+interface SystemModelCardProps {
+  model: ModelInfo;
+  override?: ModelOverride;
+  isCustom?: boolean;
+  onEdit: () => void;
+  onToggle: () => void;
+  onReset: () => void;
+  onDelete: () => void;
+}
+
+function SystemModelCard({ model, override, isCustom, onEdit, onToggle, onReset, onDelete }: SystemModelCardProps) {
+  const effectiveLabel = override?.label ?? model.label ?? model.name;
+  const effectiveDescription = override?.description ?? model.description;
+  const effectiveInput = override?.maxTokenAllowed ?? model.maxTokenAllowed;
+  const effectiveOutput = override?.maxCompletionTokens ?? model.maxCompletionTokens;
+  const isHidden = override?.hidden ?? false;
+  const hasOverride = Boolean(
+    override?.label ||
+      override?.description ||
+      override?.maxTokenAllowed ||
+      override?.maxCompletionTokens ||
+      override?.hidden,
+  );
+
+  return (
+    <div
+      className={`p-4 bg-bolt-elements-background-depth-2 border rounded-lg transition-all ${
+        isHidden ? 'opacity-60 border-dashed border-bolt-elements-borderColor' : 'border-bolt-elements-borderColor'
+      }`}
+    >
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div className="flex-1">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <h3 className="font-semibold text-bolt-elements-textPrimary">{effectiveLabel}</h3>
+            <span className="px-2 py-0.5 text-xs rounded-full bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary">
+              {model.provider}
+            </span>
+            {isHidden && <span className="px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300">已隱藏</span>}
+            {!isHidden && hasOverride && (
+              <span className="px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-300">已自訂</span>
+            )}
+            {isCustom && (
+              <span className="px-2 py-0.5 text-xs rounded-full bg-purple-500/20 text-purple-300">自訂</span>
+            )}
+          </div>
+          <p className="text-sm text-bolt-elements-textSecondary mb-1">
+            模型 ID：{' '}
+            <code className="text-xs bg-bolt-elements-background-depth-3 px-1.5 py-0.5 rounded">{model.name}</code>
+          </p>
+          <p className="text-xs text-bolt-elements-textTertiary mb-2">
+            輸入 {effectiveInput?.toLocaleString() ?? '—'} tokens • 輸出 {effectiveOutput?.toLocaleString() ?? '—'}{' '}
+            tokens
+          </p>
+          {effectiveDescription && (
+            <p className="text-sm text-bolt-elements-textSecondary">
+              {effectiveDescription}
+              {override?.description && (
+                <span className="text-xs text-bolt-elements-textTertiary ml-2">（自訂描述）</span>
+              )}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 md:flex-row md:items-center">
+          <button
+            onClick={onToggle}
+            className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+              isHidden
+                ? 'bg-green-500/20 text-green-300 hover:bg-green-500/30'
+                : 'bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary hover:bg-bolt-elements-background-depth-4'
+            }`}
+          >
+            {isHidden ? '重新顯示' : '從選單隱藏'}
+          </button>
+          <button
+            onClick={onEdit}
+            className="px-3 py-2 rounded-lg bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary hover:bg-bolt-elements-background-depth-4 text-sm transition-colors"
+          >
+            編輯設定
+          </button>
+          <button
+            onClick={onReset}
+            disabled={!hasOverride}
+            className="px-3 py-2 rounded-lg bg-red-500/10 text-red-300 hover:bg-red-500/20 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            title={hasOverride ? '清除此模型的所有自訂設定' : '此模型尚未自訂'}
+          >
+            重置為預設
+          </button>
+          <button
+            onClick={onDelete}
+            className="px-3 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 text-sm transition-colors"
+            title={isCustom ? '從自訂模型列表中刪除' : '從系統移除此模型（標記為永久隱藏）'}
+          >
+            {isCustom ? '刪除' : '移除'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface SystemModelEditorProps {
+  model: ModelInfo;
+  override?: ModelOverride;
+  onClose: () => void;
+  onSave: (payload: SystemOverridePayload) => void;
+}
+
+function SystemModelEditor({ model, override, onClose, onSave }: SystemModelEditorProps) {
+  const [formData, setFormData] = useState({
+    label: override?.label ?? model.label ?? model.name,
+    description: override?.description ?? model.description ?? '',
+    maxTokenAllowed: override?.maxTokenAllowed ?? model.maxTokenAllowed,
+    maxCompletionTokens: override?.maxCompletionTokens ?? model.maxCompletionTokens ?? undefined,
+    hidden: override?.hidden ?? false,
+  });
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const sanitized: Partial<Omit<ModelOverride, 'target' | 'provider' | 'updatedAt'>> = {
+      label: formData.label && formData.label !== (model.label ?? model.name) ? formData.label.trim() : undefined,
+      description: formData.description?.trim() || undefined,
+      maxTokenAllowed:
+        formData.maxTokenAllowed && formData.maxTokenAllowed !== model.maxTokenAllowed
+          ? formData.maxTokenAllowed
+          : undefined,
+      maxCompletionTokens:
+        formData.maxCompletionTokens && formData.maxCompletionTokens !== model.maxCompletionTokens
+          ? formData.maxCompletionTokens
+          : undefined,
+      hidden: formData.hidden,
+    };
+
+    const hasCustomValue = Boolean(
+      sanitized.hidden ||
+        sanitized.label !== undefined ||
+        sanitized.description !== undefined ||
+        sanitized.maxTokenAllowed !== undefined ||
+        sanitized.maxCompletionTokens !== undefined,
+    );
+
+    onSave({ updates: sanitized, remove: !hasCustomValue });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+      <div className="bg-bolt-elements-background-depth-1 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-bolt-elements-background-depth-1 border-b border-bolt-elements-borderColor p-4 flex items-center justify-between">
+          <div>
+            <h3 className="text-xl font-bold text-bolt-elements-textPrimary">調整系統模型</h3>
+            <p className="text-sm text-bolt-elements-textSecondary">
+              {model.provider} · {model.name}
+            </p>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-bolt-elements-background-depth-2">
+            <div className="i-ph:x text-xl text-bolt-elements-textSecondary" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1">顯示名稱</label>
+              <input
+                type="text"
+                value={formData.label}
+                onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+                className="w-full px-3 py-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor rounded-lg text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+              <p className="text-xs text-bolt-elements-textTertiary mt-1">留空將使用系統預設名稱</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1">輸入 Token 上限</label>
+              <input
+                type="number"
+                value={formData.maxTokenAllowed ?? ''}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    maxTokenAllowed: e.target.value ? parseInt(e.target.value) : (undefined as any),
+                  })
+                }
+                className="w-full px-3 py-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor rounded-lg text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1">輸出 Token 上限</label>
+              <input
+                type="number"
+                value={formData.maxCompletionTokens ?? ''}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    maxCompletionTokens: e.target.value ? parseInt(e.target.value) : undefined,
+                  })
+                }
+                className="w-full px-3 py-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor rounded-lg text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+            </div>
+            <div className="flex items-center gap-2 pt-6">
+              <input
+                id="system-model-hidden"
+                type="checkbox"
+                checked={formData.hidden}
+                onChange={(e) => setFormData({ ...formData, hidden: e.target.checked })}
+                className="w-4 h-4"
+              />
+              <label htmlFor="system-model-hidden" className="text-sm text-bolt-elements-textPrimary">
+                隱藏此模型（仍可透過還原顯示）
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1">自訂描述</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={4}
+              className="w-full px-3 py-2 bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor rounded-lg text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-accent-500"
+            />
+            <p className="text-xs text-bolt-elements-textTertiary mt-1">留空則沿用系統原始描述</p>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-bolt-elements-borderColor">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-lg bg-bolt-elements-background-depth-2 text-bolt-elements-textSecondary hover:bg-bolt-elements-background-depth-3"
+            >
+              取消
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 rounded-lg bg-accent-500 text-white hover:bg-accent-600 transition-colors"
+            >
+              儲存
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

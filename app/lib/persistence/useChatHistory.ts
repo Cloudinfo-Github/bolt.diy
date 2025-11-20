@@ -1,7 +1,7 @@
 import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
 import { useState, useEffect, useCallback } from 'react';
 import { atom } from 'nanostores';
-import { generateId, type JSONValue, type Message } from 'ai';
+import { generateId, type JSONValue, type UIMessage } from 'ai';
 import { toast } from 'react-toastify';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { logStore } from '~/lib/stores/logs'; // Import logStore
@@ -28,7 +28,7 @@ export interface ChatHistoryItem {
   id: string;
   urlId?: string;
   description?: string;
-  messages: Message[];
+  messages: UIMessage[];
   timestamp: string;
   metadata?: IChatMetadata;
 }
@@ -54,8 +54,8 @@ export function useChatHistory() {
   const { id: mixedId } = useLoaderData<{ id?: string }>();
   const [searchParams] = useSearchParams();
 
-  const [archivedMessages, setArchivedMessages] = useState<Message[]>([]);
-  const [initialMessages, setInitialMessages] = useState<Message[]>([]);
+  const [archivedMessages, setArchivedMessages] = useState<UIMessage[]>([]);
+  const [initialMessages, setInitialMessages] = useState<UIMessage[]>([]);
   const [ready, setReady] = useState<boolean>(false);
   const [urlId, setUrlId] = useState<string | undefined>();
 
@@ -111,13 +111,13 @@ export function useChatHistory() {
               }
 
               let filteredMessages = storedMessages.messages.slice(startingIdx + 1, endingIdx);
-              let archivedMessages: Message[] = [];
+              let archivedMessages: UIMessage[] = [];
 
               if (startingIdx >= 0) {
-                archivedMessages = storedMessages.messages.slice(0, startingIdx + 1);
+                archivedMessages = storedMessages.messages.slice(0, startingIdx + 1) as any;
               }
 
-              setArchivedMessages(archivedMessages);
+              setArchivedMessages(archivedMessages as any);
 
               if (startingIdx > 0) {
                 const files = Object.entries(validSnapshot?.files || {})
@@ -133,9 +133,32 @@ export function useChatHistory() {
                   })
                   .filter((x): x is { content: string; path: string } => !!x); // Type assertion
                 const projectCommands = await detectProjectCommands(files);
+                const commandActionsString = createCommandActionsString(projectCommands).trim();
 
-                // Call the modified function to get only the command actions string
-                const commandActionsString = createCommandActionsString(projectCommands);
+                const artifactBody = Object.entries(validSnapshot?.files || {})
+                  .map(([key, value]) => {
+                    if (value?.type !== 'file') {
+                      return '';
+                    }
+
+                    return `
+                      <boltAction type="file" filePath="${key}">
+${value.content}
+                      </boltAction>
+                    `;
+                  })
+                  .filter(Boolean)
+                  .join('\n');
+
+                const combinedArtifactSections = [artifactBody, commandActionsString]
+                  .filter((section) => section.length > 0)
+                  .join('\n');
+
+                const artifactMarkup = combinedArtifactSections
+                  ? `<boltArtifact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
+${combinedArtifactSections}
+</boltArtifact>`
+                  : '';
 
                 filteredMessages = [
                   {
@@ -143,30 +166,18 @@ export function useChatHistory() {
                     role: 'user',
                     content: i18next.t('workbench:artifact.restoreProjectFromSnapshot'),
                     annotations: ['no-store', 'hidden'],
-                  },
+                  } as any,
                   {
                     id: storedMessages.messages[snapshotIndex].id,
                     role: 'assistant',
 
                     // Combine followup message and the artifact with files and command actions
-                    content: `${i18next.t('workbench:artifact.chatRestored')} ${i18next.t('workbench:artifact.revertToLoadFullHistory')}
-                  <boltArtifact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
-                  ${Object.entries(snapshot?.files || {})
-                    .map(([key, value]) => {
-                      if (value?.type === 'file') {
-                        return `
-                      <boltAction type="file" filePath="${key}">
-${value.content}
-                      </boltAction>
-                      `;
-                      } else {
-                        return ``;
-                      }
-                    })
-                    .join('\n')}
-                  ${commandActionsString} 
-                  </boltArtifact>
-                  `, // Added commandActionsString, followupMessage, updated id and title
+                    content: [
+                      `${i18next.t('workbench:artifact.chatRestored')} ${i18next.t('workbench:artifact.revertToLoadFullHistory')}`,
+                      artifactMarkup,
+                    ]
+                      .filter(Boolean)
+                      .join('\n\n'),
                     annotations: [
                       'no-store',
                       ...(summary
@@ -179,17 +190,11 @@ ${value.content}
                           ]
                         : []),
                     ],
-                  },
-
-                  // Remove the separate user and assistant messages for commands
-                  /*
-                   *...(commands !== null // This block is no longer needed
-                   *  ? [ ... ]
-                   *  : []),
-                   */
+                  } as any,
                   ...filteredMessages,
                 ];
-                restoreSnapshot(mixedId);
+
+                await restoreSnapshot(mixedId, validSnapshot);
               }
 
               setInitialMessages(filteredMessages);
@@ -295,7 +300,7 @@ ${value.content}
         console.error(error);
       }
     },
-    storeMessageHistory: async (messages: Message[]) => {
+    storeMessageHistory: async (messages: UIMessage[]) => {
       const db = await getDatabase();
 
       if (!db || messages.length === 0) {
@@ -303,7 +308,7 @@ ${value.content}
       }
 
       const { firstArtifact } = workbenchStore;
-      messages = messages.filter((m) => !m.annotations?.includes('no-store'));
+      messages = messages.filter((m) => !(m as any).annotations?.includes('no-store'));
 
       let _urlId = urlId;
 
@@ -318,7 +323,7 @@ ${value.content}
       const lastMessage = messages[messages.length - 1];
 
       if (lastMessage.role === 'assistant') {
-        const annotations = lastMessage.annotations as JSONValue[];
+        const annotations = (lastMessage as any).annotations as JSONValue[];
         const filteredAnnotations = (annotations?.filter(
           (annotation: JSONValue) =>
             annotation && typeof annotation === 'object' && Object.keys(annotation).includes('type'),
@@ -382,7 +387,7 @@ ${value.content}
         console.log(error);
       }
     },
-    importChat: async (description: string, messages: Message[], metadata?: IChatMetadata) => {
+    importChat: async (description: string, messages: UIMessage[], metadata?: IChatMetadata) => {
       const db = await getDatabase();
 
       if (!db) {

@@ -1,4 +1,4 @@
-import type { LanguageModelV1 } from 'ai';
+import type { LanguageModel } from 'ai';
 import type { IProviderSetting } from '~/types/model';
 
 export interface ModelInfo {
@@ -11,6 +11,8 @@ export interface ModelInfo {
 
   /** Maximum completion/output tokens - how many tokens the model can generate. If not specified, falls back to provider defaults */
   maxCompletionTokens?: number;
+
+  description?: string;
 }
 
 export interface ProviderInfo {
@@ -26,7 +28,7 @@ export interface ProviderInfo {
     serverEnv: Env;
     apiKeys?: Record<string, string>;
     providerSettings?: Record<string, IProviderSetting>;
-  }) => LanguageModelV1;
+  }) => LanguageModel;
   getApiKeyLink?: string;
   labelForGetApiKey?: string;
   icon?: string;

@@ -5,6 +5,17 @@ import { createScopedLogger } from '~/utils/logger';
 
 const logger = createScopedLogger('tavily-tool');
 
+type TavilySearchResult = {
+  success: boolean;
+  message: string;
+  data?: {
+    query: string;
+    answer: string | null;
+    results: Array<{ title: string; url: string; content: string; score: number }>;
+  };
+  error?: string;
+};
+
 /**
  * 建立 Tavily 客戶端
  * 如果未提供 API key 則返回 null
@@ -30,10 +41,10 @@ export function createWebSearchTool(env?: Env) {
     return null;
   }
 
-  return tool({
+  return tool<{ query: string }, TavilySearchResult>({
     description:
       '使用 Tavily API 搜尋網路上的最新資訊。適用於需要即時資訊、最新新聞、技術文件或任何需要查詢網路的情況。',
-    parameters: z.object({
+    inputSchema: z.object({
       query: z.string().min(1).max(400).describe('搜尋查詢字串，使用繁體中文或英文'),
     }),
     execute: async ({ query }) => {
@@ -69,14 +80,14 @@ export function createWebSearchTool(env?: Env) {
           success: true,
           data: results,
           message: `找到 ${results.results.length} 個相關結果`,
-        };
+        } satisfies TavilySearchResult;
       } catch (error: any) {
         logger.error('Tavily 搜尋失敗:', error);
         return {
           success: false,
           error: error.message || '搜尋時發生未知錯誤',
           message: '網路搜尋失敗，請稍後再試',
-        };
+        } satisfies TavilySearchResult;
       }
     },
   });

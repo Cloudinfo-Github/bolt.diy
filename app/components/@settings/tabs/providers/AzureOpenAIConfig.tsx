@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { classNames } from '~/utils/classNames';
@@ -19,6 +19,10 @@ interface AzureConfig {
   api_version?: string;
 }
 
+type AzureServerConfig = Partial<Omit<AzureConfig, 'api_key'>> & {
+  api_key_masked?: string;
+};
+
 export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) => {
   const { t } = useI18n('settings');
 
@@ -33,12 +37,34 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
   const [isSaving, setIsSaving] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isEnvConfigured, setIsEnvConfigured] = useState(false);
+  const [serverConfig, setServerConfig] = useState<AzureServerConfig>({});
+
+  const isTraditionalEndpoint = useMemo(
+    () => config.endpoint?.includes('.openai.azure.com') ?? false,
+    [config.endpoint],
+  );
+  const isFoundryEndpoint = useMemo(
+    () => config.endpoint?.includes('.services.ai.azure.com') ?? false,
+    [config.endpoint],
+  );
 
   // Load saved configuration from cookies on mount
   useEffect(() => {
     loadSavedConfig();
     checkEnvConfiguration();
   }, []);
+
+  useEffect(() => {
+    if (isFoundryEndpoint) {
+      setConfig((prev) => {
+        if (!prev.deployment_name) {
+          return prev;
+        }
+
+        return { ...prev, deployment_name: '' };
+      });
+    }
+  }, [isFoundryEndpoint]);
 
   const loadSavedConfig = () => {
     try {
@@ -66,6 +92,22 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
     }
   };
 
+  const mergeServerConfig = (serverData: AzureServerConfig) => {
+    setServerConfig(serverData);
+
+    if (!serverData) {
+      return;
+    }
+
+    setConfig((prev) => ({
+      ...prev,
+      endpoint: serverData.endpoint ?? prev.endpoint ?? '',
+      resource_name: serverData.resource_name ?? prev.resource_name ?? '',
+      deployment_name: serverData.deployment_name ?? prev.deployment_name ?? '',
+      api_version: serverData.api_version ?? prev.api_version ?? '2025-04-01-preview',
+    }));
+  };
+
   const checkEnvConfiguration = async () => {
     try {
       const response = await fetch('/api/save-env-config?provider=azure_openai');
@@ -73,6 +115,7 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
 
       if (data.config && Object.keys(data.config).length > 0) {
         setIsEnvConfigured(true);
+        mergeServerConfig(data.config as AzureServerConfig);
       }
     } catch (error) {
       console.error('Error checking environment configuration:', error);
@@ -113,7 +156,9 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
 
   const handleSyncToEnv = async () => {
     // Validate required fields
-    if (!config.api_key || !config.endpoint) {
+    const deploymentRequired = isTraditionalEndpoint && !config.deployment_name;
+
+    if (!config.api_key || !config.endpoint || deploymentRequired) {
       toast.error(t('providers.azure.toast.validationError'));
       return;
     }
@@ -176,6 +221,42 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
           </div>
         )}
       </div>
+
+      {isEnvConfigured && (
+        <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-sm text-bolt-elements-textPrimary">
+          <p className="font-medium mb-2">{t('providers.azure.envConfiguredDetail')}</p>
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <dt className="text-bolt-elements-textSecondary text-xs uppercase tracking-wide">Endpoint</dt>
+              <dd className="font-mono text-sm break-all">
+                {serverConfig.endpoint || t('providers.azure.envMissing')}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-bolt-elements-textSecondary text-xs uppercase tracking-wide">Resource Name</dt>
+              <dd className="font-mono text-sm break-all">
+                {serverConfig.resource_name || t('providers.azure.envMissing')}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-bolt-elements-textSecondary text-xs uppercase tracking-wide">Deployment</dt>
+              <dd className="font-mono text-sm break-all">
+                {serverConfig.deployment_name || t('providers.azure.envMissing')}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-bolt-elements-textSecondary text-xs uppercase tracking-wide">API Version</dt>
+              <dd className="font-mono text-sm break-all">{serverConfig.api_version || '2025-04-01-preview'}</dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="text-bolt-elements-textSecondary text-xs uppercase tracking-wide">API Key</dt>
+              <dd className="font-mono text-sm break-all">
+                {serverConfig.api_key_masked || t('providers.azure.envApiKeyStored')}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      )}
 
       {/* Configuration Fields */}
       <div className="space-y-4">
@@ -287,7 +368,7 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
           <div className="mb-4">
             <label className="block text-sm font-medium text-bolt-elements-textSecondary mb-2">
               {t('providers.azure.deploymentName.label')}
-              {config.endpoint && config.endpoint.includes('.openai.azure.com') && (
+              {isTraditionalEndpoint && (
                 <span className="text-red-500 ml-1">*{t('providers.azure.deploymentName.requiredForTraditional')}</span>
               )}
             </label>
@@ -299,12 +380,14 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
               className={classNames(
                 'w-full px-4 py-2 rounded-lg border',
                 'bg-bolt-elements-background text-bolt-elements-textPrimary',
-                config.endpoint && config.endpoint.includes('.openai.azure.com') && !config.deployment_name
+                isTraditionalEndpoint && !config.deployment_name
                   ? 'border-red-500'
                   : 'border-bolt-elements-borderColor',
                 'focus:outline-none focus:ring-2 focus:ring-blue-500',
                 'placeholder:text-bolt-elements-textTertiary',
+                isFoundryEndpoint && 'opacity-50 cursor-not-allowed',
               )}
+              disabled={isFoundryEndpoint}
             />
             <div className="mt-1 space-y-1">
               <p className="text-xs text-bolt-elements-textSecondary">
@@ -319,13 +402,13 @@ export const AzureOpenAiConfig: React.FC<AzureOpenAIConfigProps> = ({ onSave }) 
                 </a>{' '}
                 {t('providers.azure.deploymentName.helpTextMiddle')}
               </p>
-              {config.endpoint && config.endpoint.includes('.openai.azure.com') && (
+              {isTraditionalEndpoint && (
                 <p className="text-xs text-yellow-500 font-medium">
                   ⚠️ {t('providers.azure.deploymentName.warningTraditional')}
                 </p>
               )}
-              {config.endpoint && config.endpoint.includes('.services.ai.azure.com') && (
-                <p className="text-xs text-green-500">ℹ️ {t('providers.azure.deploymentName.infoFoundry')}</p>
+              {isFoundryEndpoint && (
+                <p className="text-xs text-green-500">ℹ️ {t('providers.azure.deploymentName.disabledForFoundry')}</p>
               )}
             </div>
           </div>

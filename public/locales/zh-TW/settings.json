@@ -80,6 +80,7 @@
     "data": "資料管理",
     "cloudProviders": "雲端提供者",
     "localProviders": "本地提供者",
+    "models": "模型",
     "github": "GitHub",
     "gitlab": "GitLab",
     "netlify": "Netlify",
@@ -96,6 +97,7 @@
     "data": "管理您的資料和儲存空間",
     "cloudProviders": "配置雲端 AI 提供者和模型",
     "localProviders": "配置本地 AI 提供者和模型",
+    "models": "管理可用的 AI 模型",
     "github": "連接並管理 GitHub 整合",
     "gitlab": "連接並管理 GitLab 整合",
     "netlify": "配置 Netlify 部署設定",
@@ -379,6 +381,9 @@
       "title": "Azure OpenAI 配置",
       "description": "配置 Azure OpenAI Service 連線資訊",
       "envConfigured": ".env.local 已配置",
+      "envConfiguredDetail": "目前儲存在 .env.local 的參數",
+      "envMissing": "伺服器尚未設定",
+      "envApiKeyStored": "API Key 已安全儲存在 .env.local",
       "apiKey": {
         "label": "API Key",
         "required": "必填",
@@ -417,7 +422,8 @@
         "helpLink": "Azure Portal",
         "helpTextMiddle": "的 Model deployments 頁面找到",
         "warningTraditional": "傳統 Azure OpenAI 端點需要填寫 Deployment Name（不是模型名稱）",
-        "infoFoundry": "Azure AI Foundry 端點可以留空，將使用模型名稱"
+        "infoFoundry": "Azure AI Foundry 端點可以留空，將使用模型名稱",
+        "disabledForFoundry": "Azure AI Foundry 端點無需填寫 Deployment Name"
       },
       "apiVersion": {
         "label": "API Version",

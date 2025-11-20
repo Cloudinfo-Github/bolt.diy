@@ -30,3 +30,26 @@ export interface CustomModelsStore {
   importModels: (models: CustomModelConfig[]) => void;
   exportModels: () => CustomModelConfig[];
 }
+
+export interface ModelOverride {
+  target: string; // 目標系統模型名稱
+  provider: string;
+  label?: string;
+  description?: string;
+  maxTokenAllowed?: number;
+  maxCompletionTokens?: number;
+  hidden?: boolean;
+  updatedAt: number;
+}
+
+export interface ModelOverridesStore {
+  overrides: ModelOverride[];
+  upsertOverride: (
+    target: string,
+    provider: string,
+    updates: Partial<Omit<ModelOverride, 'target' | 'provider' | 'updatedAt'>>,
+  ) => void;
+  removeOverride: (target: string) => void;
+  toggleHidden: (target: string, provider: string) => void;
+  getOverride: (target: string) => ModelOverride | undefined;
+}

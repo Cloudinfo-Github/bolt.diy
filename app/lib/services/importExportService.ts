@@ -1,12 +1,5 @@
 import Cookies from 'js-cookie';
-import { type Message } from 'ai';
 import { getAllChats, deleteChat } from '~/lib/persistence/chats';
-
-interface ExtendedMessage extends Message {
-  name?: string;
-  function_call?: any;
-  timestamp?: number;
-}
 
 /**
  * Service for handling import and export operations of application data
@@ -30,10 +23,10 @@ export class ImportExportService {
       const sanitizedChats = chats.map((chat) => ({
         id: chat.id,
         description: chat.description || '',
-        messages: chat.messages.map((msg: ExtendedMessage) => ({
+        messages: chat.messages.map((msg: any) => ({
           id: msg.id,
           role: msg.role,
-          content: msg.content,
+          parts: msg.parts,
           name: msg.name,
           function_call: msg.function_call,
           timestamp: msg.timestamp,

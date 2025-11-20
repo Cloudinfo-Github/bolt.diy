@@ -1,4 +1,4 @@
-import { generateText, type CoreTool, type GenerateTextResult, type Message } from 'ai';
+import { generateText, type Tool, type GenerateTextResult, type UIMessage } from 'ai';
 import type { IProviderSetting } from '~/types/model';
 import { DEFAULT_MODEL, DEFAULT_PROVIDER, PROVIDER_LIST } from '~/utils/constants';
 import { extractCurrentContext, extractPropertiesFromMessage, simplifyBoltActions } from './utils';
@@ -8,32 +8,39 @@ import { LLMManager } from '~/lib/modules/llm/manager';
 const logger = createScopedLogger('create-summary');
 
 export async function createSummary(props: {
-  messages: Message[];
+  messages: UIMessage[];
   env?: Env;
   apiKeys?: Record<string, string>;
   providerSettings?: Record<string, IProviderSetting>;
   promptId?: string;
   contextOptimization?: boolean;
-  onFinish?: (resp: GenerateTextResult<Record<string, CoreTool<any, any>>, never>) => void;
+  onFinish?: (resp: GenerateTextResult<Record<string, Tool<any, any>>, never>) => void;
 }) {
   const { messages, env: serverEnv, apiKeys, providerSettings, onFinish } = props;
   let currentModel = DEFAULT_MODEL;
   let currentProvider = DEFAULT_PROVIDER.name;
   const processedMessages = messages.map((message) => {
     if (message.role === 'user') {
-      const { model, provider, content } = extractPropertiesFromMessage(message);
+      const { model, provider, parts } = extractPropertiesFromMessage(message);
       currentModel = model;
       currentProvider = provider;
 
-      return { ...message, content };
+      return { ...message, parts };
     } else if (message.role == 'assistant') {
-      let content = message.content;
+      const parts = message.parts.map((part) => {
+        if (part.type === 'text') {
+          let content = part.text;
+          content = simplifyBoltActions(content);
+          content = content.replace(/<div class=\\"__boltThought__\\">.*?<\/div>/s, '');
+          content = content.replace(/<think>.*?<\/think>/s, '');
 
-      content = simplifyBoltActions(content);
-      content = content.replace(/<div class=\\"__boltThought__\\">.*?<\/div>/s, '');
-      content = content.replace(/<think>.*?<\/think>/s, '');
+          return { ...part, text: content };
+        }
 
-      return { ...message, content };
+        return part;
+      });
+
+      return { ...message, parts };
     }
 
     return message;
@@ -94,10 +101,9 @@ ${summary.summary}`;
 
   logger.debug('Sliced Messages:', slicedMessages.length);
 
-  const extractTextContent = (message: Message) =>
-    Array.isArray(message.content)
-      ? (message.content.find((item) => item.type === 'text')?.text as string) || ''
-      : message.content;
+  const extractTextContent = (message: UIMessage) => {
+    return message.parts.find((item) => item.type === 'text')?.text || '';
+  };
 
   // select files from the list of code file from the project that might be useful for the current request from the user
   const resp = await generateText({

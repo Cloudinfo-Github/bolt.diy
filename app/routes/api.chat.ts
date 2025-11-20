@@ -1,5 +1,5 @@
 import { type ActionFunctionArgs } from '@remix-run/cloudflare';
-import { createDataStream, generateId } from 'ai';
+import { createUIMessageStream, createUIMessageStreamResponse, generateId } from 'ai';
 import { MAX_RESPONSE_SEGMENTS, MAX_TOKENS, isReasoningModel, type FileMap } from '~/lib/.server/llm/constants';
 import { CONTINUE_PROMPT } from '~/lib/common/prompts/prompts';
 import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/llm/stream-text';
@@ -52,34 +52,25 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
   });
   let responseSegments = 0;
 
-  const {
-    messages,
-    files,
-    promptId,
-    contextOptimization,
-    supabase,
-    chatMode,
-    designScheme,
-    maxLLMSteps,
-    webSearchEnabled,
-  } = await request.json<{
-    messages: Messages;
-    files: any;
-    promptId?: string;
-    contextOptimization: boolean;
-    chatMode: 'discuss' | 'build';
-    designScheme?: DesignScheme;
-    supabase?: {
-      isConnected: boolean;
-      hasSelectedProject: boolean;
-      credentials?: {
-        anonKey?: string;
-        supabaseUrl?: string;
+  const { messages, files, promptId, contextOptimization, supabase, chatMode, designScheme, webSearchEnabled } =
+    await request.json<{
+      messages: Messages;
+      files: any;
+      promptId?: string;
+      contextOptimization: boolean;
+      chatMode: 'discuss' | 'build';
+      designScheme?: DesignScheme;
+      supabase?: {
+        isConnected: boolean;
+        hasSelectedProject: boolean;
+        credentials?: {
+          anonKey?: string;
+          supabaseUrl?: string;
+        };
       };
-    };
-    maxLLMSteps: number;
-    webSearchEnabled?: boolean;
-  }>();
+      maxLLMSteps: number;
+      webSearchEnabled?: boolean;
+    }>();
 
   const cookieHeader = request.headers.get('Cookie');
   const apiKeys = JSON.parse(parseCookies(cookieHeader || '').apiKeys || '{}');
@@ -96,11 +87,19 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
   try {
     const mcpService = MCPService.getInstance();
-    const totalMessageContent = messages.reduce((acc, message) => acc + message.content, '');
+    const totalMessageContent = messages.reduce((acc, message) => {
+      const textContent = message.parts
+        .filter((part) => part.type === 'text')
+        .map((part) => part.text)
+        .join('');
+      return acc + textContent;
+    }, '');
     logger.debug(`Total message length: ${totalMessageContent.split(' ').length}, words`);
 
-    const dataStream = createDataStream({
-      async execute(dataStream) {
+    logger.debug(`Total message length: ${totalMessageContent.split(' ').length}, words`);
+
+    const stream = createUIMessageStream({
+      async execute({ writer }) {
         streamRecovery.startMonitoring();
 
         const filePaths = getFilePaths(files || {});
@@ -108,7 +107,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         const summary: string | undefined = undefined;
         let messageSliceId = 0;
 
-        const processedMessages = await mcpService.processToolInvocations(messages, dataStream);
+        const processedMessages = await mcpService.processToolInvocations(messages, writer);
 
         if (processedMessages.length > 3) {
           messageSliceId = processedMessages.length - 3;
@@ -116,13 +115,16 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
         if (filePaths.length > 0 && contextOptimization) {
           logger.debug('Generating Chat Summary');
-          dataStream.writeData({
-            type: 'progress',
-            label: 'summary',
-            status: 'in-progress',
-            order: progressCounter++,
-            message: 'Analysing Request',
-          } satisfies ProgressAnnotation);
+          writer.write({
+            type: 'data',
+            data: {
+              type: 'progress',
+              label: 'summary',
+              status: 'in-progress',
+              order: progressCounter++,
+              message: 'Analysing Request',
+            } satisfies ProgressAnnotation,
+          } as any);
 
           // （已移除錯誤插入的推理迴圈，summary 邏輯保持原樣）
         }
@@ -131,36 +133,35 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           supabaseConnection: supabase,
           toolChoice: 'auto',
           tools: mcpService.toolsWithoutExecute,
-          maxSteps: maxLLMSteps,
+
+          // maxSteps: maxLLMSteps,
           onStepFinish: ({ toolCalls }) => {
             toolCalls.forEach((toolCall) => {
-              mcpService.processToolCall(toolCall, dataStream);
+              mcpService.processToolCall(toolCall as any, writer);
             });
           },
-          onFinish: async ({
-            text: content,
-            finishReason,
-            usage,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            experimental_providerMetadata,
-            response,
-          }) => {
+          onFinish: async (result: any) => {
+            const { text: content, finishReason, usage, response } = result;
+            const experimentalProviderMetadata = (result as any).experimental_providerMetadata;
             logger.info('[onFinish] ========== CALLBACK CALLED ==========');
 
             // Mark analysis as complete if it was started
             if (filePaths.length > 0 && contextOptimization) {
-              dataStream.writeData({
-                type: 'progress',
-                label: 'summary',
-                status: 'complete',
-                order: progressCounter++,
-                message: 'Analysis Complete',
-              } satisfies ProgressAnnotation);
+              writer.write({
+                type: 'data',
+                data: {
+                  type: 'progress',
+                  label: 'summary',
+                  status: 'complete',
+                  order: progressCounter++,
+                  message: 'Analysis Complete',
+                } satisfies ProgressAnnotation,
+              } as any);
             }
 
             logger.debug('usage', JSON.stringify(usage));
             logger.debug('finishReason', finishReason);
-            logger.debug('experimental_providerMetadata', JSON.stringify(experimental_providerMetadata));
+            logger.debug('experimentalProviderMetadata', JSON.stringify(experimentalProviderMetadata));
             logger.debug('response keys', response ? Object.keys(response) : 'no response');
 
             // 提取 reasoning summary（官方推薦方式）
@@ -235,20 +236,20 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
                 }
               }
 
-              // 方法 2: 從 experimental_providerMetadata 提取（Vercel AI SDK 官方方式）
+              // 方法 2: 從 experimentalProviderMetadata 提取（Vercel AI SDK 官方方式）
               if (!reasoningSummary && !reasoningContent) {
-                if (experimental_providerMetadata?.azure?.reasoningSummary) {
-                  reasoningSummary = String(experimental_providerMetadata.azure.reasoningSummary);
-                  logger.info('[Reasoning] ✅ Found reasoningSummary in experimental_providerMetadata.azure');
-                } else if (experimental_providerMetadata?.openai?.reasoningSummary) {
-                  reasoningSummary = String(experimental_providerMetadata.openai.reasoningSummary);
-                  logger.info('[Reasoning] ✅ Found reasoningSummary in experimental_providerMetadata.openai');
+                if (experimentalProviderMetadata?.azure?.reasoningSummary) {
+                  reasoningSummary = String(experimentalProviderMetadata.azure.reasoningSummary);
+                  logger.info('[Reasoning] ✅ Found reasoningSummary in experimentalProviderMetadata.azure');
+                } else if (experimentalProviderMetadata?.openai?.reasoningSummary) {
+                  reasoningSummary = String(experimentalProviderMetadata.openai.reasoningSummary);
+                  logger.info('[Reasoning] ✅ Found reasoningSummary in experimentalProviderMetadata.openai');
                 }
               }
 
               // 方法 3: 檢查是否有 reasoningTokens（表示模型使用了推理但內容未提取）
               if (!reasoningSummary && !reasoningContent) {
-                const reasoningTokens = experimental_providerMetadata?.openai?.reasoningTokens;
+                const reasoningTokens = experimentalProviderMetadata?.openai?.reasoningTokens;
                 const hasReasoningTokens = typeof reasoningTokens === 'number' && reasoningTokens > 0;
 
                 if (hasReasoningTokens) {
@@ -271,15 +272,18 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
                 const reasoningAnnotation: ReasoningAnnotation = {
                   type: REASONING_ANNOTATION_TYPE,
                   summary: finalReasoningContent,
-                  provider: experimental_providerMetadata?.azure
+                  provider: experimentalProviderMetadata?.azure
                     ? 'azure'
-                    : experimental_providerMetadata?.openai
+                    : experimentalProviderMetadata?.openai
                       ? 'openai'
                       : undefined,
                   model: response?.modelId,
                 };
 
-                dataStream.writeMessageAnnotation(reasoningAnnotation);
+                writer.write({
+                  type: 'data',
+                  data: reasoningAnnotation,
+                } as any);
 
                 logger.info('[Reasoning] ✅ Reasoning annotation sent to frontend');
               } else {
@@ -288,15 +292,15 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
                   '[Reasoning] Available metadata:',
                   JSON.stringify(
                     {
-                      hasAzureMetadata: !!experimental_providerMetadata?.azure,
-                      hasOpenAIMetadata: !!experimental_providerMetadata?.openai,
-                      azureKeys: experimental_providerMetadata?.azure
-                        ? Object.keys(experimental_providerMetadata.azure)
+                      hasAzureMetadata: !!experimentalProviderMetadata?.azure,
+                      hasOpenAIMetadata: !!experimentalProviderMetadata?.openai,
+                      azureKeys: experimentalProviderMetadata?.azure
+                        ? Object.keys(experimentalProviderMetadata.azure)
                         : [],
-                      openaiKeys: experimental_providerMetadata?.openai
-                        ? Object.keys(experimental_providerMetadata.openai)
+                      openaiKeys: experimentalProviderMetadata?.openai
+                        ? Object.keys(experimentalProviderMetadata.openai)
                         : [],
-                      reasoningTokens: experimental_providerMetadata?.openai?.reasoningTokens,
+                      reasoningTokens: experimentalProviderMetadata?.openai?.reasoningTokens,
                     },
                     null,
                     2,
@@ -308,27 +312,33 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             }
 
             if (usage) {
-              cumulativeUsage.completionTokens += usage.completionTokens || 0;
-              cumulativeUsage.promptTokens += usage.promptTokens || 0;
-              cumulativeUsage.totalTokens += usage.totalTokens || 0;
+              cumulativeUsage.completionTokens += (usage as any).completionTokens || 0;
+              cumulativeUsage.promptTokens += (usage as any).promptTokens || 0;
+              cumulativeUsage.totalTokens += (usage as any).totalTokens || 0;
             }
 
             if (finishReason !== 'length') {
-              dataStream.writeMessageAnnotation({
-                type: USAGE_ANNOTATION_TYPE,
-                value: {
-                  completionTokens: cumulativeUsage.completionTokens,
-                  promptTokens: cumulativeUsage.promptTokens,
-                  totalTokens: cumulativeUsage.totalTokens,
+              writer.write({
+                type: 'data',
+                data: {
+                  type: USAGE_ANNOTATION_TYPE,
+                  value: {
+                    completionTokens: cumulativeUsage.completionTokens,
+                    promptTokens: cumulativeUsage.promptTokens,
+                    totalTokens: cumulativeUsage.totalTokens,
+                  },
                 },
-              });
-              dataStream.writeData({
-                type: 'progress',
-                label: 'response',
-                status: 'complete',
-                order: progressCounter++,
-                message: 'Response Generated',
-              } satisfies ProgressAnnotation);
+              } as any);
+              writer.write({
+                type: 'data',
+                data: {
+                  type: 'progress',
+                  label: 'response',
+                  status: 'complete',
+                  order: progressCounter++,
+                  message: 'Response Generated',
+                } satisfies ProgressAnnotation,
+              } as any);
               streamRecovery.stop();
               await new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -345,17 +355,22 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
             const lastUserMessage = processedMessages.filter((x) => x.role === 'user').slice(-1)[0];
             const { model, provider } = extractPropertiesFromMessage(lastUserMessage);
-            processedMessages.push({ id: generateId(), role: 'assistant', content });
+            processedMessages.push({ id: generateId(), role: 'assistant', parts: [{ type: 'text', text: content }] });
             processedMessages.push({
               id: generateId(),
               role: 'user',
-              content: `[Model: ${model}]\n\n[Provider: ${provider}]\n\n${CONTINUE_PROMPT}`,
+              parts: [
+                {
+                  type: 'text',
+                  text: `[Model: ${model}]\n\n[Provider: ${provider}]\n\n${CONTINUE_PROMPT}`,
+                },
+              ],
             });
 
             responseSegments += 1;
 
-            const result = await streamText({
-              messages: [...processedMessages],
+            const continuationResult = await streamText({
+              messages: [...processedMessages] as any,
               env: context.cloudflare?.env,
               options,
               apiKeys,
@@ -374,7 +389,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             // Monitor fullStream in continuation
             (async () => {
               try {
-                for await (const part of result.fullStream) {
+                for await (const part of (continuationResult as any).fullStream) {
                   streamRecovery.updateActivity();
 
                   if (part.type === 'error') {
@@ -394,9 +409,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             })();
 
             // 使用 AI SDK 正確的流合併方法，並啟用推理內容傳輸
-            result.mergeIntoDataStream(dataStream, {
-              sendReasoning: true,
-            });
+            writer.merge((continuationResult as any).toUIMessageStream());
           },
         };
 
@@ -410,16 +423,19 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
          * 這樣可以避免顯示佔位符文字
          */
 
-        dataStream.writeData({
-          type: 'progress',
-          label: 'response',
-          status: 'in-progress',
-          order: progressCounter++,
-          message: isReasoning ? 'AI 深度思考中...' : 'Generating Response',
-        } satisfies ProgressAnnotation);
+        writer.write({
+          type: 'data',
+          data: {
+            type: 'progress',
+            label: 'response',
+            status: 'in-progress',
+            order: progressCounter++,
+            message: isReasoning ? 'AI 深度思考中...' : 'Generating Response',
+          } satisfies ProgressAnnotation,
+        } as any);
 
         const result = await streamText({
-          messages: [...processedMessages],
+          messages: [...processedMessages] as any,
           env: context.cloudflare?.env,
           options,
           apiKeys,
@@ -465,9 +481,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         })();
 
         // 使用 AI SDK 正確的流合併方法，並啟用推理內容傳輸
-        result.mergeIntoDataStream(dataStream, {
-          sendReasoning: true,
-        });
+        writer.merge(result.toUIMessageStream());
       },
       onError: (error: any) => {
         streamRecovery.stop();
@@ -507,15 +521,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
       },
     });
 
-    return new Response(dataStream, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/event-stream; charset=utf-8',
-        Connection: 'keep-alive',
-        'Cache-Control': 'no-cache',
-        'Text-Encoding': 'chunked',
-      },
-    });
+    return createUIMessageStreamResponse({ stream });
   } catch (error: any) {
     streamRecovery.stop();
     logger.error(error);

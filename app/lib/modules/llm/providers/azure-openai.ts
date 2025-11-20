@@ -1,7 +1,7 @@
 import { BaseProvider } from '~/lib/modules/llm/base-provider';
 import type { ModelInfo } from '~/lib/modules/llm/types';
 import type { IProviderSetting } from '~/types/model';
-import type { LanguageModelV1 } from 'ai';
+import type { LanguageModel } from 'ai';
 import { createAzure } from '@ai-sdk/azure';
 import { createOpenAI } from '@ai-sdk/openai';
 
@@ -43,106 +43,7 @@ export default class AzureOpenAIProvider extends BaseProvider {
     baseUrlKey: 'AZURE_OPENAI_ENDPOINT',
   };
 
-  staticModels: ModelInfo[] = [
-    /*
-     * ✅ Azure AI Foundry 實際部署的模型
-     * 最後更新：2025-11-13
-     * 說明：只包含用戶實際部署在 Azure AI Foundry 專案中的 11 個模型
-     */
-
-    // ==================== DeepSeek 系列 ====================
-    {
-      name: 'DeepSeek-R1',
-      label: 'DeepSeek-R1 🔥',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'DeepSeek-R1-0528',
-      label: 'DeepSeek-R1-0528 🔥⚡',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 8192,
-    },
-
-    // ==================== GPT-4.1 ====================
-    {
-      name: 'gpt-4.1',
-      label: 'GPT-4.1',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 1048576,
-      maxCompletionTokens: 32768,
-    },
-
-    // ==================== GPT-4o 系列 ====================
-    {
-      name: 'gpt-4o-realtime-preview',
-      label: 'GPT-4o Realtime Preview',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 16384,
-    },
-
-    // ==================== GPT-5 系列 ====================
-    {
-      name: 'gpt-5',
-      label: 'GPT-5',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
-    },
-    {
-      name: 'gpt-5-codex',
-      label: 'GPT-5 Codex',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
-    },
-
-    // ==================== 圖像生成模型 ====================
-    {
-      name: 'gpt-image-1',
-      label: 'GPT Image 1',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4096,
-    },
-
-    // ==================== Grok 系列 (xAI) ====================
-    {
-      name: 'grok-4-fast-reasoning',
-      label: 'Grok-4 Fast Reasoning 🧠',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4096, // 降低以符合 Azure S0 tier 的 50K tokens/min 限制
-    },
-
-    // ==================== O3 系列 (推理模型) ====================
-    {
-      name: 'o3-mini',
-      label: 'O3 Mini',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 65000,
-    },
-
-    // ==================== Sora 系列 (視頻生成) ====================
-    {
-      name: 'sora',
-      label: 'Sora',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4096,
-    },
-    {
-      name: 'sora-2',
-      label: 'Sora 2',
-      provider: 'AzureOpenAI',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4096,
-    },
-  ];
+  staticModels: ModelInfo[] = [];
 
   async getDynamicModels(
     _apiKeys?: Record<string, string>,
@@ -194,7 +95,7 @@ export default class AzureOpenAIProvider extends BaseProvider {
     serverEnv: Env;
     apiKeys?: Record<string, string>;
     providerSettings?: Record<string, IProviderSetting>;
-  }): LanguageModelV1 {
+  }): LanguageModel {
     const { model, serverEnv, apiKeys, providerSettings } = options;
 
     const { apiKey, baseUrl } = this.getProviderBaseUrlAndKey({
@@ -298,17 +199,29 @@ export default class AzureOpenAIProvider extends BaseProvider {
               }
 
               /*
-               * 🔥 依照官方建議，Responses API 需要透過 include 指定 output item
-               * 這裡強制加入 reasoning / reasoning_summary / output_text，以確保可取得摘要與加密內容
+               * Azure 僅允許特定 include 值，若傳遞其他字串（例："reasoning"）會回傳 400
+               * 目前我們只保留官方允許且對推理有幫助的 reasoning.encrypted_content
                */
 
-              const requiredIncludes = ['reasoning', 'reasoning_summary', 'output_text'];
+              const allowedIncludeItems = new Set([
+                'reasoning.encrypted_content',
+                'file_search_call.results',
+                'web_search_call.results',
+                'web_search_call.action.sources',
+                'message.input_image.image_url',
+                'computer_call_output.output.image_url',
+                'code_interpreter_call.outputs',
+                'message.output_text.logprobs',
+              ]);
+              const desiredIncludeItems = ['reasoning.encrypted_content'];
 
               if (!Array.isArray(body.include)) {
                 body.include = [];
               }
 
-              for (const item of requiredIncludes) {
+              body.include = body.include.filter((item: string) => allowedIncludeItems.has(item));
+
+              for (const item of desiredIncludeItems) {
                 if (!body.include.includes(item)) {
                   body.include.push(item);
                 }
@@ -663,10 +576,10 @@ export default class AzureOpenAIProvider extends BaseProvider {
       // 根據模型選擇使用 Responses API 或 Chat Completions API
       if (requiresResponsesAPI) {
         console.log('[AzureOpenAI] Using Responses API for', model);
-        return openai.responses(model) as unknown as LanguageModelV1;
+        return openai.responses(model) as unknown as LanguageModel;
       } else {
         console.log('[AzureOpenAI] Using Chat Completions API for', model);
-        return openai(model) as unknown as LanguageModelV1;
+        return openai(model) as unknown as LanguageModel;
       }
     } else {
       console.log('[AzureOpenAI] Using traditional Azure OpenAI endpoint');
@@ -681,7 +594,7 @@ export default class AzureOpenAIProvider extends BaseProvider {
       });
 
       // Return model instance using deployment name
-      return azure(deploymentName) as unknown as LanguageModelV1;
+      return azure(deploymentName) as unknown as LanguageModel;
     }
   }
 }

@@ -1,6 +1,6 @@
 import ignore from 'ignore';
 import { useGit } from '~/lib/hooks/useGit';
-import type { Message } from 'ai';
+import type { UIMessage as Message } from 'ai';
 import { detectProjectCommands, createCommandsMessage, escapeBoltTags } from '~/utils/projectCommands';
 import { generateId } from '~/utils/fileUtils';
 import { useState } from 'react';
@@ -124,7 +124,11 @@ export default function GitCloneButton({ importChat, className }: GitCloneButton
 
         const filesMessage: Message = {
           role: 'assistant',
-          content: `Cloning the repo ${repoUrl} into ${workdir}
+          id: generateId(),
+          parts: [
+            {
+              type: 'text',
+              text: `Cloning the repo ${repoUrl} into ${workdir}
 ${
   skippedFiles.length > 0
     ? `\nSkipped files (${skippedFiles.length}):
@@ -142,14 +146,16 @@ ${escapeBoltTags(file.content)}
   )
   .join('\n')}
 </boltArtifact>`,
-          id: generateId(),
-          createdAt: new Date(),
-        };
+            },
+          ],
+
+          // createdAt: new Date(),
+        } as any;
 
         const messages = [filesMessage];
 
         if (commandsMessage) {
-          messages.push(commandsMessage);
+          messages.push(commandsMessage as any);
         }
 
         await importChat(`${t('gitClone.gitProject')}:${repoUrl.split('/').slice(-1)[0]}`, messages);

@@ -1,5 +1,4 @@
-import { type ToolSet, type Message, type DataStreamWriter, convertToCoreMessages } from 'ai';
-import { formatDataStreamPart } from '@ai-sdk/ui-utils';
+import { type ToolSet, type UIMessage, convertToCoreMessages, type UIMessageStreamWriter } from 'ai';
 import { experimental_createMCPClient } from '@ai-sdk/mcp';
 import { Experimental_StdioMCPTransport } from '@ai-sdk/mcp/mcp-stdio';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
@@ -375,7 +374,7 @@ export class MCPService {
     return toolName in this._tools;
   }
 
-  processToolCall(toolCall: ToolCall, dataStream: DataStreamWriter): void {
+  processToolCall(toolCall: ToolCall, writer: UIMessageStreamWriter): void {
     const { toolCallId, toolName } = toolCall;
 
     if (this.isValidToolName(toolName)) {
@@ -383,18 +382,21 @@ export class MCPService {
       const serverName = this._toolNamesToServerNames.get(toolName);
 
       if (serverName) {
-        dataStream.writeMessageAnnotation({
-          type: 'toolCall',
-          toolCallId,
-          serverName,
-          toolName,
-          toolDescription: description,
-        } satisfies ToolCallAnnotation);
+        writer.write({
+          type: 'data',
+          data: {
+            type: 'toolCall',
+            toolCallId,
+            serverName,
+            toolName,
+            toolDescription: description,
+          } satisfies ToolCallAnnotation,
+        } as any);
       }
     }
   }
 
-  async processToolInvocations(messages: Message[], dataStream: DataStreamWriter): Promise<Message[]> {
+  async processToolInvocations(messages: UIMessage[], writer: UIMessageStreamWriter): Promise<UIMessage[]> {
     const lastMessage = messages[messages.length - 1];
     const parts = lastMessage.parts;
 
@@ -409,7 +411,7 @@ export class MCPService {
           return part;
         }
 
-        const { toolInvocation } = part;
+        const { toolInvocation } = part as any;
         const { toolName, toolCallId } = toolInvocation;
 
         // return part as-is if tool does not exist, or if it's not a tool call result
@@ -445,12 +447,11 @@ export class MCPService {
         }
 
         // Forward updated tool result to the client.
-        dataStream.write(
-          formatDataStreamPart('tool_result', {
-            toolCallId,
-            result,
-          }),
-        );
+        writer.write({
+          type: 'tool-result',
+          toolCallId,
+          result,
+        } as any);
 
         // Return updated toolInvocation with the actual result.
         return {

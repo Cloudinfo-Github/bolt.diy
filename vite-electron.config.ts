@@ -68,7 +68,7 @@ export default defineConfig((config) => {
     css: {
       preprocessorOptions: {
         scss: {
-          api: 'modern-compiler',
+          // api: 'modern-compiler', // Removed for Vite 7 compatibility
         },
       },
     },
