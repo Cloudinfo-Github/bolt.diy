@@ -5,7 +5,7 @@
 
 import { useStore } from '@nanostores/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { customModels$, customModelsStore } from '~/lib/stores/custom-models';
+import { customModels$, customModelsStore, syncStatus$, lastSyncTime$ } from '~/lib/stores/custom-models';
 import { modelOverrides$, modelOverridesStore } from '~/lib/stores/model-overrides';
 import type { CustomModelConfig, ModelOverride } from '~/types/custom-models';
 import type { ModelInfo } from '~/lib/modules/llm/types';
@@ -14,6 +14,8 @@ import { toast } from 'react-toastify';
 export function ModelManagement() {
   const models = useStore(customModels$);
   const overrides = useStore(modelOverrides$);
+  const syncStatus = useStore(syncStatus$);
+  const lastSyncTime = useStore(lastSyncTime$);
   const [isAddingModel, setIsAddingModel] = useState(false);
   const [editingModel, setEditingModel] = useState<CustomModelConfig | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -270,8 +272,104 @@ export function ModelManagement() {
     setSystemEditorModel(null);
   };
 
+  // 手動同步到後端
+  const handleManualSync = async () => {
+    try {
+      await customModelsStore.syncToBackend();
+      toast.success('同步成功！');
+    } catch (error) {
+      toast.error('同步失敗，請稍後再試');
+      console.error('Manual sync failed:', error);
+    }
+  };
+
+  // 從後端重新載入
+  const handleReloadFromBackend = async () => {
+    try {
+      await customModelsStore.reloadFromBackend();
+      toast.success('已從後端重新載入模型！');
+    } catch (error) {
+      toast.error('載入失敗，請稍後再試');
+      console.error('Reload from backend failed:', error);
+    }
+  };
+
+  // 格式化同步時間
+  const formatSyncTime = (timestamp: number) => {
+    if (!timestamp) {
+      return '尚未同步';
+    }
+
+    const now = Date.now();
+    const diff = now - timestamp;
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+
+    if (seconds < 60) {
+      return '剛剛';
+    }
+
+    if (minutes < 60) {
+      return `${minutes} 分鐘前`;
+    }
+
+    if (hours < 24) {
+      return `${hours} 小時前`;
+    }
+
+    return new Date(timestamp).toLocaleString('zh-TW');
+  };
+
   return (
     <div className="p-4 space-y-8">
+      {/* 同步狀態指示器 */}
+      <div className="bg-bolt-elements-background-depth-2 rounded-lg p-4 border border-bolt-elements-borderColor">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              {syncStatus === 'syncing' && <div className="i-ph:spinner-gap animate-spin text-blue-400" />}
+              {syncStatus === 'success' && <div className="i-ph:check-circle text-green-400" />}
+              {syncStatus === 'error' && <div className="i-ph:warning-circle text-red-400" />}
+              {syncStatus === 'idle' && <div className="i-ph:database text-bolt-elements-textSecondary" />}
+              <span className="text-sm font-medium text-bolt-elements-textPrimary">
+                {syncStatus === 'syncing' && '正在同步...'}
+                {syncStatus === 'success' && '已同步'}
+                {syncStatus === 'error' && '同步失敗'}
+                {syncStatus === 'idle' && '後端同步'}
+              </span>
+            </div>
+            <span className="text-xs text-bolt-elements-textSecondary">最後同步：{formatSyncTime(lastSyncTime)}</span>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleReloadFromBackend}
+              className="px-3 py-1.5 text-sm bg-bolt-elements-button-secondary-background text-bolt-elements-button-secondary-text rounded hover:bg-bolt-elements-button-secondary-backgroundHover transition-colors"
+              title="從後端重新載入"
+            >
+              <div className="flex items-center gap-1.5">
+                <div className="i-ph:download-simple" />
+                <span>從後端載入</span>
+              </div>
+            </button>
+            <button
+              onClick={handleManualSync}
+              disabled={syncStatus === 'syncing'}
+              className="px-3 py-1.5 text-sm bg-bolt-elements-button-primary-background text-bolt-elements-button-primary-text rounded hover:bg-bolt-elements-button-primary-backgroundHover transition-colors disabled:opacity-60"
+              title="手動同步到後端"
+            >
+              <div className="flex items-center gap-1.5">
+                <div className={syncStatus === 'syncing' ? 'i-ph:spinner-gap animate-spin' : 'i-ph:cloud-arrow-up'} />
+                <span>同步到後端</span>
+              </div>
+            </button>
+          </div>
+        </div>
+        <p className="text-xs text-bolt-elements-textSecondary mt-2">
+          💡 自訂模型會自動同步到後端，重新載入頁面時會從後端恢復。如需手動同步，請點擊上方按鈕。
+        </p>
+      </div>
+
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
