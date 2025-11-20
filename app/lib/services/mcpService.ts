@@ -3,7 +3,6 @@ import { experimental_createMCPClient } from '@ai-sdk/mcp';
 import { Experimental_StdioMCPTransport } from '@ai-sdk/mcp/mcp-stdio';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { z } from 'zod';
-import type { ToolCallAnnotation } from '~/types/context';
 import {
   TOOL_EXECUTION_APPROVAL,
   TOOL_EXECUTION_DENIED,
@@ -383,14 +382,11 @@ export class MCPService {
 
       if (serverName) {
         writer.write({
-          type: 'data',
-          data: {
-            type: 'toolCall',
-            toolCallId,
-            serverName,
-            toolName,
-            toolDescription: description,
-          } satisfies ToolCallAnnotation,
+          type: 'data-toolCall',
+          toolCallId,
+          serverName,
+          toolName,
+          toolDescription: description,
         } as any);
       }
     }

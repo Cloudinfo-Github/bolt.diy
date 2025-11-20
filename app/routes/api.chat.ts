@@ -6,12 +6,7 @@ import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/
 import type { IProviderSetting } from '~/types/model';
 import { createScopedLogger } from '~/utils/logger';
 import { getFilePaths } from '~/lib/.server/llm/select-context';
-import {
-  REASONING_ANNOTATION_TYPE,
-  USAGE_ANNOTATION_TYPE,
-  type ProgressAnnotation,
-  type ReasoningAnnotation,
-} from '~/types/context';
+import { REASONING_ANNOTATION_TYPE, USAGE_ANNOTATION_TYPE, type ReasoningAnnotation } from '~/types/context';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 import type { DesignScheme } from '~/types/design-scheme';
 import { MCPService } from '~/lib/services/mcpService';
@@ -116,14 +111,11 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         if (filePaths.length > 0 && contextOptimization) {
           logger.debug('Generating Chat Summary');
           writer.write({
-            type: 'data',
-            data: {
-              type: 'progress',
-              label: 'summary',
-              status: 'in-progress',
-              order: progressCounter++,
-              message: 'Analysing Request',
-            } satisfies ProgressAnnotation,
+            type: 'data-progress',
+            label: 'summary',
+            status: 'in-progress',
+            order: progressCounter++,
+            message: 'Analysing Request',
           } as any);
 
           // （已移除錯誤插入的推理迴圈，summary 邏輯保持原樣）
@@ -148,14 +140,11 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             // Mark analysis as complete if it was started
             if (filePaths.length > 0 && contextOptimization) {
               writer.write({
-                type: 'data',
-                data: {
-                  type: 'progress',
-                  label: 'summary',
-                  status: 'complete',
-                  order: progressCounter++,
-                  message: 'Analysis Complete',
-                } satisfies ProgressAnnotation,
+                type: 'data-progress',
+                label: 'summary',
+                status: 'complete',
+                order: progressCounter++,
+                message: 'Analysis Complete',
               } as any);
             }
 
@@ -281,8 +270,8 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
                 };
 
                 writer.write({
-                  type: 'data',
-                  data: reasoningAnnotation,
+                  ...reasoningAnnotation,
+                  type: `data-${reasoningAnnotation.type}`,
                 } as any);
 
                 logger.info('[Reasoning] ✅ Reasoning annotation sent to frontend');
@@ -319,25 +308,19 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
             if (finishReason !== 'length') {
               writer.write({
-                type: 'data',
-                data: {
-                  type: USAGE_ANNOTATION_TYPE,
-                  value: {
-                    completionTokens: cumulativeUsage.completionTokens,
-                    promptTokens: cumulativeUsage.promptTokens,
-                    totalTokens: cumulativeUsage.totalTokens,
-                  },
+                type: `data-${USAGE_ANNOTATION_TYPE}`,
+                value: {
+                  completionTokens: cumulativeUsage.completionTokens,
+                  promptTokens: cumulativeUsage.promptTokens,
+                  totalTokens: cumulativeUsage.totalTokens,
                 },
               } as any);
               writer.write({
-                type: 'data',
-                data: {
-                  type: 'progress',
-                  label: 'response',
-                  status: 'complete',
-                  order: progressCounter++,
-                  message: 'Response Generated',
-                } satisfies ProgressAnnotation,
+                type: 'data-progress',
+                label: 'response',
+                status: 'complete',
+                order: progressCounter++,
+                message: 'Response Generated',
               } as any);
               streamRecovery.stop();
               await new Promise((resolve) => setTimeout(resolve, 0));
@@ -424,14 +407,11 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
          */
 
         writer.write({
-          type: 'data',
-          data: {
-            type: 'progress',
-            label: 'response',
-            status: 'in-progress',
-            order: progressCounter++,
-            message: isReasoning ? 'AI 深度思考中...' : 'Generating Response',
-          } satisfies ProgressAnnotation,
+          type: 'data-progress',
+          label: 'response',
+          status: 'in-progress',
+          order: progressCounter++,
+          message: isReasoning ? 'AI 深度思考中...' : 'Generating Response',
         } as any);
 
         const result = await streamText({
